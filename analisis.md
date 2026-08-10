@@ -8,6 +8,16 @@
 
 Juego de carreras en 3D con estética low-poly. El jugador debe conducir un vehículo a través de circuitos en el menor tiempo posible.
 
+## Boceto del juego
+
+- **Cámara:** tercera persona detrás del auto.
+- **Pista:** tiles low-poly (recta y curva), pórtico de salida/meta, rampas para saltos y obstáculos para esquivar.
+- **Límite:** borde de la pista; caerse reinicia la vuelta (castigo).
+- **Auto:** modelo low-poly simple (chasis + 4 ruedas), colores desbloqueables por récord.
+- **Menú:** título, botones Jugar / Mapa / Créditos, animación en el botón Jugar.
+- **HUD:** cronómetro y vuelta actual.
+- **Fin:** tiempo final, récord, botones Reintentar / Volver al menú.
+
 ## Condiciones de victoria / derrota
 
 - **Victoria:** Cruzar la línea de meta y registrar un tiempo válido.
