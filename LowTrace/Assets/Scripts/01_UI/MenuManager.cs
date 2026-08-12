@@ -18,6 +18,11 @@ public class MenuManager : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
+    public void IrACreditos()
+    {
+        SceneManager.LoadScene("Creditos");
+    }
+
     public void Salir()
     {
         Application.Quit();
