@@ -80,7 +80,15 @@ public class CarController : MonoBehaviour
     {
         if (rb == null) return;
 
-        rb.MoveRotation(Quaternion.Euler(0f, yawActual, 0f));
-        rb.linearVelocity = new Vector3(direccionMovimiento.x * velocidadActual, rb.linearVelocity.y, direccionMovimiento.z * velocidadActual);
+        Vector3 eulerActual = rb.rotation.eulerAngles;
+        rb.MoveRotation(Quaternion.Euler(eulerActual.x, yawActual, eulerActual.z));
+
+        Vector3 dirHorizontal = direccionMovimiento;
+        dirHorizontal.y = 0f;
+        dirHorizontal.Normalize();
+
+        Vector3 velocidad = dirHorizontal * velocidadActual;
+        velocidad.y = rb.linearVelocity.y;
+        rb.linearVelocity = velocidad;
     }
 }

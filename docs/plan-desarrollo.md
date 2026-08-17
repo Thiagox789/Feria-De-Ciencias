@@ -23,6 +23,37 @@ Cada entrega tiene:
 - **Tareas**: pasos concretos.
 - **Criterio de terminado**: cómo se comprueba que está lista (se escribe en el checklist de `documento.md`).
 
+### Nota sobre la UI
+
+La UI **no se termina en la Entrega 1**: se construye por capas según lo que va
+haciendo falta en cada etapa, y se vuelve a tocar en entregas posteriores:
+
+- **Entrega 1 → menú principal**: título, botones, hover, créditos, navegación.
+  Es lo único que se "cierra" en esa fecha.
+- **Entrega 2 → HUD de carrera + ResultPanel**: cronómetro, contadores,
+  pantalla de fin con Reintentar/Menú. Estos van dentro de `01_UI/` pero se
+  crean acá porque la carrera recién existe en esta fecha.
+- **Entrega 3 → refactor de controladores**: la UI pasa a leer el estado del
+  `GameManager`/`SoundManager`/`DataManager` (sin referencias sueltas).
+- **Entrega 7 → pulido final**: UI responsiva (Canvas Scaler + anchors) y
+  revisión visual global.
+
+**Regla:** tocar y ajustar la UI en cualquier entrega está permitido y es
+esperado. Sólo hay un requisito de fondo: lo que se entregó antes debe seguir
+funcionando (regresión cero en lo ya aprobado).
+
+### Nota sobre fechas
+
+Las fechas del cronograma son **límites**, no obligaciones de esperar:
+
+- Adelantarse está permitido: si la Entrega 2 está lista y probada, se puede
+  empezar la 3 el mismo día.
+- **Mezclar entregas** también: por ejemplo, meter el `SoundManager` (Entrega 3)
+  junto con el loop de carrera si necesitás sonido para probar la meta, o
+  adelantar parte de `07_Data/` si un récord se necesita antes.
+- Lo único que no se saltea: **el criterio de terminado de cada entrega** se debe
+  poder cumplir y **verificar en el editor** antes de commitear.
+
 ---
 
 ## 0. Fundaciones (primeros días)

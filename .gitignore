@@ -104,3 +104,6 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Packs importados no usados (solo samples enormes)
+/[Ll]owTrace/Assets/Assets-Importados/TerrainSampleAssets/
