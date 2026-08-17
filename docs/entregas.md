@@ -39,3 +39,42 @@ Bitácora de avance del proyecto **LowTrace** — Feria de Ciencias (ETec 2026).
 - [x] Se puede volver al menú.
 
 ---
+
+## Entrega 2 — 20 de agosto: Loop del juego + victoria/derrota (1 punto)
+
+**Estado:** EN PROGRESO (código y escena generados el 14 de agosto; falta probar en el editor)
+
+### Lo que se hizo
+
+**Scripts (`Assets/Scripts/`):**
+- `02_Game/GameManager.cs`: singleton con estados `Espera → Carrera → Terminado`,
+  cronómetro, récord de sesión, vueltas, checkpoints en orden y castigo por caída
+  (recarga la escena). Vueltas totales editable desde el inspector.
+- `02_Game/Checkpoint.cs` (nuevo): trigger con tag `Player` → registra el
+  checkpoint en el orden correcto (3 checkpoints habilitan la meta).
+- `02_Game/FinishLine.cs`: trigger en la meta → cruza la vuelta / termina la carrera.
+- `03_Vehicle/CarController.cs`: conducción con `Keyboard.current` (Input System
+  nuevo), WASD; al primer movimiento arranca la carrera (`IniciarCarrera()`).
+- `04_Camera/CameraFollow.cs`: cámara que sigue al auto (provisoria; en entrega 6
+  se reemplaza por Cinemachine).
+- `01_UI/UIManager.cs` (nuevo, reemplaza a Stopwatch/HUD/ResultPanel eliminados):
+  cronómetro, diferencia con el récord, contador de checkpoints (`0/3`), contador
+  de vueltas (`0/1`), estado, pantalla de victoria y teclas Reintentar (`R`/Espacio)
+  y Volver al menú (`Esc`).
+
+**Escena `Game.unity` reescrita por completo:**
+- `GameController` (GameManager con auto y 3 checkpoints referenciados),
+  `Auto` (tag `Player`, Rigidbody, CarController), `Victoria` (meta trigger),
+  3 cubos-checkpoint (Rigidbody IsKinematic + IsTrigger + Checkpoint.cs),
+  `UIController` (UIManager), cámara con CameraFollow, luz direccional,
+  Canvas HUD con contadores y panel de victoria.
+
+### Criterio de aceptación
+
+- [ ] La carrera inicia al primer movimiento (WASD) y cronometra.
+- [ ] Tocar los 3 checkpoints muestra `3/3` y habilita la meta.
+- [ ] Cruzar la meta muestra la pantalla de fin con tiempo y récord.
+- [ ] Reintentar recarga la escena y Menú vuelve al menú.
+- [ ] Caerse de la pista (y < umbral) recarga la escena.
+
+---

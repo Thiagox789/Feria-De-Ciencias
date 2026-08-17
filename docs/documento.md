@@ -99,16 +99,15 @@ LowTrace/Assets/
 
 ### 4.1. 13 de agosto — Documento de IA + UI funcional (1 punto)
 - [x] Subir este `documento.md` con el plan de trabajo con IA.
-- [ ] Conectar la UI del menú (botones Jugar / Mapa / Créditos).
-- [ ] Animación en el botón Jugar.
-- [ ] Pantalla de créditos.
-- [ ] Escena de juego creada y navegable (aunque sea el circuito en blanco).
+- [x] Conectar la UI del menú (botones Jugar / Mapa / Créditos).
+- [x] Animación en el botón Jugar.
+- [x] Pantalla de créditos.
+- [x] Escena de juego creada y navegable (aunque sea el circuito en blanco).
 
 ### 4.2. 20 de agosto — Loop del juego + victoria / derrota / finalización (1 punto)
 - [ ] GameManager con estados (Menú → Carrera → Fin).
 - [ ] Cronómetro y cruce de línea de meta (trigger).
 - [ ] Pantalla de resultado final: récord, reintentar, volver al menú.
-- [ ] Castigo: caerse de la pista → reiniciar la vuelta.
 
 ### 4.3. 27 de agosto — Controladores (1 punto)
 - [ ] Controlador de juego (GameManager) consolidado.

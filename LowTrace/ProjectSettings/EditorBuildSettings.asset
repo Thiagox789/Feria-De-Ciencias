@@ -13,13 +13,19 @@ EditorBuildSettings:
     guid: df0da53695a6ef118ba689b5764cdd56
   - enabled: 1
     path: Assets/Scenes/Mapa.unity
-    guid: 6cfa5194e4d902c7aaecad26fcada18e
-  - enabled: 1
-    path: Assets/Scenes/Game.unity
+    guid: 2fda671639e52fc52b52d6726a5f4929
+  - enabled: 0
+    path: Assets/Scenes/bASURA.unity
     guid: d5d1ad37a333a7838b79ffe1c723b6f3
   - enabled: 1
     path: Assets/Scenes/Creditos.unity
     guid: b5eeffd2e462ecedaa1c0533c672c6d1
+  - enabled: 1
+    path: Assets/Scenes/Game.unity
+    guid: bddfac557e5c879b496cd68fc5cd448d
+  - enabled: 1
+    path: Assets/Juego2.unity
+    guid: bf3427a409a25d5a68d58ea7c8c601f2
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
