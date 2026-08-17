@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -80,6 +81,21 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        Keyboard kb = Keyboard.current;
+        if (kb != null)
+        {
+            if (kb.rKey.wasPressedThisFrame)
+            {
+                Reintentar();
+                return;
+            }
+            if (kb.escapeKey.wasPressedThisFrame)
+            {
+                VolverAlMenu();
+                return;
+            }
+        }
+
         if (Estado == EstadoJuego.Carrera)
         {
             TiempoCarrera += Time.deltaTime;
