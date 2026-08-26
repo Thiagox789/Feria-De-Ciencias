@@ -105,9 +105,9 @@ LowTrace/Assets/
 - [x] Escena de juego creada y navegable (aunque sea el circuito en blanco).
 
 ### 4.2. 20 de agosto — Loop del juego + victoria / derrota / finalización (1 punto)
-- [ ] GameManager con estados (Menú → Carrera → Fin).
-- [ ] Cronómetro y cruce de línea de meta (trigger).
-- [ ] Pantalla de resultado final: récord, reintentar, volver al menú.
+- [x] GameManager con estados (Menú → Carrera → Fin).
+- [x] Cronómetro y cruce de línea de meta (trigger).
+- [x] Pantalla de resultado final: récord, reintentar, volver al menú.
 
 ### 4.3. 27 de agosto — Controladores (1 punto)
 - [ ] Controlador de juego (GameManager) consolidado.

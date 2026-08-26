@@ -42,7 +42,7 @@ Bitácora de avance del proyecto **LowTrace** — Feria de Ciencias (ETec 2026).
 
 ## Entrega 2 — 20 de agosto: Loop del juego + victoria/derrota (1 punto)
 
-**Estado:** EN PROGRESO (código y escena generados el 14 de agosto; falta probar en el editor)
+**Estado:** COMPLETADA (verificada el 24 de agosto de 2026)
 
 ### Lo que se hizo
 
@@ -71,10 +71,10 @@ Bitácora de avance del proyecto **LowTrace** — Feria de Ciencias (ETec 2026).
 
 ### Criterio de aceptación
 
-- [ ] La carrera inicia al primer movimiento (WASD) y cronometra.
-- [ ] Tocar los 3 checkpoints muestra `3/3` y habilita la meta.
-- [ ] Cruzar la meta muestra la pantalla de fin con tiempo y récord.
-- [ ] Reintentar recarga la escena y Menú vuelve al menú.
-- [ ] Caerse de la pista (y < umbral) recarga la escena.
+- [x] La carrera inicia al primer movimiento (WASD) y cronometra.
+- [x] Tocar los 3 checkpoints muestra `3/3` y habilita la meta.
+- [x] Cruzar la meta muestra la pantalla de fin con tiempo y récord.
+- [x] Reintentar recarga la escena y Menú vuelve al menú.
+- [x] Caerse de la pista (y < umbral) recarga la escena.
 
 ---
