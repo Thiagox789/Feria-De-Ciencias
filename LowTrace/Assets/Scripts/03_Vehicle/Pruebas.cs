@@ -1,14 +1,12 @@
 using UnityEngine;
 
-public class CarController : MonoBehaviour
+public class Pruebas : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Rigidbody carRB;
     [SerializeField] private Transform[] rayPoints;
     [SerializeField] private LayerMask drivable;
     [SerializeField] private Transform accelerationPoint;
-    [SerializeField] private GameObject[] tires;
-    [SerializeField] private GameObject[] frontTireParent;
 
     [Header("Suspension Settings")]
     [SerializeField] private float springStiffness = 30000f;
@@ -25,14 +23,11 @@ public class CarController : MonoBehaviour
     [SerializeField] private AnimationCurve turningCurve;
     [SerializeField] private float dragCoefficient = 1f;
 
-    [Header("Visuals")]
-    [SerializeField] private float tireRotSpeed = 3000f;
-    [SerializeField] private float maxSteeringAngle = 30f;
-
     [Header("Inputs")]
     [SerializeField] private float moveInput;
     [SerializeField] private float steerInput;
 
+    // Estado del coche
     private int[] wheelIsGrounded = new int[4];
     private bool isGrounded;
     private Vector3 currentCarLocalVelocity;
@@ -44,7 +39,9 @@ public class CarController : MonoBehaviour
     private void Start()
     {
         if (carRB == null)
+        {
             carRB = GetComponent<Rigidbody>();
+        }
     }
 
     private void Update()
@@ -58,7 +55,6 @@ public class CarController : MonoBehaviour
         GroundCheck();
         CalculateCarVelocity();
         Movement();
-        Visuals();
     }
 
     #region Input Handling
@@ -83,6 +79,7 @@ public class CarController : MonoBehaviour
             tempGroundedWheels += wheelIsGrounded[i];
         }
 
+        // Si más de 1 rueda toca el suelo, el auto está grounded
         isGrounded = tempGroundedWheels > 1;
     }
 
@@ -121,8 +118,9 @@ public class CarController : MonoBehaviour
 
     private void Turn()
     {
+        float curveValue = turningCurve.Evaluate(carVelocityRatio);
         float speedFactor = Mathf.Abs(currentCarLocalVelocity.z) > 0.5f ? Mathf.Sign(currentCarLocalVelocity.z) : 1f;
-        float turnAmount = steerStrength * steerInput * turningCurve.Evaluate(carVelocityRatio) * speedFactor;
+        float turnAmount = steerStrength * steerInput * curveValue * speedFactor;
         carRB.AddTorque(transform.up * turnAmount, ForceMode.Acceleration);
     }
 
@@ -133,43 +131,6 @@ public class CarController : MonoBehaviour
         Vector3 dragForce = transform.right * dragForceMagnitude;
 
         carRB.AddForceAtPosition(dragForce, carRB.worldCenterOfMass, ForceMode.Acceleration);
-    }
-    #endregion
-
-    #region Visuals
-    private void Visuals()
-    {
-        TireVisuals();
-    }
-
-    private void TireVisuals()
-    {
-        float steeringAngle = steerInput * maxSteeringAngle;
-
-        for (int i = 0; i < tires.Length; i++)
-        {
-            if (i == 0 || i == 1)
-            {
-                tires[i].transform.Rotate(Vector3.right, tireRotSpeed * carVelocityRatio * Time.deltaTime, Space.Self);
-                if (frontTireParent.Length > i && frontTireParent[i] != null)
-                {
-                    frontTireParent[i].transform.localRotation = Quaternion.Euler(
-                        frontTireParent[i].transform.localRotation.eulerAngles.x,
-                        steeringAngle,
-                        frontTireParent[i].transform.localRotation.eulerAngles.z
-                    );
-                }
-            }
-            else
-            {
-                tires[i].transform.Rotate(Vector3.right, tireRotSpeed * moveInput * Time.deltaTime, Space.Self);
-            }
-        }
-    }
-
-    private void SetTirePosition(GameObject tire, Vector3 targetPosition)
-    {
-        tire.transform.position = targetPosition;
     }
     #endregion
 
@@ -198,17 +159,12 @@ public class CarController : MonoBehaviour
 
                 carRB.AddForceAtPosition(rayPoints[i].up * netForce, rayPoints[i].position);
 
-                SetTirePosition(tires[i], hit.point + (rayPoints[i].up * wheelRadius));
-
-                Debug.DrawRay(rayPoints[i].position, -rayPoints[i].up * hit.distance, Color.red);
+                // Debug.DrawRay(rayPoints[i].position, -rayPoints[i].up * hit.distance, Color.red);
             }
             else
             {
                 wheelIsGrounded[i] = 0;
-
-                SetTirePosition(tires[i], rayPoints[i].position - (Vector3.up * maxLength));
-
-                Debug.DrawRay(rayPoints[i].position, -rayPoints[i].up * (maxLength + wheelRadius), Color.green);
+                // Debug.DrawRay(rayPoints[i].position, -rayPoints[i].up * (maxLength + wheelRadius), Color.green);
             }
         }
     }

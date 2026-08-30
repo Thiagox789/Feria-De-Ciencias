@@ -2259,11 +2259,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 9148106930174485795, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
---- !u!4 &258595845 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 439626, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
-  m_PrefabInstance: {fileID: 584835870}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &286488547 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6488228733133631731, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
@@ -3187,12 +3182,11 @@ Transform:
   m_GameObject: {fileID: 418865587}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 2.83, y: 1.4, z: 0.5}
+  m_LocalPosition: {x: 2.78, y: 1.787, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 584835871}
-  - {fileID: 920210018}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!54 &418865589
@@ -3203,7 +3197,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 418865587}
   serializedVersion: 5
-  m_Mass: 1000
+  m_Mass: 2
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: -0.3, z: 0}
@@ -3220,7 +3214,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 0
   m_CollisionDetection: 2
 --- !u!114 &418865590
 MonoBehaviour:
@@ -3234,23 +3228,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2164d6dfcaa7d10ebbe8ebdd4399c957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarController
-  puntosSuspension:
-  - {fileID: 626768334}
-  - {fileID: 520519629}
-  - {fileID: 258595845}
-  - {fileID: 499275506}
-  puntoAceleracion: {fileID: 920210018}
+  puntosSuspension: []
+  puntoAceleracion: {fileID: 0}
   capaConducible:
     serializedVersion: 2
-    m_Bits: 1
-  rigidezResorte: 30000
-  amortiguacion: 3000
+    m_Bits: 0
+  rigidezResorte: 45000
+  amortiguacion: 4000
   largoReposo: 0.6
-  recorridoResorte: 0.5
-  radioRueda: 0.34
-  gravedadExtra: 0
-  aceleracion: 12000
-  frenado: 9000
+  recorridoResorte: 0.4
+  radioRueda: 0.35
+  gravedadExtra: 8
+  aceleracion: 20
+  frenado: 25
   velocidadMax: 35
   fuerzaGiro: 60
   curvaGiro:
@@ -3300,8 +3290,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 1.4, z: 5}
-  m_Center: {x: 0, y: 0.15, z: 0}
+  m_Size: {x: 1.8, y: 1.57, z: 5}
+  m_Center: {x: 0, y: -0.2, z: 0}
 --- !u!1 &419156515 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1585015375599971490, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
@@ -3788,11 +3778,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -6531525120215824829, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
---- !u!4 &499275506 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 457100, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
-  m_PrefabInstance: {fileID: 584835870}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &506354572 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4022053798514969785, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
@@ -3874,11 +3859,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -9210880720569222717, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
---- !u!4 &520519629 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 423422, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
-  m_PrefabInstance: {fileID: 584835870}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &527855349 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1281719579074837555, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
@@ -4106,18 +4086,6 @@ PrefabInstance:
     - target: {fileID: 134962, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
       propertyPath: m_Name
       value: PolicecarSkin
-      objectReference: {fileID: 0}
-    - target: {fileID: 429084, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 429084, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 429084, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 429084, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4637,11 +4605,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -5858582335389809474, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
---- !u!4 &626768334 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 455130, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
-  m_PrefabInstance: {fileID: 584835870}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &631186193 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7397338240133331852, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
@@ -8137,37 +8100,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &920210017
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 920210018}
-  m_Layer: 0
-  m_Name: PuntoAceleracion
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &920210018
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 920210017}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -0.3, z: 0}
-  m_LocalScale: {x: 0.99999976, y: 1, z: 0.99999976}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 418865588}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &920434347 stripped
 GameObject:
