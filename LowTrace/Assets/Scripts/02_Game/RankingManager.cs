@@ -16,9 +16,17 @@ public class RankingManager : MonoBehaviour
     [SerializeField] private int maximoEntradas = 10;
     [SerializeField] private string mapaFiltro = "";
 
-    private List<RecordsData.RegistroTiempo> rankingActual = new List<RecordsData.RegistroTiempo>();
+    private List<RegistroTiempo> rankingActual = new List<RegistroTiempo>();
 
     public event System.Action OnRankingActualizado;
+
+    [System.Serializable]
+    public class RegistroTiempo
+    {
+        public string nombreJugador;
+        public float tiempo;
+        public string mapa;
+    }
 
     private void Awake()
     {
@@ -31,16 +39,8 @@ public class RankingManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    private void Start()
-    {
-        ActualizarRanking();
-    }
-
     public void ActualizarRanking()
     {
-        if (DataManager.Instancia == null || DataManager.Instancia.Records == null) return;
-
-        rankingActual = DataManager.Instancia.Records.ObtenerRanking(mapaFiltro, maximoEntradas);
         ActualizarUI();
         OnRankingActualizado?.Invoke();
     }
@@ -53,16 +53,24 @@ public class RankingManager : MonoBehaviour
 
     public void AgregarTiempo(string nombre, float tiempo, string mapa)
     {
-        if (DataManager.Instancia == null || DataManager.Instancia.Records == null) return;
+        RegistroTiempo registro = new RegistroTiempo
+        {
+            nombreJugador = nombre,
+            tiempo = tiempo,
+            mapa = mapa
+        };
+        rankingActual.Add(registro);
+        rankingActual.Sort((a, b) => a.tiempo.CompareTo(b.tiempo));
 
-        DataManager.Instancia.Records.AgregarRegistro(nombre, tiempo, mapa);
-        DataManager.Instancia.GuardarRecords();
-        ActualizarRanking(mapa);
+        if (rankingActual.Count > maximoEntradas)
+            rankingActual.RemoveRange(maximoEntradas, rankingActual.Count - maximoEntradas);
+
+        ActualizarUI();
     }
 
-    public List<RecordsData.RegistroTiempo> ObtenerRanking()
+    public List<RegistroTiempo> ObtenerRanking()
     {
-        return new List<RecordsData.RegistroTiempo>(rankingActual);
+        return new List<RegistroTiempo>(rankingActual);
     }
 
     public float ObtenerMejorTiempo()

@@ -71,7 +71,6 @@ public class MapMenuUI : MonoBehaviour
             indiceActual = MapSelectionManager.Instancia.IndiceSeleccionado;
         }
 
-        CargarAjustes();
         ActualizarUI(indiceActual);
 
         if (panelAjustes != null)
@@ -115,15 +114,7 @@ public class MapMenuUI : MonoBehaviour
             textoDescripcion.text = mapa.descripcion;
 
         if (textoTiempoRecord != null)
-        {
-            float record = 0f;
-            if (DataManager.Instancia != null && DataManager.Instancia.Records != null)
-                record = DataManager.Instancia.Records.ObtenerMejorTiempo(mapa.nombre);
-
-            textoTiempoRecord.text = record > 0f
-                ? "Récord: " + FormatearTiempo(record)
-                : "Sin récord";
-        }
+            textoTiempoRecord.text = "Sin récord";
     }
 
     private void Jugar()
@@ -147,57 +138,24 @@ public class MapMenuUI : MonoBehaviour
     {
         if (panelAjustes != null)
             panelAjustes.SetActive(false);
-
-        if (SettingsManager.Instancia != null)
-            SettingsManager.Instancia.Guardar();
-    }
-
-    private void CargarAjustes()
-    {
-        if (SettingsManager.Instancia == null) return;
-
-        if (sliderVolumenMusica != null)
-            sliderVolumenMusica.value = SettingsManager.Instancia.VolumenMusica;
-
-        if (sliderVolumenSFX != null)
-            sliderVolumenSFX.value = SettingsManager.Instancia.VolumenSFX;
-
-        if (togglePantallaCompleta != null)
-            togglePantallaCompleta.isOn = SettingsManager.Instancia.PantallaCompleta;
-
-        if (dropdownCalidad != null)
-            dropdownCalidad.value = SettingsManager.Instancia.CalidadGrafica;
     }
 
     private void CambiarVolumenMusica(float valor)
     {
-        if (SettingsManager.Instancia != null)
-            SettingsManager.Instancia.VolumenMusica = valor;
+        AudioListener.volume = valor;
     }
 
     private void CambiarVolumenSFX(float valor)
     {
-        if (SettingsManager.Instancia != null)
-            SettingsManager.Instancia.VolumenSFX = valor;
     }
 
     private void CambiarPantallaCompleta(bool valor)
     {
-        if (SettingsManager.Instancia != null)
-            SettingsManager.Instancia.PantallaCompleta = valor;
+        Screen.fullScreen = valor;
     }
 
     private void CambiarCalidad(int indice)
     {
-        if (SettingsManager.Instancia != null)
-            SettingsManager.Instancia.CalidadGrafica = indice;
-    }
-
-    private string FormatearTiempo(float tiempo)
-    {
-        int min = (int)(tiempo / 60f);
-        int seg = (int)(tiempo % 60f);
-        int mili = (int)((tiempo - Mathf.Floor(tiempo)) * 1000f);
-        return string.Format("{0:00}:{1:00}.{2:000}", min, seg, mili);
+        QualitySettings.SetQualityLevel(indice);
     }
 }

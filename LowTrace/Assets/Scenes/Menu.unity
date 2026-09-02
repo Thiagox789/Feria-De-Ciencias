@@ -211,7 +211,6 @@ GameObject:
   - component: {fileID: 208332131}
   - component: {fileID: 208332130}
   - component: {fileID: 208332129}
-  - component: {fileID: 208332128}
   m_Layer: 5
   m_Name: Boton-Ajustes
   m_TagString: Untagged
@@ -239,26 +238,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -1, y: -2}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &208332128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 208332126}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686a4c1b5ef68176ab2819f639f60a6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ButtonHoverScale
-  escalaObjetivo: 1.1
-  velocidad: 10
-  cambiarColor: 1
-  colorHover: {r: 1, g: 0.72, b: 0.3, a: 1}
-  imagen: {fileID: 0}
-  pulsoActivo: 0
-  amplitudPulso: 0.03
-  velocidadPulso: 2
 --- !u!95 &208332129
 Animator:
   serializedVersion: 7
@@ -490,7 +469,6 @@ GameObject:
   - component: {fileID: 465761290}
   - component: {fileID: 465761289}
   - component: {fileID: 465761288}
-  - component: {fileID: 465761291}
   m_Layer: 5
   m_Name: Boton-Creditos
   m_TagString: Untagged
@@ -612,26 +590,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 465761286}
   m_CullTransparentMesh: 1
---- !u!114 &465761291
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 465761286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686a4c1b5ef68176ab2819f639f60a6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ButtonHoverScale
-  escalaObjetivo: 1.1
-  velocidad: 10
-  cambiarColor: 1
-  colorHover: {r: 1, g: 0.72, b: 0.3, a: 1}
-  imagen: {fileID: 0}
-  pulsoActivo: 0
-  amplitudPulso: 0.03
-  velocidadPulso: 2
 --- !u!1 &757716626
 GameObject:
   m_ObjectHideFlags: 0
@@ -855,7 +813,6 @@ GameObject:
   - component: {fileID: 866374538}
   - component: {fileID: 866374537}
   - component: {fileID: 866374536}
-  - component: {fileID: 866374535}
   m_Layer: 5
   m_Name: Boton-Tabla
   m_TagString: Untagged
@@ -883,26 +840,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.5, y: 1.5}
   m_SizeDelta: {x: -5, y: -2}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &866374535
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 866374533}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686a4c1b5ef68176ab2819f639f60a6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ButtonHoverScale
-  escalaObjetivo: 1.1
-  velocidad: 10
-  cambiarColor: 1
-  colorHover: {r: 1, g: 0.72, b: 0.3, a: 1}
-  imagen: {fileID: 0}
-  pulsoActivo: 0
-  amplitudPulso: 0.03
-  velocidadPulso: 2
 --- !u!95 &866374536
 Animator:
   serializedVersion: 7
@@ -1019,6 +956,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 866374533}
   m_CullTransparentMesh: 1
+--- !u!1 &897764416
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 897764417}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &897764417
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 897764416}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.60845, y: 2.42427, z: -4.94828}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &924404039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1156,6 +1124,170 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 924404039}
   m_CullTransparentMesh: 1
+--- !u!1 &960520193
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 960520198}
+  - component: {fileID: 960520197}
+  - component: {fileID: 960520196}
+  - component: {fileID: 960520194}
+  m_Layer: 0
+  m_Name: Controladores
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &960520194
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 960520193}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &960520196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 960520193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2792779a8d1bb51318cf07af35c89423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoundManager
+  musica: {fileID: 960520194}
+  sfx: {fileID: 960520194}
+  motorSFX: {fileID: 960520194}
+  musicas:
+  - {fileID: 8300000, guid: 17c14747bb1ae0b0e8a2d4bc584d16e8, type: 3}
+  - {fileID: 8300000, guid: ca6c22a5a27bf5425b2f6e6809bd3a60, type: 3}
+  - {fileID: 8300000, guid: 6c868f512f6223eed91eb8f9caeec12a, type: 3}
+--- !u!114 &960520197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 960520193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf8a9372bca9cc4748f238a26682abd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DataManager
+  records: {fileID: 11400000, guid: 65a0c7bc2f17e8f1c861e980ca5445e0, type: 2}
+  ajustes: {fileID: 11400000, guid: 707235430a94dfc0492e8616be9aa6c0, type: 2}
+--- !u!4 &960520198
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 960520193}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.60845, y: 2.42427, z: -4.94828}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &979365916
 GameObject:
   m_ObjectHideFlags: 0
@@ -1430,6 +1562,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1005122883}
   m_CullTransparentMesh: 1
+--- !u!1 &1318852350
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1318852352}
+  - component: {fileID: 1318852351}
+  m_Layer: 0
+  m_Name: SceneLoader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1318852351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1318852350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1615c5d43cbac0e7a9483070fe0bad1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
+--- !u!4 &1318852352
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1318852350}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.60845, y: 2.42427, z: -4.94828}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1699966770
 GameObject:
   m_ObjectHideFlags: 0
@@ -1717,7 +1893,6 @@ GameObject:
   - component: {fileID: 1794676487}
   - component: {fileID: 1794676486}
   - component: {fileID: 1794676485}
-  - component: {fileID: 1794676484}
   m_Layer: 5
   m_Name: Boton-Jugar
   m_TagString: Untagged
@@ -1745,26 +1920,6 @@ RectTransform:
   m_AnchoredPosition: {x: 1, y: 0.5}
   m_SizeDelta: {x: -4, y: -2}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1794676484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1794676482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686a4c1b5ef68176ab2819f639f60a6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ButtonHoverScale
-  escalaObjetivo: 1.1
-  velocidad: 10
-  cambiarColor: 1
-  colorHover: {r: 1, g: 0.72, b: 0.3, a: 1}
-  imagen: {fileID: 0}
-  pulsoActivo: 0
-  amplitudPulso: 0.03
-  velocidadPulso: 2
 --- !u!95 &1794676485
 Animator:
   serializedVersion: 7
@@ -1910,6 +2065,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb95532d40ac05d6ebe9ebf06f6fbf19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuManager
+  botones:
+  - {fileID: 1947929667}
+  - {fileID: 465761288}
+  - {fileID: 208332130}
+  - {fileID: 866374537}
+  - {fileID: 1794676486}
+  escalaObjetivo: 1.1
+  velocidad: 10
+  colorHover: {r: 1, g: 0.72, b: 0.3, a: 1}
+  pulsoActivo: 0
 --- !u!4 &1820279343
 Transform:
   m_ObjectHideFlags: 0
@@ -2084,10 +2249,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 757716627}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.28347918, y: 0.8944076}
-  m_AnchorMax: {x: 0.70877075, y: 1}
-  m_AnchoredPosition: {x: 8, y: 7}
-  m_SizeDelta: {x: -616, y: -14}
+  m_AnchorMin: {x: 0.28300002, y: 0.84900004}
+  m_AnchorMax: {x: 0.70877075, y: 0.95370376}
+  m_AnchoredPosition: {x: 8.5, y: 31.5}
+  m_SizeDelta: {x: -617, y: -63}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1841332846
 MonoBehaviour:
@@ -2175,7 +2340,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -316.76135, y: 0, z: -299.13428, w: -14.506165}
+  m_margin: {x: -316.76135, y: 0, z: -299.13428, w: -64.68933}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2201,7 +2366,6 @@ GameObject:
   - component: {fileID: 1947929669}
   - component: {fileID: 1947929668}
   - component: {fileID: 1947929667}
-  - component: {fileID: 1947929670}
   m_Layer: 5
   m_Name: Boton-Salir
   m_TagString: Untagged
@@ -2323,26 +2487,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1947929665}
   m_CullTransparentMesh: 1
---- !u!114 &1947929670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1947929665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686a4c1b5ef68176ab2819f639f60a6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ButtonHoverScale
-  escalaObjetivo: 1.1
-  velocidad: 10
-  cambiarColor: 1
-  colorHover: {r: 1, g: 0.72, b: 0.3, a: 1}
-  imagen: {fileID: 0}
-  pulsoActivo: 0
-  amplitudPulso: 0.03
-  velocidadPulso: 2
 --- !u!1 &2137394010
 GameObject:
   m_ObjectHideFlags: 0
@@ -2489,3 +2633,6 @@ SceneRoots:
   - {fileID: 440972576}
   - {fileID: 168171424}
   - {fileID: 1820279343}
+  - {fileID: 897764417}
+  - {fileID: 1318852352}
+  - {fileID: 960520198}

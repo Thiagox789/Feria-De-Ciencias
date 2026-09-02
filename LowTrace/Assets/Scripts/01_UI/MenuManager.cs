@@ -1,36 +1,61 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
+    [Header("Botones con efecto hover")]
+    [SerializeField] private Button[] botones;
+
+    [Header("Configuración hover")]
+    [SerializeField] private float escalaObjetivo = 1.1f;
+    [SerializeField] private float velocidad = 10f;
+    [SerializeField] private Color colorHover = new Color(1f, 0.72f, 0.3f);
+    [SerializeField] private bool pulsoActivo = false;
+
+    private void Awake()
+    {
+        if (botones == null) return;
+
+        foreach (Button boton in botones)
+        {
+            if (boton == null) continue;
+
+            ButtonHoverScale hover = boton.gameObject.GetComponent<ButtonHoverScale>();
+            if (hover == null)
+                hover = boton.gameObject.AddComponent<ButtonHoverScale>();
+
+            hover.SetConfig(escalaObjetivo, velocidad, colorHover, pulsoActivo);
+        }
+    }
+
     public void Jugar()
     {
-        SceneManager.LoadScene("IA");
+        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("IA");
     }
 
     public void IrAMapa()
     {
-        SceneManager.LoadScene("Mapa");
+        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("Mapa");
     }
 
     public void VolverAlMenu()
     {
-        SceneManager.LoadScene("Menu");
+        if (SceneLoader.Instancia != null) SceneLoader.Instancia.VolverAlMenu();
     }
 
     public void IrAAjustes()
     {
-        SceneManager.LoadScene("Ajustes");
+        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("Ajustes");
     }
 
     public void IrARanking()
     {
-        SceneManager.LoadScene("Ranking");
+        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("Ranking");
     }
 
     public void IrACreditos()
     {
-        SceneManager.LoadScene("Creditos");
+        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("Creditos");
     }
 
     public void Salir()

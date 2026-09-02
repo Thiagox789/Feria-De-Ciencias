@@ -1,114 +1,91 @@
 using UnityEngine;
-using System.IO;
+using System.IO; 
 
 public class DataManager : MonoBehaviour
 {
-    public static DataManager Instancia { get; private set; }
+    public static DataManager Instancia;
 
-    [Header("ScriptableObjects")]
-    [SerializeField] private RecordsData recordsData;
-    [SerializeField] private SettingsData settingsData;
-    [SerializeField] private UnlocksData unlocksData;
+    [Header("Archivos de Datos (ScriptableObjects)")]
+    public RecordsData records;
+    public SettingsData ajustes; // ¡NUEVO! Agregamos los ajustes de volumen
 
-    private string carpetaGuardado;
     private string rutaRecords;
-    private string rutaSettings;
-    private string rutaUnlocks;
-
-    public RecordsData Records => recordsData;
-    public SettingsData Settings => settingsData;
-    public UnlocksData Unlocks => unlocksData;
+    private string rutaAjustes;  // ¡NUEVO! Ruta para guardar los ajustes
 
     private void Awake()
     {
-        if (Instancia != null && Instancia != this)
-        {
-            Destroy(gameObject);
-            return;
+        if (Instancia != null) 
+        { 
+            Destroy(gameObject); 
+            return; 
         }
         Instancia = this;
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject); 
 
-        carpetaGuardado = Application.persistentDataPath + "/Guardado";
-        rutaRecords = carpetaGuardado + "/records.json";
-        rutaSettings = carpetaGuardado + "/settings.json";
-        rutaUnlocks = carpetaGuardado + "/unlocks.json";
+        // Definimos las rutas de los archivos en la computadora
+        rutaRecords = Application.persistentDataPath + "/records_jugador.json";
+        rutaAjustes = Application.persistentDataPath + "/ajustes_juego.json";
 
-        if (!Directory.Exists(carpetaGuardado))
-            Directory.CreateDirectory(carpetaGuardado);
-
-        CargarTodos();
+        // Apenas empieza el juego, cargamos TODO
+        CargarDatos();
+        CargarAjustes();
     }
 
-    public void GuardarTodos()
+    // ==========================================
+    // RÉCORDS
+    // ==========================================
+    public void GuardarDatos()
     {
-        GuardarRecords();
-        GuardarSettings();
-        GuardarUnlocks();
+        string textoJson = JsonUtility.ToJson(records);
+        File.WriteAllText(rutaRecords, textoJson);
     }
 
-    public void CargarTodos()
+    public void CargarDatos()
     {
-        CargarRecords();
-        CargarSettings();
-        CargarUnlocks();
-    }
-
-    public void GuardarRecords()
-    {
-        if (recordsData == null) return;
-        string json = JsonUtility.ToJson(recordsData, true);
-        File.WriteAllText(rutaRecords, json);
-    }
-
-    public void CargarRecords()
-    {
-        if (recordsData == null) return;
         if (File.Exists(rutaRecords))
         {
-            string json = File.ReadAllText(rutaRecords);
-            JsonUtility.FromJsonOverwrite(json, recordsData);
+            string textoJson = File.ReadAllText(rutaRecords);
+            JsonUtility.FromJsonOverwrite(textoJson, records);
         }
     }
 
-    public void GuardarSettings()
+    public void IntentarNuevoRecord(float nuevoTiempo)
     {
-        if (settingsData == null) return;
-        string json = JsonUtility.ToJson(settingsData, true);
-        File.WriteAllText(rutaSettings, json);
-    }
-
-    public void CargarSettings()
-    {
-        if (settingsData == null) return;
-        if (File.Exists(rutaSettings))
+        if (nuevoTiempo < records.mejorTiempo)
         {
-            string json = File.ReadAllText(rutaSettings);
-            JsonUtility.FromJsonOverwrite(json, settingsData);
+            records.mejorTiempo = nuevoTiempo; 
+            GuardarDatos();                    
         }
     }
 
-    public void GuardarUnlocks()
+    // ==========================================
+    // AJUSTES DE VOLUMEN (¡NUEVO!)
+    // ==========================================
+    
+    // Convierte el volumen a JSON y lo guarda en la compu
+    public void GuardarAjustes()
     {
-        if (unlocksData == null) return;
-        string json = JsonUtility.ToJson(unlocksData, true);
-        File.WriteAllText(rutaUnlocks, json);
+        string textoJson = JsonUtility.ToJson(ajustes);
+        File.WriteAllText(rutaAjustes, textoJson);
+        Debug.Log("¡Ajustes de sonido guardados en JSON: " + rutaAjustes + "!");
     }
 
-    public void CargarUnlocks()
+    // Lee el JSON de la compu y actualiza el juego
+    public void CargarAjustes()
     {
-        if (unlocksData == null) return;
-        if (File.Exists(rutaUnlocks))
+        if (File.Exists(rutaAjustes))
         {
-            string json = File.ReadAllText(rutaUnlocks);
-            JsonUtility.FromJsonOverwrite(json, unlocksData);
+            string textoJson = File.ReadAllText(rutaAjustes);
+            JsonUtility.FromJsonOverwrite(textoJson, ajustes);
         }
-    }
-
-    public void BorrarDatos()
-    {
-        if (File.Exists(rutaRecords)) File.Delete(rutaRecords);
-        if (File.Exists(rutaSettings)) File.Delete(rutaSettings);
-        if (File.Exists(rutaUnlocks)) File.Delete(rutaUnlocks);
+        else 
+        {
+            // Si es la primera vez, aseguramos que el volumen esté al máximo por defecto
+            if (ajustes != null)
+            {
+                ajustes.volumenMusica = 1f;
+                ajustes.volumenSFX = 1f;
+            }
+        }
     }
 }

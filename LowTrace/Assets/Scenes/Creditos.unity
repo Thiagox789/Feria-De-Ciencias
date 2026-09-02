@@ -496,6 +496,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1016307617}
   m_CullTransparentMesh: 1
+--- !u!1 &1083351839
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1083351841}
+  - component: {fileID: 1083351840}
+  m_Layer: 0
+  m_Name: SceneLoader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1083351840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1083351839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1615c5d43cbac0e7a9483070fe0bad1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
+--- !u!4 &1083351841
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1083351839}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.60845, y: 2.42427, z: -4.94828}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1312945427
 GameObject:
   m_ObjectHideFlags: 0
@@ -525,6 +569,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb95532d40ac05d6ebe9ebf06f6fbf19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuManager
+  botones:
+  - {fileID: 1493772912}
+  escalaObjetivo: 1.1
+  velocidad: 10
+  colorHover: {r: 1, g: 0.72, b: 0.3, a: 1}
+  pulsoActivo: 0
 --- !u!4 &1312945429
 Transform:
   m_ObjectHideFlags: 0
@@ -755,7 +805,6 @@ GameObject:
   - component: {fileID: 1493772914}
   - component: {fileID: 1493772913}
   - component: {fileID: 1493772912}
-  - component: {fileID: 1493772915}
   m_Layer: 0
   m_Name: Boton-Volver
   m_TagString: Untagged
@@ -877,26 +926,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1493772910}
   m_CullTransparentMesh: 1
---- !u!114 &1493772915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1493772910}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686a4c1b5ef68176ab2819f639f60a6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ButtonHoverScale
-  escalaObjetivo: 1.1
-  velocidad: 10
-  cambiarColor: 1
-  colorHover: {r: 1, g: 0.72156864, b: 0.3019608, a: 1}
-  imagen: {fileID: 0}
-  pulsoActivo: 0
-  amplitudPulso: 0.03
-  velocidadPulso: 2
 --- !u!1 &1569961083
 GameObject:
   m_ObjectHideFlags: 0
@@ -1163,3 +1192,4 @@ SceneRoots:
   - {fileID: 920334642}
   - {fileID: 1569961086}
   - {fileID: 1312945429}
+  - {fileID: 1083351841}

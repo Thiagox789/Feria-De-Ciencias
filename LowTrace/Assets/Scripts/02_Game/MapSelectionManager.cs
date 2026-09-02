@@ -84,10 +84,6 @@ public class MapSelectionManager : MonoBehaviour
     public bool EsMapaDesbloqueado(int indice)
     {
         if (indice < 0 || indice >= mapas.Count) return false;
-
-        if (DataManager.Instancia != null && DataManager.Instancia.Unlocks != null)
-            return DataManager.Instancia.Unlocks.EstaMapaDesbloqueado(mapas[indice].nombre);
-
         return true;
     }
 

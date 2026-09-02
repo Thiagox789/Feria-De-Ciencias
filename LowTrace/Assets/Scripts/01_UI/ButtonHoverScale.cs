@@ -17,6 +17,14 @@ public class ButtonHoverScale : MonoBehaviour, IPointerEnterHandler, IPointerExi
     private Vector3 escalaBase;
     private bool sobreElemento;
 
+    public void SetConfig(float escala, float vel, Color color, bool pulso)
+    {
+        escalaObjetivo = escala;
+        velocidad = vel;
+        colorHover = color;
+        pulsoActivo = pulso;
+    }
+
     private void Awake()
     {
         rect = GetComponent<RectTransform>();

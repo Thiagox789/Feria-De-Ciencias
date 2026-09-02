@@ -1,129 +1,144 @@
 using UnityEngine;
-using UnityEngine.Audio;
+using UnityEngine.SceneManagement; // NUEVO: Necesario para saber en qué escena estamos
 
+// MonoBehaviour permite que este script se pueda "pegar" a un objeto dentro de Unity
 public class SoundManager : MonoBehaviour
 {
-    public static SoundManager Instancia { get; private set; }
+    // Patrón "Singleton"
+    public static SoundManager Instancia;
 
-    [Header("Música")]
-    [SerializeField] private AudioSource musicaSource;
-    [SerializeField] private AudioClip[] musicaClips;
-    [SerializeField] private float volumenMusica = 0.5f;
+    [Header("Reproductores de Audio")]
+    [SerializeField] private AudioSource musica;
+    [SerializeField] private AudioSource sfx;
+    [SerializeField] private AudioSource motorSFX;
 
-    [Header("Efectos de Sonido")]
-    [SerializeField] private AudioSource[] sfxSources;
-    [SerializeField] private float volumenSFX = 0.7f;
-
-    private int musicaActual = -1;
-
-    public float VolumenMusica
-    {
-        get => volumenMusica;
-        set
-        {
-            volumenMusica = Mathf.Clamp01(value);
-            if (musicaSource != null)
-                musicaSource.volume = volumenMusica;
-        }
-    }
-
-    public float VolumenSFX
-    {
-        get => volumenSFX;
-        set => volumenSFX = Mathf.Clamp01(value);
-    }
+    [Header("Lista de Canciones")]
+    [SerializeField] private AudioClip[] musicas;
 
     private void Awake()
     {
-        if (Instancia != null && Instancia != this)
-        {
-            Destroy(gameObject);
-            return;
+        if (Instancia != null) 
+        { 
+            Destroy(gameObject); 
+            return; 
         }
         Instancia = this;
         DontDestroyOnLoad(gameObject);
 
-        if (musicaSource != null)
-            musicaSource.volume = volumenMusica;
+        if (musica != null) musica.playOnAwake = false;
+        if (sfx != null) sfx.playOnAwake = false;
+        
+        if (motorSFX != null) 
+        {
+            motorSFX.playOnAwake = false;
+            motorSFX.loop = true; 
+        }
     }
 
-    public void PlayMusic(int indice)
+    // ======= ¡NUEVO! CAMBIO AUTOMÁTICO DE CANCIÓN =======
+    // Le avisamos a Unity que queremos ejecutar nuestra función AlCargarEscena cada vez que se cambie de pantalla
+    private void OnEnable()
     {
-        if (musicaClips == null || indice < 0 || indice >= musicaClips.Length) return;
-        if (musicaActual == indice && musicaSource.isPlaying) return;
-
-        musicaActual = indice;
-        musicaSource.clip = musicaClips[indice];
-        musicaSource.volume = volumenMusica;
-        musicaSource.loop = true;
-        musicaSource.Play();
+        SceneManager.sceneLoaded += AlCargarEscena;
     }
 
-    public void PlayMusic(AudioClip clip)
+    private void OnDisable()
     {
-        if (clip == null) return;
-        musicaSource.clip = clip;
-        musicaSource.volume = volumenMusica;
-        musicaSource.loop = true;
-        musicaSource.Play();
+        SceneManager.sceneLoaded -= AlCargarEscena;
     }
 
-    public void StopMusic()
+    private void AlCargarEscena(Scene escena, LoadSceneMode modo)
     {
-        musicaSource.Stop();
-        musicaActual = -1;
+        int indiceCancion = 0; // Por defecto la 0 (para Menú, Ajustes y Ranking)
+
+        // Verificamos qué pantalla acaba de cargar
+        if (escena.name == "IA" || escena.name == "Game" || escena.name == "Mapa") 
+        {
+            indiceCancion = 1; // La canción de jugar
+        }
+        else if (escena.name == "Creditos")
+        {
+            indiceCancion = 2; // La canción de créditos
+        }
+
+        // Llamamos al método PlayMusic para reproducirla
+        PlayMusic(indiceCancion);
+    }
+    // ===================================================
+
+    // ======= ¡NUEVO! CONTROL DE VOLUMEN =======
+    
+    // La función Start() se ejecuta justo después de Awake().
+    // Aquí el DataManager ya cargó el JSON, así que le pedimos el volumen guardado.
+    private void Start()
+    {
+        if (DataManager.Instancia != null && DataManager.Instancia.ajustes != null)
+        {
+            SetVolumenMusica(DataManager.Instancia.ajustes.volumenMusica);
+            SetVolumenSFX(DataManager.Instancia.ajustes.volumenSFX);
+        }
     }
 
-    public void PauseMusic()
+    // Cambia el volumen de la música (recibe un valor de 0 a 1)
+    public void SetVolumenMusica(float volumen)
     {
-        musicaSource.Pause();
+        if (musica != null)
+        {
+            musica.volume = volumen; // .volume es una propiedad nativa de Unity
+        }
     }
 
-    public void ResumeMusic()
+    // Cambia el volumen de los efectos (y del motor también)
+    public void SetVolumenSFX(float volumen)
     {
-        musicaSource.UnPause();
+        if (sfx != null) sfx.volume = volumen;
+        if (motorSFX != null) motorSFX.volume = volumen;
+    }
+    // =========================================
+
+    public void PlayMusic(int index)
+    {
+        if (index < musicas.Length && musicas[index] != null)
+        {
+            // ¡IMPORTANTE! Solo cambiamos la canción si es diferente a la que ya está sonando.
+            // Así evitamos que la música se reinicie desde cero al pasar de Menú a Ajustes.
+            if (musica.clip != musicas[index])
+            {
+                musica.clip = musicas[index]; 
+                musica.Play();                
+            }
+        }
     }
 
     public void PlaySFX(AudioClip clip)
     {
-        if (clip == null) return;
-        AudioSource fuente = ObtenerFuenteSFXDisponible();
-        if (fuente != null)
+        if (sfx != null && clip != null)
         {
-            fuente.clip = clip;
-            fuente.volume = volumenSFX;
-            fuente.Play();
+            sfx.PlayOneShot(clip);
         }
     }
 
-    public void PlaySFX(AudioClip clip, float volumen)
+    public void IniciarMotor(AudioClip clipMotor)
     {
-        if (clip == null) return;
-        AudioSource fuente = ObtenerFuenteSFXDisponible();
-        if (fuente != null)
+        if (motorSFX != null && clipMotor != null)
         {
-            fuente.clip = clip;
-            fuente.volume = volumen * volumenSFX;
-            fuente.Play();
+            motorSFX.clip = clipMotor;
+            motorSFX.Play();
         }
     }
 
-    public void StopAllSFX()
+    public void DetenerMotor()
     {
-        foreach (var fuente in sfxSources)
-        {
-            if (fuente != null && fuente.isPlaying)
-                fuente.Stop();
-        }
+        if (motorSFX != null) motorSFX.Stop();
     }
 
-    private AudioSource ObtenerFuenteSFXDisponible()
+    public void CambiarTonoMotor(float pitch)
     {
-        foreach (var fuente in sfxSources)
-        {
-            if (fuente != null && !fuente.isPlaying)
-                return fuente;
-        }
-        return sfxSources.Length > 0 ? sfxSources[0] : null;
+        if (motorSFX != null) motorSFX.pitch = pitch;
+    }
+
+    public void StopMusic()
+    {
+        if (musica != null) musica.Stop();
     }
 }

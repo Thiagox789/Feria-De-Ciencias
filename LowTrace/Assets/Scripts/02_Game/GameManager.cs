@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -81,21 +80,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        Keyboard kb = Keyboard.current;
-        if (kb != null)
-        {
-            if (kb.rKey.wasPressedThisFrame)
-            {
-                Reintentar();
-                return;
-            }
-            if (kb.escapeKey.wasPressedThisFrame)
-            {
-                VolverAlMenu();
-                return;
-            }
-        }
-
         if (Estado == EstadoJuego.Carrera)
         {
             TiempoCarrera += Time.deltaTime;
@@ -129,17 +113,8 @@ public class GameManager : MonoBehaviour
     public void Castigo()
     {
         if (Estado != EstadoJuego.Carrera) return;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    public void Reintentar()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    public void VolverAlMenu()
-    {
-        SceneManager.LoadScene("Menu");
+        if (SceneLoader.Instancia != null)
+            SceneLoader.Instancia.CargarEscenaActual();
     }
 
     private void CambiarEstado(EstadoJuego nuevo)

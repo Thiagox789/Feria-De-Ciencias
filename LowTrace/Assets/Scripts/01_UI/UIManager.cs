@@ -65,16 +65,19 @@ public class UIManager : MonoBehaviour
 
     private void ProcesarTeclas()
     {
-        if (GameManager.Instancia.Estado != GameManager.EstadoJuego.Terminado) return;
         if (Keyboard.current == null) return;
 
         if (Keyboard.current.rKey.wasPressedThisFrame || Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             Reintentar();
         }
-        else if (Keyboard.current.escapeKey.wasPressedThisFrame)
+
+        if (GameManager.Instancia.Estado == GameManager.EstadoJuego.Terminado)
         {
-            VolverAlMenu();
+            if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                VolverAlMenu();
+            }
         }
     }
 
@@ -146,12 +149,12 @@ public class UIManager : MonoBehaviour
 
     public void Reintentar()
     {
-        if (GameManager.Instancia != null) GameManager.Instancia.Reintentar();
+        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscenaActual();
     }
 
     public void VolverAlMenu()
     {
-        if (GameManager.Instancia != null) GameManager.Instancia.VolverAlMenu();
+        if (SceneLoader.Instancia != null) SceneLoader.Instancia.VolverAlMenu();
     }
 
     public static string Formatear(float t)
