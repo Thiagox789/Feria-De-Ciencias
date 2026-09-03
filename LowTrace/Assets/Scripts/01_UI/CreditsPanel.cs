@@ -28,4 +28,9 @@ public class CreditsPanel : MonoBehaviour
             }
         }
     }
+
+    public void VolverAlMenu()
+    {
+        SceneLoader.ObtenerInstancia().VolverAlMenu();
+    }
 }

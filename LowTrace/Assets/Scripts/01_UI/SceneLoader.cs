@@ -13,6 +13,17 @@ public class SceneLoader : MonoBehaviour
             return;
         }
         Instancia = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public static SceneLoader ObtenerInstancia()
+    {
+        if (Instancia == null)
+        {
+            GameObject go = new GameObject("SceneLoader");
+            Instancia = go.AddComponent<SceneLoader>();
+        }
+        return Instancia;
     }
 
     public void CargarEscena(string nombreEscena)
