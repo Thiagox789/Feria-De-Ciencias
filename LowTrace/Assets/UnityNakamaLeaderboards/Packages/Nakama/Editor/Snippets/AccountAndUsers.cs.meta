@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 8c3a71dc6ff64337a47cffda0682814c
+timeCreated: 1559895277
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326477
+  packageName: Leaderboards, powered by Nakama
+  packageVersion: 1.1.0
+  assetPath: Assets/UnityNakamaLeaderboards/Packages/Nakama/Editor/Snippets/AccountAndUsers.cs
+  uploadId: 804188

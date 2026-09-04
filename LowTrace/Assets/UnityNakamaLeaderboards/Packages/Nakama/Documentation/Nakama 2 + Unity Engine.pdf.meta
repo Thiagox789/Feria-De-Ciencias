@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d6fc326d328214623ace85dbd2078846
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326477
+  packageName: Leaderboards, powered by Nakama
+  packageVersion: 1.1.0
+  assetPath: Assets/UnityNakamaLeaderboards/Packages/Nakama/Documentation/Nakama
+    2 + Unity Engine.pdf
+  uploadId: 804188

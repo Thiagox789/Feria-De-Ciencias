@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 25ab73e5e772c43669ee57183c7e8e62
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326477
+  packageName: Leaderboards, powered by Nakama
+  packageVersion: 1.1.0
+  assetPath: Assets/UnityNakamaLeaderboards/Packages/Nakama/Editor/NakamaEditor.asmdef
+  uploadId: 804188

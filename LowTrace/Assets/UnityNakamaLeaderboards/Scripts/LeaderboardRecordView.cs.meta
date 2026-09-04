@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 0f620a55a32924e759e6cb44ff48c7e2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326477
+  packageName: Leaderboards, powered by Nakama
+  packageVersion: 1.1.0
+  assetPath: Assets/UnityNakamaLeaderboards/Scripts/LeaderboardRecordView.cs
+  uploadId: 804188

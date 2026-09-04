@@ -371,7 +371,7 @@ GameObject:
   - component: {fileID: 1016307620}
   - component: {fileID: 1016307619}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: TXT-Volver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -827,11 +827,11 @@ RectTransform:
   - {fileID: 1016307618}
   m_Father: {fileID: 920334642}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.6111874, y: 0.29422224}
-  m_AnchorMax: {x: 0.79300004, y: 0.34222224}
+  m_AnchorMin: {x: 0.7924376, y: 0.06282133}
+  m_AnchorMax: {x: 0.97400004, y: 0.10829468}
   m_AnchoredPosition: {x: 0, y: 0.5}
-  m_SizeDelta: {x: 0, y: -2}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1493772912
 MonoBehaviour:
   m_ObjectHideFlags: 0

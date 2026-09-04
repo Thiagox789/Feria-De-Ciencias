@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 919ec2ad9c2a74c719ff3a1485d765ac
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326477
+  packageName: Leaderboards, powered by Nakama
+  packageVersion: 1.1.0
+  assetPath: Assets/UnityNakamaLeaderboards/Third-Party Notices.txt
+  uploadId: 804188

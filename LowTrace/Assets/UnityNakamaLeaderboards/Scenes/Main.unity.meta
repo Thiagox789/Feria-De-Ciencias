@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 8305f726c20148a484384cfdf846f86d
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326477
+  packageName: Leaderboards, powered by Nakama
+  packageVersion: 1.1.0
+  assetPath: Assets/UnityNakamaLeaderboards/Scenes/Main.unity
+  uploadId: 804188

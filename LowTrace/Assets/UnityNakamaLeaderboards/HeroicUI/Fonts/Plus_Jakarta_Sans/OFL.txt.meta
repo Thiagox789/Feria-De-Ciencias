@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 788550cca66354a858431e368fb11f02
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326477
+  packageName: Leaderboards, powered by Nakama
+  packageVersion: 1.1.0
+  assetPath: Assets/UnityNakamaLeaderboards/HeroicUI/Fonts/Plus_Jakarta_Sans/OFL.txt
+  uploadId: 804188

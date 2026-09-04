@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: bdf4b7cccedb9480f97755cc4dec1147
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326477
+  packageName: Leaderboards, powered by Nakama
+  packageVersion: 1.1.0
+  assetPath: Assets/UnityNakamaLeaderboards/Packages/Nakama/CHANGELOG.md
+  uploadId: 804188

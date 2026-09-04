@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ecabaeb74b28c465db7f163e6e9c9807
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326477
+  packageName: Leaderboards, powered by Nakama
+  packageVersion: 1.1.0
+  assetPath: Assets/UnityNakamaLeaderboards/Settings/UniversalRenderPipelineGlobalSettings.asset
+  uploadId: 804188

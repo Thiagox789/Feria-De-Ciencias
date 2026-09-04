@@ -1,5 +1,6 @@
 using UnityEngine;
-using System.IO; 
+using System.IO;
+using System.Collections.Generic;
 
 public class DataManager : MonoBehaviour
 {
@@ -7,26 +8,26 @@ public class DataManager : MonoBehaviour
 
     [Header("Archivos de Datos (ScriptableObjects)")]
     public RecordsData records;
-    public SettingsData ajustes; // ¡NUEVO! Agregamos los ajustes de volumen
+    public SettingsData ajustes;
 
     private string rutaRecords;
-    private string rutaAjustes;  // ¡NUEVO! Ruta para guardar los ajustes
+    private string rutaAjustes;
+
+    private const int MAXIMO_RANKING = 10;
 
     private void Awake()
     {
-        if (Instancia != null) 
-        { 
-            Destroy(gameObject); 
-            return; 
+        if (Instancia != null)
+        {
+            Destroy(gameObject);
+            return;
         }
         Instancia = this;
-        DontDestroyOnLoad(gameObject); 
+        DontDestroyOnLoad(gameObject);
 
-        // Definimos las rutas de los archivos en la computadora
         rutaRecords = Application.persistentDataPath + "/records_jugador.json";
         rutaAjustes = Application.persistentDataPath + "/ajustes_juego.json";
 
-        // Apenas empieza el juego, cargamos TODO
         CargarDatos();
         CargarAjustes();
     }
@@ -53,24 +54,62 @@ public class DataManager : MonoBehaviour
     {
         if (nuevoTiempo < records.mejorTiempo)
         {
-            records.mejorTiempo = nuevoTiempo; 
-            GuardarDatos();                    
+            records.mejorTiempo = nuevoTiempo;
+            GuardarDatos();
         }
     }
 
     // ==========================================
-    // AJUSTES DE VOLUMEN (¡NUEVO!)
+    // RANKING
     // ==========================================
-    
-    // Convierte el volumen a JSON y lo guarda en la compu
+    public void AgregarAlRanking(string nombre, float tiempo)
+    {
+        RecordsData.EntradaRanking nuevaEntrada = new RecordsData.EntradaRanking
+        {
+            nombreJugador = nombre,
+            tiempo = tiempo,
+            fecha = System.DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+        };
+
+        records.ranking.Add(nuevaEntrada);
+        records.ranking.Sort((a, b) => a.tiempo.CompareTo(b.tiempo));
+
+        if (records.ranking.Count > MAXIMO_RANKING)
+            records.ranking.RemoveRange(MAXIMO_RANKING, records.ranking.Count - MAXIMO_RANKING);
+
+        GuardarDatos();
+    }
+
+    public List<RecordsData.EntradaRanking> ObtenerRanking()
+    {
+        return new List<RecordsData.EntradaRanking>(records.ranking);
+    }
+
+    public int ObtenerPosicionEnRanking(float tiempo)
+    {
+        for (int i = 0; i < records.ranking.Count; i++)
+        {
+            if (tiempo <= records.ranking[i].tiempo)
+                return i + 1;
+        }
+        return records.ranking.Count + 1;
+    }
+
+    public void LimpiarRanking()
+    {
+        records.ranking.Clear();
+        GuardarDatos();
+    }
+
+    // ==========================================
+    // AJUSTES DE VOLUMEN
+    // ==========================================
     public void GuardarAjustes()
     {
         string textoJson = JsonUtility.ToJson(ajustes);
         File.WriteAllText(rutaAjustes, textoJson);
-        Debug.Log("¡Ajustes de sonido guardados en JSON: " + rutaAjustes + "!");
     }
 
-    // Lee el JSON de la compu y actualiza el juego
     public void CargarAjustes()
     {
         if (File.Exists(rutaAjustes))
@@ -78,9 +117,8 @@ public class DataManager : MonoBehaviour
             string textoJson = File.ReadAllText(rutaAjustes);
             JsonUtility.FromJsonOverwrite(textoJson, ajustes);
         }
-        else 
+        else
         {
-            // Si es la primera vez, aseguramos que el volumen esté al máximo por defecto
             if (ajustes != null)
             {
                 ajustes.volumenMusica = 1f;

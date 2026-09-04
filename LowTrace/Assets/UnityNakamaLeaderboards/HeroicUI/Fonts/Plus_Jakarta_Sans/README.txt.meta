@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 232572927356745dc8e3e6015b1b9263
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326477
+  packageName: Leaderboards, powered by Nakama
+  packageVersion: 1.1.0
+  assetPath: Assets/UnityNakamaLeaderboards/HeroicUI/Fonts/Plus_Jakarta_Sans/README.txt
+  uploadId: 804188

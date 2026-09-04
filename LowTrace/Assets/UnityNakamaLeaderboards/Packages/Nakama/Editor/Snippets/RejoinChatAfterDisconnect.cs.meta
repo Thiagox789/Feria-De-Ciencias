@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 0005fa3038e840b3afa093735c5d46cb
+timeCreated: 1560335143
+AssetOrigin:
+  serializedVersion: 1
+  productId: 326477
+  packageName: Leaderboards, powered by Nakama
+  packageVersion: 1.1.0
+  assetPath: Assets/UnityNakamaLeaderboards/Packages/Nakama/Editor/Snippets/RejoinChatAfterDisconnect.cs
+  uploadId: 804188

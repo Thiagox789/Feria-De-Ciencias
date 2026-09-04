@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
 public class UIManager : MonoBehaviour
@@ -20,10 +21,21 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textoRecord;
     [SerializeField] private TextMeshProUGUI textoDiferenciaFinal;
 
+    [Header("Ranking")]
+    [SerializeField] private TMP_InputField inputNombreJugador;
+    [SerializeField] private Button botonGuardarRanking;
+    [SerializeField] private TextMeshProUGUI textoPosicionRanking;
+    [SerializeField] private GameObject panelRankingGuardado;
+
+    private float tiempoFinalCarrera;
+
     private void Awake()
     {
         GameManager.OnEstadoCambio += MostrarEstado;
         GameManager.OnCarreraTerminada += MostrarPantallaVictoria;
+
+        if (botonGuardarRanking != null)
+            botonGuardarRanking.onClick.AddListener(GuardarEnRanking);
     }
 
     private void OnDestroy()
@@ -118,6 +130,8 @@ public class UIManager : MonoBehaviour
 
     private void MostrarPantallaVictoria(float tiempoFinal)
     {
+        tiempoFinalCarrera = tiempoFinal;
+
         if (objetosAOcultar != null)
         {
             foreach (GameObject obj in objetosAOcultar)
@@ -145,6 +159,39 @@ public class UIManager : MonoBehaviour
             float diferencia = Mathf.Abs(GameManager.Instancia.MejorTiempo - tiempoFinal);
             textoDiferenciaFinal.text = diferencia > 0f ? Formatear(diferencia) : "0";
         }
+
+        if (panelRankingGuardado != null)
+            panelRankingGuardado.SetActive(false);
+    }
+
+    private void GuardarEnRanking()
+    {
+        if (DataManager.Instancia == null) return;
+
+        string nombre = "Jugador";
+        if (inputNombreJugador != null && !string.IsNullOrEmpty(inputNombreJugador.text))
+        {
+            nombre = inputNombreJugador.text.Trim();
+        }
+
+        DataManager.Instancia.AgregarAlRanking(nombre, tiempoFinalCarrera);
+        DataManager.Instancia.IntentarNuevoRecord(tiempoFinalCarrera);
+
+        int posicion = DataManager.Instancia.ObtenerPosicionEnRanking(tiempoFinalCarrera);
+
+        if (panelRankingGuardado != null)
+            panelRankingGuardado.SetActive(true);
+
+        if (textoPosicionRanking != null)
+        {
+            if (posicion <= 3)
+                textoPosicionRanking.text = "TOP " + posicion + "!";
+            else
+                textoPosicionRanking.text = "Posicion #" + posicion;
+        }
+
+        if (botonGuardarRanking != null)
+            botonGuardarRanking.interactable = false;
     }
 
     public void Reintentar()

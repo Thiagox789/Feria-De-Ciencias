@@ -1849,7 +1849,6 @@ GameObject:
   - component: {fileID: 220487347}
   - component: {fileID: 220487346}
   - component: {fileID: 220487345}
-  - component: {fileID: 220487344}
   m_Layer: 5
   m_Name: Boton-Salir
   m_TagString: Untagged
@@ -1865,38 +1864,18 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 220487342}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1661154509}
   m_Father: {fileID: 1760614210}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.05177083, y: 0.9537036}
-  m_AnchorMax: {x: 0.1556875, y: 0.99100006}
-  m_AnchoredPosition: {x: -0.5, y: 0}
-  m_SizeDelta: {x: 1, y: 0}
+  m_AnchorMin: {x: 0.089520834, y: 0.9110001}
+  m_AnchorMax: {x: 0.194, y: 0.94600004}
+  m_AnchoredPosition: {x: 0, y: -0.5}
+  m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &220487344
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 220487342}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686a4c1b5ef68176ab2819f639f60a6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ButtonHoverScale
-  escalaObjetivo: 1.1
-  velocidad: 10
-  cambiarColor: 1
-  colorHover: {r: 1, g: 0.72156864, b: 0.29803923, a: 1}
-  imagen: {fileID: 0}
-  pulsoActivo: 0
-  amplitudPulso: 0.03
-  velocidadPulso: 2
 --- !u!114 &220487345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1941,8 +1920,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 20192102}
-        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
+      - m_Target: {fileID: 1835189439}
+        m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
         m_MethodName: VolverAlMenu
         m_Mode: 1
         m_Arguments:
@@ -12252,7 +12231,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.5
+  m_fontSize: 29.35
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -12339,7 +12318,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.44252086, y: 0.028}
   m_AnchorMax: {x: 0.6094792, y: 0.081}
-  m_AnchoredPosition: {x: -15, y: -4.000061}
+  m_AnchoredPosition: {x: -15, y: -4.000122}
   m_SizeDelta: {x: -82, y: -8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1662666893
@@ -13634,6 +13613,56 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -185816505621711579, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
+--- !u!1 &1835189438
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1835189440}
+  - component: {fileID: 1835189439}
+  m_Layer: 0
+  m_Name: MenuManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1835189439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1835189438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb95532d40ac05d6ebe9ebf06f6fbf19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuManager
+  botones:
+  - {fileID: 220487345}
+  escalaObjetivo: 1.1
+  velocidad: 10
+  colorHover: {r: 1, g: 0.72, b: 0.3, a: 1}
+  pulsoActivo: 0
+--- !u!4 &1835189440
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1835189438}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 102.52723, y: 0.00003, z: 2048.3904}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1837711152 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1498572695657622618, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
@@ -15835,3 +15864,4 @@ SceneRoots:
   - {fileID: 1954977251}
   - {fileID: 870684832}
   - {fileID: 20192103}
+  - {fileID: 1835189440}
