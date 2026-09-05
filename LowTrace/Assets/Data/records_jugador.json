@@ -1,0 +1,155 @@
+{
+    "mejorTiempo": 60.0,
+    "rankingGlobal": [
+        {
+            "nombreJugador": "Jugador 1",
+            "tiempo": 61.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 2",
+            "tiempo": 63.0,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 3",
+            "tiempo": 64.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 4",
+            "tiempo": 66.0,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 5",
+            "tiempo": 67.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 6",
+            "tiempo": 69.0,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 7",
+            "tiempo": 70.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 8",
+            "tiempo": 72.0,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 9",
+            "tiempo": 73.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 10",
+            "tiempo": 75.0,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 11",
+            "tiempo": 76.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 12",
+            "tiempo": 78.0,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 13",
+            "tiempo": 79.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 14",
+            "tiempo": 81.0,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 15",
+            "tiempo": 82.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 16",
+            "tiempo": 84.0,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 17",
+            "tiempo": 85.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 18",
+            "tiempo": 87.0,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 19",
+            "tiempo": 88.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 20",
+            "tiempo": 90.0,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 21",
+            "tiempo": 91.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 22",
+            "tiempo": 93.0,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 23",
+            "tiempo": 94.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 24",
+            "tiempo": 96.0,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        },
+        {
+            "nombreJugador": "Jugador 25",
+            "tiempo": 97.5,
+            "mapa": "Circuito 1",
+            "fecha": "05/09/2026 16:00"
+        }
+    ]
+}

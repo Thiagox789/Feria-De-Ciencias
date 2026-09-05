@@ -25,7 +25,11 @@ public class SoundManager : MonoBehaviour
         Instancia = this;
         DontDestroyOnLoad(gameObject);
 
-        if (musica != null) musica.playOnAwake = false;
+        if (musica != null)
+        {
+            musica.playOnAwake = false;
+            musica.loop = true;
+        }
         if (sfx != null) sfx.playOnAwake = false;
         
         if (motorSFX != null) 
@@ -98,8 +102,9 @@ public class SoundManager : MonoBehaviour
 
     public void PlayMusic(int index)
     {
-        if (index < musicas.Length && musicas[index] != null)
+        if (musica != null && index < musicas.Length && musicas[index] != null)
         {
+            musica.loop = true;
             // ¡IMPORTANTE! Solo cambiamos la canción si es diferente a la que ya está sonando.
             // Así evitamos que la música se reinicie desde cero al pasar de Menú a Ajustes.
             if (musica.clip != musicas[index])

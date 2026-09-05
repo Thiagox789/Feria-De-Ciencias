@@ -174,10 +174,14 @@ public class UIManager : MonoBehaviour
             nombre = inputNombreJugador.text.Trim();
         }
 
-        DataManager.Instancia.AgregarAlRanking(nombre, tiempoFinalCarrera);
+        string mapa = "Mapa1";
+        if (MapSelectionManager.Instancia != null)
+            mapa = MapSelectionManager.Instancia.ObtenerNombreEscenaActual();
+
+        DataManager.Instancia.AgregarAlRanking(nombre, tiempoFinalCarrera, mapa);
         DataManager.Instancia.IntentarNuevoRecord(tiempoFinalCarrera);
 
-        int posicion = DataManager.Instancia.ObtenerPosicionEnRanking(tiempoFinalCarrera);
+        int posicion = DataManager.Instancia.ObtenerPosicionEnRanking(tiempoFinalCarrera, mapa);
 
         if (panelRankingGuardado != null)
             panelRankingGuardado.SetActive(true);

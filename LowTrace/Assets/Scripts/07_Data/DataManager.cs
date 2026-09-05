@@ -4,7 +4,24 @@ using System.Collections.Generic;
 
 public class DataManager : MonoBehaviour
 {
-    public static DataManager Instancia;
+    private static DataManager _instancia;
+    public static DataManager Instancia
+    {
+        get
+        {
+            if (_instancia == null)
+            {
+                _instancia = FindObjectOfType<DataManager>();
+                if (_instancia == null)
+                {
+                    GameObject go = new GameObject("DataManager");
+                    _instancia = go.AddComponent<DataManager>();
+                }
+            }
+            return _instancia;
+        }
+        private set { _instancia = value; }
+    }
 
     [Header("Archivos de Datos (ScriptableObjects)")]
     public RecordsData records;
@@ -13,17 +30,22 @@ public class DataManager : MonoBehaviour
     private string rutaRecords;
     private string rutaAjustes;
 
-    private const int MAXIMO_RANKING = 10;
+    private const int MAXIMO_RANKING = 100;
 
     private void Awake()
     {
-        if (Instancia != null)
+        if (_instancia != null && _instancia != this)
         {
             Destroy(gameObject);
             return;
         }
-        Instancia = this;
+        _instancia = this;
         DontDestroyOnLoad(gameObject);
+
+        if (records == null)
+            records = ScriptableObject.CreateInstance<RecordsData>();
+        if (ajustes == null)
+            ajustes = ScriptableObject.CreateInstance<SettingsData>();
 
         rutaRecords = Application.persistentDataPath + "/records_jugador.json";
         rutaAjustes = Application.persistentDataPath + "/ajustes_juego.json";
@@ -43,6 +65,12 @@ public class DataManager : MonoBehaviour
 
     public void CargarDatos()
     {
+        if (string.IsNullOrEmpty(rutaRecords))
+            rutaRecords = Application.persistentDataPath + "/records_jugador.json";
+
+        if (records == null)
+            records = ScriptableObject.CreateInstance<RecordsData>();
+
         if (File.Exists(rutaRecords))
         {
             string textoJson = File.ReadAllText(rutaRecords);
@@ -62,42 +90,114 @@ public class DataManager : MonoBehaviour
     // ==========================================
     // RANKING
     // ==========================================
-    public void AgregarAlRanking(string nombre, float tiempo)
+    public void AgregarAlRanking(string nombre, float tiempo, string mapa)
     {
+        if (!string.IsNullOrEmpty(nombre) && nombre.Length > 14)
+        {
+            nombre = nombre.Substring(0, 14);
+        }
+
         RecordsData.EntradaRanking nuevaEntrada = new RecordsData.EntradaRanking
         {
             nombreJugador = nombre,
             tiempo = tiempo,
+            mapa = mapa,
             fecha = System.DateTime.Now.ToString("dd/MM/yyyy HH:mm")
         };
 
-        records.ranking.Add(nuevaEntrada);
-        records.ranking.Sort((a, b) => a.tiempo.CompareTo(b.tiempo));
+        records.rankingGlobal.Add(nuevaEntrada);
+        records.rankingGlobal.Sort((a, b) => a.tiempo.CompareTo(b.tiempo));
 
-        if (records.ranking.Count > MAXIMO_RANKING)
-            records.ranking.RemoveRange(MAXIMO_RANKING, records.ranking.Count - MAXIMO_RANKING);
+        if (records.rankingGlobal.Count > MAXIMO_RANKING)
+            records.rankingGlobal.RemoveRange(MAXIMO_RANKING, records.rankingGlobal.Count - MAXIMO_RANKING);
 
         GuardarDatos();
     }
 
-    public List<RecordsData.EntradaRanking> ObtenerRanking()
+    public struct EntradaRankingConPosicion
     {
-        return new List<RecordsData.EntradaRanking>(records.ranking);
+        public int posicionGlobal;
+        public RecordsData.EntradaRanking entrada;
     }
 
-    public int ObtenerPosicionEnRanking(float tiempo)
+    public List<RecordsData.EntradaRanking> ObtenerRanking()
     {
-        for (int i = 0; i < records.ranking.Count; i++)
+        if (records == null)
+            records = ScriptableObject.CreateInstance<RecordsData>();
+
+        if (records.rankingGlobal == null)
+            records.rankingGlobal = new List<RecordsData.EntradaRanking>();
+
+        return new List<RecordsData.EntradaRanking>(records.rankingGlobal);
+    }
+
+    public List<EntradaRankingConPosicion> ObtenerRankingFiltradoConPosicion(string filtroNombre = "", string filtroMapa = "")
+    {
+        if (records == null)
+            records = ScriptableObject.CreateInstance<RecordsData>();
+
+        if (records.rankingGlobal == null)
+            records.rankingGlobal = new List<RecordsData.EntradaRanking>();
+
+        // 1. Filtrar primero por mapa (o incluir todos)
+        List<RecordsData.EntradaRanking> listaPorMapa = new List<RecordsData.EntradaRanking>();
+        bool esTodos = string.IsNullOrEmpty(filtroMapa) || 
+                       filtroMapa.Equals("Todos", System.StringComparison.OrdinalIgnoreCase) ||
+                       filtroMapa.StartsWith("Option", System.StringComparison.OrdinalIgnoreCase);
+
+        foreach (var entrada in records.rankingGlobal)
         {
-            if (tiempo <= records.ranking[i].tiempo)
+            if (esTodos || (entrada.mapa != null && entrada.mapa.Equals(filtroMapa, System.StringComparison.OrdinalIgnoreCase)))
+            {
+                listaPorMapa.Add(entrada);
+            }
+        }
+
+        // 2. Ordenar por tiempo (menor tiempo = mejor posición en este mapa)
+        listaPorMapa.Sort((a, b) => a.tiempo.CompareTo(b.tiempo));
+
+        // 3. Asignar posición en este mapa y filtrar por nombre si hay texto en el buscador
+        List<EntradaRankingConPosicion> resultado = new List<EntradaRankingConPosicion>();
+
+        for (int i = 0; i < listaPorMapa.Count; i++)
+        {
+            var entrada = listaPorMapa[i];
+
+            bool coincideNombre = string.IsNullOrEmpty(filtroNombre) || 
+                                  (entrada.nombreJugador != null && entrada.nombreJugador.IndexOf(filtroNombre, System.StringComparison.OrdinalIgnoreCase) >= 0);
+
+            if (coincideNombre)
+            {
+                resultado.Add(new EntradaRankingConPosicion
+                {
+                    posicionGlobal = i + 1,
+                    entrada = entrada
+                });
+            }
+        }
+
+        return resultado;
+    }
+
+    public List<RecordsData.EntradaRanking> ObtenerRankingPorMapa(string mapa)
+    {
+        return records.ObttenerRankingPorMapa(mapa);
+    }
+
+    public int ObtenerPosicionEnRanking(float tiempo, string mapa)
+    {
+        var rankingMapa = records.ObttenerRankingPorMapa(mapa);
+        for (int i = 0; i < rankingMapa.Count; i++)
+        {
+            if (tiempo <= rankingMapa[i].tiempo)
                 return i + 1;
         }
-        return records.ranking.Count + 1;
+        return rankingMapa.Count + 1;
     }
 
     public void LimpiarRanking()
     {
-        records.ranking.Clear();
+        records.rankingGlobal.Clear();
         GuardarDatos();
     }
 

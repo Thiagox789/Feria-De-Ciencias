@@ -227,7 +227,7 @@ public class LocalLeaderboardController : MonoBehaviour
             return;
         }
 
-        DataManager.Instancia.AgregarAlRanking("Jugador", score);
+        DataManager.Instancia.AgregarAlRanking("Jugador", score, "Mapa1");
         LoadRecords();
     }
 
