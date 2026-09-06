@@ -6,24 +6,14 @@ public class MapSelectionManager : MonoBehaviour
 {
     public static MapSelectionManager Instancia { get; private set; }
 
-    [System.Serializable]
-    public class MapaInfo
-    {
-        public string nombre;
-        public string escena;
-        public Sprite miniatura;
-        public float tiempoRequerido;
-        public string descripcion;
-    }
-
     [Header("Mapas")]
-    [SerializeField] private List<MapaInfo> mapas = new List<MapaInfo>();
+    [SerializeField] private List<MapData> mapas = new List<MapData>();
 
     private int indiceSeleccionado = 0;
 
     public int IndiceSeleccionado => indiceSeleccionado;
-    public MapaInfo MapaActual => mapas.Count > 0 ? mapas[indiceSeleccionado] : null;
-    public List<MapaInfo> Mapas => mapas;
+    public MapData MapaActual => (mapas != null && mapas.Count > 0 && indiceSeleccionado < mapas.Count) ? mapas[indiceSeleccionado] : null;
+    public List<MapData> Mapas => mapas;
 
     public event System.Action<int> OnMapaCambiado;
 

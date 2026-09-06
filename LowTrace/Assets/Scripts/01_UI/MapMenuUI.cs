@@ -10,6 +10,9 @@ public class MapMenuUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textoNombreMapa;
     [SerializeField] private TextMeshProUGUI textoDescripcion;
     [SerializeField] private TextMeshProUGUI textoTiempoRecord;
+    [SerializeField] private TextMeshProUGUI textoTipoPista;
+    [SerializeField] private TextMeshProUGUI textoDificultad;
+    [SerializeField] private TextMeshProUGUI textoTiempoEstimado;
 
     [Header("Navegación")]
     [SerializeField] private Button botonIzquierda;
@@ -112,6 +115,15 @@ public class MapMenuUI : MonoBehaviour
 
         if (textoDescripcion != null)
             textoDescripcion.text = mapa.descripcion;
+
+        if (textoTipoPista != null)
+            textoTipoPista.text = mapa.tipoPista.ToString();
+
+        if (textoDificultad != null)
+            textoDificultad.text = mapa.dificultad.ToString();
+
+        if (textoTiempoEstimado != null)
+            textoTiempoEstimado.text = mapa.tiempoEstimado.ToString("F0") + "s";
 
         if (textoTiempoRecord != null)
             textoTiempoRecord.text = "Sin récord";
