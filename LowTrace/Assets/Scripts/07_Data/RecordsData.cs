@@ -24,10 +24,25 @@ public class RecordsData : ScriptableObject
         List<EntradaRanking> resultado = new List<EntradaRanking>();
         foreach (var entrada in rankingGlobal)
         {
-            if (entrada.mapa == mapa)
+            if (SonMapasEquivalentes(entrada.mapa, mapa))
                 resultado.Add(entrada);
         }
         resultado.Sort((a, b) => a.tiempo.CompareTo(b.tiempo));
         return resultado;
+    }
+
+    private bool SonMapasEquivalentes(string m1, string m2)
+    {
+        if (string.IsNullOrEmpty(m1) || string.IsNullOrEmpty(m2)) return true;
+        if (string.Equals(m1, m2, System.StringComparison.OrdinalIgnoreCase)) return true;
+
+        string n1 = m1.Replace(" ", "").ToLower();
+        string n2 = m2.Replace(" ", "").ToLower();
+        if (n1 == n2) return true;
+
+        if ((n1.Contains("ia") || n1.Contains("mapa1")) && (n2.Contains("ia") || n2.Contains("mapa1")))
+            return true;
+
+        return false;
     }
 }

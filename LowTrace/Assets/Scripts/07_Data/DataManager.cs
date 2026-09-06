@@ -184,6 +184,16 @@ public class DataManager : MonoBehaviour
         return records.ObttenerRankingPorMapa(mapa);
     }
 
+    public float ObtenerMejorTiempoPorMapa(string mapa)
+    {
+        var rankingMapa = ObtenerRankingPorMapa(mapa);
+        if (rankingMapa != null && rankingMapa.Count > 0)
+        {
+            return rankingMapa[0].tiempo;
+        }
+        return (records != null && records.mejorTiempo < 9999f) ? records.mejorTiempo : 0f;
+    }
+
     public int ObtenerPosicionEnRanking(float tiempo, string mapa)
     {
         var rankingMapa = records.ObttenerRankingPorMapa(mapa);

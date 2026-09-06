@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     [Header("Cronometro (HUD)")]
     [SerializeField] private TextMeshProUGUI textoTiempo;
     [SerializeField] private TextMeshProUGUI textoDiferencia;
+    [SerializeField] private TextMeshProUGUI textoRecordHUD;
     [SerializeField] private TextMeshProUGUI textoCheckpoints;
     [SerializeField] private TextMeshProUGUI textoVuelta;
 
@@ -44,6 +45,11 @@ public class UIManager : MonoBehaviour
         GameManager.OnCarreraTerminada -= MostrarPantallaVictoria;
     }
 
+    private void Start()
+    {
+        ActualizarTextoRecord();
+    }
+
     private void Update()
     {
         if (GameManager.Instancia == null) return;
@@ -57,6 +63,11 @@ public class UIManager : MonoBehaviour
         ActualizarCheckpoints();
         ActualizarVuelta();
         ProcesarTeclas();
+    }
+
+    private string ObtenerNombreMapaActual()
+    {
+        return UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
     }
 
     private void ActualizarCheckpoints()
@@ -93,21 +104,73 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void ActualizarTextoRecord()
+    {
+        string mapa = ObtenerNombreMapaActual();
+        float mejorTiempo = 0f;
+
+        if (DataManager.Instancia != null)
+        {
+            mejorTiempo = DataManager.Instancia.ObtenerMejorTiempoPorMapa(mapa);
+        }
+        if (mejorTiempo <= 0f && GameManager.Instancia != null)
+        {
+            mejorTiempo = GameManager.Instancia.MejorTiempo;
+        }
+
+        string recordString = mejorTiempo > 0f ? Formatear(mejorTiempo) : "--:--.---";
+
+        if (textoRecord != null)
+        {
+            textoRecord.text = recordString;
+        }
+
+        if (textoRecordHUD != null)
+        {
+            textoRecordHUD.text = recordString;
+        }
+    }
+
     private void ActualizarDiferencia()
     {
-        if (textoDiferencia == null || GameManager.Instancia == null) return;
+        if (GameManager.Instancia == null) return;
+
+        ActualizarTextoRecord();
 
         float tiempoActual = GameManager.Instancia.TiempoCarrera;
-        float record = GameManager.Instancia.MejorTiempo;
+        string mapa = ObtenerNombreMapaActual();
 
-        if (record <= 0f)
+        float mejorTiempo = 0f;
+        if (DataManager.Instancia != null)
         {
-            textoDiferencia.text = "0";
+            mejorTiempo = DataManager.Instancia.ObtenerMejorTiempoPorMapa(mapa);
+        }
+        if (mejorTiempo <= 0f && GameManager.Instancia != null)
+        {
+            mejorTiempo = GameManager.Instancia.MejorTiempo;
+        }
+
+        if (textoDiferencia == null) return;
+
+        if (mejorTiempo <= 0f)
+        {
+            textoDiferencia.text = "--:--.---";
             return;
         }
 
-        float diferencia = Mathf.Abs(record - tiempoActual);
-        textoDiferencia.text = Formatear(diferencia);
+        float diff = tiempoActual - mejorTiempo;
+        if (diff > 0)
+        {
+            textoDiferencia.text = "+" + Formatear(diff);
+        }
+        else if (diff < 0)
+        {
+            textoDiferencia.text = "-" + Formatear(Mathf.Abs(diff));
+        }
+        else
+        {
+            textoDiferencia.text = "00:00.000";
+        }
     }
 
     private void MostrarEstado(GameManager.EstadoJuego estado)
@@ -147,17 +210,37 @@ public class UIManager : MonoBehaviour
             textoTiempoFinal.text = Formatear(tiempoFinal);
         }
 
-        if (textoRecord != null && GameManager.Instancia != null)
+        string mapa = MapSelectionManager.Instancia != null 
+            ? MapSelectionManager.Instancia.ObtenerNombreEscenaActual() 
+            : "Mapa1";
+
+        float mejorTiempo = 0f;
+        if (DataManager.Instancia != null)
         {
-            textoRecord.text = GameManager.Instancia.MejorTiempo > 0f
-                ? Formatear(GameManager.Instancia.MejorTiempo)
-                : "0";
+            mejorTiempo = DataManager.Instancia.ObtenerMejorTiempoPorMapa(mapa);
         }
 
-        if (textoDiferenciaFinal != null && GameManager.Instancia != null)
+        if (textoRecord != null)
         {
-            float diferencia = Mathf.Abs(GameManager.Instancia.MejorTiempo - tiempoFinal);
-            textoDiferenciaFinal.text = diferencia > 0f ? Formatear(diferencia) : "0";
+            textoRecord.text = mejorTiempo > 0f ? Formatear(mejorTiempo) : Formatear(tiempoFinal);
+        }
+
+        if (textoDiferenciaFinal != null)
+        {
+            if (mejorTiempo <= 0f)
+            {
+                textoDiferenciaFinal.text = "¡Nuevo Récord!";
+            }
+            else
+            {
+                float diff = tiempoFinal - mejorTiempo;
+                if (diff > 0)
+                    textoDiferenciaFinal.text = "+" + Formatear(diff);
+                else if (diff < 0)
+                    textoDiferenciaFinal.text = "-" + Formatear(Mathf.Abs(diff));
+                else
+                    textoDiferenciaFinal.text = "00:00.000";
+            }
         }
 
         if (panelRankingGuardado != null)
