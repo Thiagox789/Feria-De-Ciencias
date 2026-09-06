@@ -4,20 +4,6 @@ using TMPro;
 
 public class MapMenuUI : MonoBehaviour
 {
-    [Header("Panel Mapa")]
-    [SerializeField] private GameObject panelMapa;
-    [SerializeField] private Image imagenMapa;
-    [SerializeField] private TextMeshProUGUI textoNombreMapa;
-    [SerializeField] private TextMeshProUGUI textoDescripcion;
-    [SerializeField] private TextMeshProUGUI textoTiempoRecord;
-    [SerializeField] private TextMeshProUGUI textoTipoPista;
-    [SerializeField] private TextMeshProUGUI textoDificultad;
-    [SerializeField] private TextMeshProUGUI textoTiempoEstimado;
-
-    [Header("Navegación")]
-    [SerializeField] private Button botonIzquierda;
-    [SerializeField] private Button botonDerecha;
-
     [Header("Botones Principales")]
     [SerializeField] private Button botonJugar;
     [SerializeField] private Button botonVolver;
@@ -31,16 +17,35 @@ public class MapMenuUI : MonoBehaviour
     [SerializeField] private TMP_Dropdown dropdownCalidad;
     [SerializeField] private Button botonCerrarAjustes;
 
-    private int indiceActual = 0;
-
     private void Awake()
     {
-        if (botonIzquierda != null)
-            botonIzquierda.onClick.AddListener(NavegarIzquierda);
+        AutoBuscarReferencias();
+        ConectarListeners();
+    }
 
-        if (botonDerecha != null)
-            botonDerecha.onClick.AddListener(NavegarDerecha);
+    private void AutoBuscarReferencias()
+    {
+        if (botonJugar == null)
+        {
+            var obj = GameObject.Find("Canvas/Botones/Boton-Jugar");
+            if (obj != null) botonJugar = obj.GetComponent<Button>();
+        }
 
+        if (botonVolver == null)
+        {
+            var obj = GameObject.Find("Canvas/Botones/Boton-Volver");
+            if (obj != null) botonVolver = obj.GetComponent<Button>();
+        }
+
+        if (botonCerrarAjustes == null && panelAjustes != null)
+        {
+            var obj = GameObject.Find("Canvas/Panel-Ajustes/Boton-Cerrar");
+            if (obj != null) botonCerrarAjustes = obj.GetComponent<Button>();
+        }
+    }
+
+    private void ConectarListeners()
+    {
         if (botonJugar != null)
             botonJugar.onClick.AddListener(Jugar);
 
@@ -68,65 +73,8 @@ public class MapMenuUI : MonoBehaviour
 
     private void Start()
     {
-        if (MapSelectionManager.Instancia != null)
-        {
-            MapSelectionManager.Instancia.OnMapaCambiado += ActualizarUI;
-            indiceActual = MapSelectionManager.Instancia.IndiceSeleccionado;
-        }
-
-        ActualizarUI(indiceActual);
-
         if (panelAjustes != null)
             panelAjustes.SetActive(false);
-    }
-
-    private void OnDestroy()
-    {
-        if (MapSelectionManager.Instancia != null)
-            MapSelectionManager.Instancia.OnMapaCambiado -= ActualizarUI;
-    }
-
-    private void NavegarIzquierda()
-    {
-        if (MapSelectionManager.Instancia == null) return;
-        MapSelectionManager.Instancia.SeleccionarAnterior();
-        indiceActual = MapSelectionManager.Instancia.IndiceSeleccionado;
-    }
-
-    private void NavegarDerecha()
-    {
-        if (MapSelectionManager.Instancia == null) return;
-        MapSelectionManager.Instancia.SeleccionarSiguiente();
-        indiceActual = MapSelectionManager.Instancia.IndiceSeleccionado;
-    }
-
-    private void ActualizarUI(int indice)
-    {
-        if (MapSelectionManager.Instancia == null) return;
-
-        var mapa = MapSelectionManager.Instancia.MapaActual;
-        if (mapa == null) return;
-
-        if (imagenMapa != null && mapa.miniatura != null)
-            imagenMapa.sprite = mapa.miniatura;
-
-        if (textoNombreMapa != null)
-            textoNombreMapa.text = mapa.nombre;
-
-        if (textoDescripcion != null)
-            textoDescripcion.text = mapa.descripcion;
-
-        if (textoTipoPista != null)
-            textoTipoPista.text = mapa.tipoPista.ToString();
-
-        if (textoDificultad != null)
-            textoDificultad.text = mapa.dificultad.ToString();
-
-        if (textoTiempoEstimado != null)
-            textoTiempoEstimado.text = mapa.tiempoEstimado.ToString("F0") + "s";
-
-        if (textoTiempoRecord != null)
-            textoTiempoRecord.text = "Sin récord";
     }
 
     private void Jugar()
@@ -137,7 +85,10 @@ public class MapMenuUI : MonoBehaviour
 
     private void VolverAlMenu()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+        if (SceneLoader.Instancia != null)
+            SceneLoader.Instancia.VolverAlMenu();
+        else
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
     }
 
     private void AbrirAjustes()
@@ -154,11 +105,26 @@ public class MapMenuUI : MonoBehaviour
 
     private void CambiarVolumenMusica(float valor)
     {
-        AudioListener.volume = valor;
+        if (SoundManager.Instancia != null)
+            SoundManager.Instancia.SetVolumenMusica(valor);
+
+        if (DataManager.Instancia != null && DataManager.Instancia.ajustes != null)
+        {
+            DataManager.Instancia.ajustes.volumenMusica = valor;
+            DataManager.Instancia.GuardarAjustes();
+        }
     }
 
     private void CambiarVolumenSFX(float valor)
     {
+        if (SoundManager.Instancia != null)
+            SoundManager.Instancia.SetVolumenSFX(valor);
+
+        if (DataManager.Instancia != null && DataManager.Instancia.ajustes != null)
+        {
+            DataManager.Instancia.ajustes.volumenSFX = valor;
+            DataManager.Instancia.GuardarAjustes();
+        }
     }
 
     private void CambiarPantallaCompleta(bool valor)

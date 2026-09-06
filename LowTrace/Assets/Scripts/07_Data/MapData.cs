@@ -22,8 +22,6 @@ public class MapData : ScriptableObject
     public string nombre;
     public string escena;
     public Sprite miniatura;
-    [TextArea(2, 5)]
-    public string descripcion;
 
     [Header("Configuración de Pista")]
     public TamanioPista tipoPista = TamanioPista.M;

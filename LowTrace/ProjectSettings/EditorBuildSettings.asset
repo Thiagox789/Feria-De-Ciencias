@@ -23,6 +23,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Creditos.unity
     guid: b5eeffd2e462ecedaa1c0533c672c6d1
+  - enabled: 1
+    path: Assets/Scenes/Seleccion-Mapa.unity
+    guid: b05d218a0674a1ecc952a465102f7887
+  - enabled: 1
+    path: Assets/Scenes/IA2.unity
+    guid: dc4feef40b992889ba42abf392982dd6
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

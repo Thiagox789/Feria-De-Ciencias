@@ -30,12 +30,12 @@ public class MenuManager : MonoBehaviour
 
     public void Jugar()
     {
-        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("IA");
+        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("Seleccion-Mapa");
     }
 
     public void IrAMapa()
     {
-        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("Mapa");
+        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("Seleccion-Mapa");
     }
 
     public void VolverAlMenu()

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc12cc31a2fd6a8588d9341954c14623, type: 3}
+  m_Name: Mapa2_GranCanion
+  m_EditorClassIdentifier: Assembly-CSharp::MapData
+  nombre: "Gran Ca\xF1\xF3n"
+  escena: IA2
+  miniatura: {fileID: 0}
+  descripcion: Curvas cerradas y terreno irregular.
+  tipoPista: 1
+  dificultad: 1
+  tiempoEstimado: 60
