@@ -3756,6 +3756,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -4821852167302665564, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
+--- !u!4 &553770095 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 439626, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
+  m_PrefabInstance: {fileID: 692248588}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &564411637 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4811171726696857748, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
@@ -4814,29 +4819,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
---- !u!4 &692248589 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 457100, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
-  m_PrefabInstance: {fileID: 692248588}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &692248590 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 429084, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
-  m_PrefabInstance: {fileID: 692248588}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &692248591 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 439626, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
-  m_PrefabInstance: {fileID: 692248588}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &692248592 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 423422, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
-  m_PrefabInstance: {fileID: 692248588}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &692248593 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 455130, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
   m_PrefabInstance: {fileID: 692248588}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &693449928 stripped
@@ -7669,6 +7654,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -8051071809030009592, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
+--- !u!4 &884657883 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 423422, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
+  m_PrefabInstance: {fileID: 692248588}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &892480780 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9166300197273916676, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
@@ -7899,6 +7889,10 @@ MonoBehaviour:
   textoTiempoFinal: {fileID: 1000420125}
   textoRecord: {fileID: 1462622631}
   textoDiferenciaFinal: {fileID: 1107221182}
+  inputNombreJugador: {fileID: 0}
+  botonGuardarRanking: {fileID: 0}
+  textoPosicionRanking: {fileID: 0}
+  panelRankingGuardado: {fileID: 0}
 --- !u!4 &918908102
 Transform:
   m_ObjectHideFlags: 0
@@ -10971,6 +10965,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -8442293719721796999, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
+--- !u!4 &1398868864 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 455130, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
+  m_PrefabInstance: {fileID: 692248588}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1400701483 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6793350441674140665, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
@@ -13301,55 +13300,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pruebas
   carRB: {fileID: 1770940020}
   rayPoints:
-  - {fileID: 692248593}
-  - {fileID: 692248592}
-  - {fileID: 692248591}
-  - {fileID: 692248589}
+  - {fileID: 1398868864}
+  - {fileID: 884657883}
+  - {fileID: 553770095}
+  - {fileID: 2041388973}
+  wheelMeshes: []
   drivable:
     serializedVersion: 2
     m_Bits: 256
   accelerationPoint: {fileID: 1935672917}
   springStiffness: 30000
   restLength: 1
-  springTravel: 0.5
+  springTravel: 1
   wheelRadius: 0.33
   damperStiffness: 3000
-  acceleration: 28
+  acceleration: 22
   deceleration: 8
-  maxSpeed: 45
-  maxSpeedReverse: 15
-  steerStrength: 18
-  maxYawVelocity: 1.5
+  maxSpeed: 30
+  maxSpeedReverse: 12
+  steerStrength: 10
+  maxYawVelocity: 0.7
   turningCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
-      inSlope: -1
-      outSlope: -1
+      value: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.5
-      value: 0.65
-      inSlope: -0.8
-      outSlope: -0.8
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.333
-      outWeight: 0.333
-    - serializedVersion: 3
       time: 1
-      value: 0.35
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.333
-      outWeight: 0.333
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -13357,8 +13348,9 @@ MonoBehaviour:
   antiRollStrength: 5000
   autoResetIfFlipped: 1
   flipTimeout: 3
-  moveInput: 1
-  steerInput: 1
+  spinWheelMeshes: 1
+  moveInput: 0
+  steerInput: 0
 --- !u!54 &1770940020
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -15227,6 +15219,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -3022371064256699638, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
+--- !u!4 &2041388973 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 457100, guid: 1bc3a967e1e743b41b30f111c58ba985, type: 3}
+  m_PrefabInstance: {fileID: 692248588}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2043749537 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6464433086948905280, guid: c56056d5ef725afef846060aca2ecbf4, type: 3}
