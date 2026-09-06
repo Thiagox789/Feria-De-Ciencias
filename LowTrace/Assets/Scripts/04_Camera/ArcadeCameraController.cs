@@ -11,7 +11,7 @@ public class ArcadeCameraController : MonoBehaviour
     [Tooltip("Transform del auto a seguir.")]
     [SerializeField] private Transform target;
     [Tooltip("Referencia al controlador del auto para leer su velocidad (evita GetComponent en Update).")]
-    [SerializeField] private ArcadeCarController targetCarController;
+    [SerializeField] private WheelCarController targetCarController;
 
     [Header("Posicionamiento")]
     [Tooltip("Offset local respecto al auto (detrás y arriba).")]

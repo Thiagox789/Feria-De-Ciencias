@@ -42,7 +42,7 @@ public class TrackItem : MonoBehaviour
         if (collected) return;
         if (!other.CompareTag(playerTag)) return;
 
-        ArcadeCarController car = other.GetComponent<ArcadeCarController>();
+        WheelCarController car = other.GetComponent<WheelCarController>();
         if (car == null) return;
 
         collected = true;
@@ -52,7 +52,7 @@ public class TrackItem : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void ApplyEffect(ArcadeCarController car)
+    private void ApplyEffect(WheelCarController car)
     {
         switch (itemType)
         {
