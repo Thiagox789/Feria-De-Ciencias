@@ -27,7 +27,14 @@ public class MapSelectionManager : MonoBehaviour
     [SerializeField] private Button botonAdelante;
     [SerializeField] private Button botonAtras;
 
+    [Header("Selector de Cielo")]
+    [SerializeField] private TextMeshProUGUI textoNombreCielo;
+    [SerializeField] private Button botonCieloAdelante;
+    [SerializeField] private Button botonCieloAtras;
+
     private int indiceSeleccionado = 0;
+    private int indiceCieloActual = 0;
+    private int framesRestantesApply = 0;
 
     public int IndiceSeleccionado => indiceSeleccionado;
     public MapData MapaActual => (mapas != null && mapas.Count > 0 && indiceSeleccionado >= 0 && indiceSeleccionado < mapas.Count) ? mapas[indiceSeleccionado] : null;
@@ -54,6 +61,32 @@ public class MapSelectionManager : MonoBehaviour
     {
         ConectarBotones();
         ActualizarUI();
+        SceneManager.sceneLoaded += OnEscenaCargada;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnEscenaCargada;
+    }
+
+    private void OnEscenaCargada(Scene escena, LoadSceneMode modo)
+    {
+        framesRestantesApply = 10; // Aplicar skybox durante 10 frames
+    }
+
+    private void Update()
+    {
+        if (framesRestantesApply > 0)
+        {
+            AplicarSkybox();
+            framesRestantesApply--;
+        }
+    }
+
+    private System.Collections.IEnumerator AplicarSkyboxDespuesDeFrame()
+    {
+        yield return null;
+        AplicarSkybox();
     }
 
     private void InicializarSeleccion()
@@ -83,6 +116,10 @@ public class MapSelectionManager : MonoBehaviour
         this.botonAdelante = nuevo.botonAdelante;
         this.botonAtras = nuevo.botonAtras;
 
+        this.textoNombreCielo = nuevo.textoNombreCielo;
+        this.botonCieloAdelante = nuevo.botonCieloAdelante;
+        this.botonCieloAtras = nuevo.botonCieloAtras;
+
         if (nuevo.empezarEnPrimerMapa)
             this.indiceSeleccionado = 0;
 
@@ -103,6 +140,18 @@ public class MapSelectionManager : MonoBehaviour
             botonAtras.onClick.RemoveListener(SeleccionarAnterior);
             botonAtras.onClick.AddListener(SeleccionarAnterior);
         }
+
+        if (botonCieloAdelante != null)
+        {
+            botonCieloAdelante.onClick.RemoveListener(SeleccionarCieloSiguiente);
+            botonCieloAdelante.onClick.AddListener(SeleccionarCieloSiguiente);
+        }
+
+        if (botonCieloAtras != null)
+        {
+            botonCieloAtras.onClick.RemoveListener(SeleccionarCieloAnterior);
+            botonCieloAtras.onClick.AddListener(SeleccionarCieloAnterior);
+        }
     }
 
     public void SeleccionarMapa(int indice)
@@ -112,6 +161,18 @@ public class MapSelectionManager : MonoBehaviour
         if (!EsMapaDesbloqueado(indice)) return;
 
         indiceSeleccionado = indice;
+        
+        // Reiniciar cielo al default del mapa
+        MapData mapa = MapaActual;
+        if (mapa != null && mapa.skyboxes != null && mapa.skyboxes.Length > 0)
+        {
+            indiceCieloActual = Mathf.Clamp(mapa.skyboxDefault, 0, mapa.skyboxes.Length - 1);
+        }
+        else
+        {
+            indiceCieloActual = 0;
+        }
+        
         GuardarSeleccion();
         ActualizarUI();
         OnMapaCambiado?.Invoke(indice);
@@ -168,11 +229,17 @@ public class MapSelectionManager : MonoBehaviour
 
         if (textoTiempoEstimado != null)
             textoTiempoEstimado.text = mapa.tiempoEstimado.ToString("F0") + "s";
+
+        ActualizarUICielo();
     }
 
     public void CargarMapaSeleccionado()
     {
         if (mapas == null || mapas.Count == 0) return;
+        
+        // Aplicar skybox antes de cargar la escena
+        AplicarSkybox();
+        
         string escena = mapas[indiceSeleccionado].escena;
         if (!string.IsNullOrEmpty(escena))
             SceneManager.LoadScene(escena);
@@ -197,5 +264,73 @@ public class MapSelectionManager : MonoBehaviour
 
         if (indiceSeleccionado < 0 || (mapas != null && indiceSeleccionado >= mapas.Count))
             indiceSeleccionado = 0;
+    }
+
+    // ==========================================
+    // SELECTOR DE CIELO
+    // ==========================================
+    
+    public void SeleccionarCieloSiguiente()
+    {
+        MapData mapa = MapaActual;
+        if (mapa == null || mapa.skyboxes == null || mapa.skyboxes.Length <= 1) return;
+
+        indiceCieloActual = (indiceCieloActual + 1) % mapa.skyboxes.Length;
+        ActualizarUICielo();
+    }
+
+    public void SeleccionarCieloAnterior()
+    {
+        MapData mapa = MapaActual;
+        if (mapa == null || mapa.skyboxes == null || mapa.skyboxes.Length <= 1) return;
+
+        indiceCieloActual--;
+        if (indiceCieloActual < 0) indiceCieloActual = mapa.skyboxes.Length - 1;
+        ActualizarUICielo();
+    }
+
+    private void ActualizarUICielo()
+    {
+        MapData mapa = MapaActual;
+        if (mapa == null || mapa.skyboxes == null || mapa.skyboxes.Length == 0)
+        {
+            if (textoNombreCielo != null)
+                textoNombreCielo.text = "Sin cielo";
+            return;
+        }
+
+        // Asegurar que el índice sea válido
+        if (indiceCieloActual < 0 || indiceCieloActual >= mapa.skyboxes.Length)
+            indiceCieloActual = 0;
+
+        // Mostrar nombre del cielo
+        if (textoNombreCielo != null)
+        {
+            if (mapa.nombresSkyboxes != null && indiceCieloActual < mapa.nombresSkyboxes.Length)
+                textoNombreCielo.text = mapa.nombresSkyboxes[indiceCieloActual];
+            else
+                textoNombreCielo.text = "Cielo " + (indiceCieloActual + 1);
+        }
+    }
+
+    public Material ObtenerSkyboxSeleccionado()
+    {
+        MapData mapa = MapaActual;
+        if (mapa == null || mapa.skyboxes == null || mapa.skyboxes.Length == 0)
+            return null;
+
+        if (indiceCieloActual < 0 || indiceCieloActual >= mapa.skyboxes.Length)
+            return null;
+
+        return mapa.skyboxes[indiceCieloActual];
+    }
+
+    public void AplicarSkybox()
+    {
+        Material skybox = ObtenerSkyboxSeleccionado();
+        if (skybox != null)
+        {
+            RenderSettings.skybox = skybox;
+        }
     }
 }

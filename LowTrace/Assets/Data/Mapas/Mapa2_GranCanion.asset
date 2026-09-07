@@ -14,8 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapData
   nombre: "Gran Ca\xF1\xF3n"
   escena: IA2
-  miniatura: {fileID: 0}
-  descripcion: Curvas cerradas y terreno irregular.
+  miniatura: {fileID: 21300000, guid: 9638d95a5d8e23e03af17ad0127fb437, type: 3}
   tipoPista: 1
   dificultad: 1
   tiempoEstimado: 60
+  skyboxes:
+  - {fileID: 2100000, guid: 2d796ced94d61438fbab81b194038162, type: 2}
+  - {fileID: 2100000, guid: aa78c8d403a8547fe86d1f74239e6b03, type: 2}
+  - {fileID: 2100000, guid: c56e28e54cac24b04ae3dd957d214534, type: 2}
+  nombresSkyboxes:
+  - Atardecer
+  - Noche
+  - "D\xEDa"
+  skyboxDefault: 0

@@ -1331,7 +1331,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 5a7d5136c88f064088855d89504797c5, type: 3}
+  m_Texture: {fileID: 0}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -2645,7 +2645,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 993c77162cd67865e9a6e0c5345581c1, type: 2}
   empezarEnPrimerMapa: 1
   imagenMapa: {fileID: 0}
-  rawImagenMapa: {fileID: 0}
+  rawImagenMapa: {fileID: 252508633}
   spriteRendererMapa: {fileID: 0}
   textoNombreMapa: {fileID: 1955288716}
   textoTipoPista: {fileID: 718432534}
@@ -2653,6 +2653,9 @@ MonoBehaviour:
   textoTiempoEstimado: {fileID: 829475448}
   botonAdelante: {fileID: 220973913}
   botonAtras: {fileID: 62161151}
+  textoNombreCielo: {fileID: 1680418616}
+  botonCieloAdelante: {fileID: 1806127357}
+  botonCieloAtras: {fileID: 2144605751}
 --- !u!1 &621222216
 GameObject:
   m_ObjectHideFlags: 0
