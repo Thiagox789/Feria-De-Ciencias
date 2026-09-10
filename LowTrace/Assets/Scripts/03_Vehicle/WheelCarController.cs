@@ -4,7 +4,7 @@ using UnityEngine;
 /// Controlador de auto arcade con WheelColliders.
 /// Aceleración, freno y dirección pensados para sentirse tipo
 /// juego low-poly de carreras (giro rápido, responsivo, exagerado).
-/// Sin marchas, sin luces, sin sonido.
+/// Sin marchas, sin luces.
 /// </summary>
 public class WheelCarController : MonoBehaviour
 {

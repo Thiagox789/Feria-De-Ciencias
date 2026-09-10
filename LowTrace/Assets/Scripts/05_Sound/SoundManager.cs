@@ -15,6 +15,14 @@ public class SoundManager : MonoBehaviour
     [Header("Lista de Canciones")]
     [SerializeField] private AudioClip[] musicas;
 
+    [Header("SFX UI")]
+    [SerializeField] private AudioClip clipBoton;
+
+    [Header("Sonido Motor")]
+    [SerializeField] private AudioClip clipMotor;
+    [SerializeField] private float pitchMin = 0.8f;
+    [SerializeField] private float pitchMax = 2.0f;
+
     private void Awake()
     {
         if (Instancia != null) 
@@ -53,6 +61,11 @@ public class SoundManager : MonoBehaviour
 
     private void AlCargarEscena(Scene escena, LoadSceneMode modo)
     {
+        autoEnEscena = null;
+
+        if (motorSFX != null && motorSFX.isPlaying)
+            motorSFX.Stop();
+
         int indiceCancion = 0; // Por defecto la 0 (para Menú, Ajustes y Ranking)
 
         // Verificamos qué pantalla acaba de cargar
@@ -123,6 +136,14 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public void PlaySFXBoton()
+    {
+        if (sfx != null && clipBoton != null)
+        {
+            sfx.PlayOneShot(clipBoton);
+        }
+    }
+
     public void IniciarMotor(AudioClip clipMotor)
     {
         if (motorSFX != null && clipMotor != null)
@@ -145,5 +166,35 @@ public class SoundManager : MonoBehaviour
     public void StopMusic()
     {
         if (musica != null) musica.Stop();
+    }
+
+    private WheelCarController autoEnEscena;
+
+    private void Update()
+    {
+        if (autoEnEscena == null)
+            autoEnEscena = FindObjectOfType<WheelCarController>();
+
+        if (autoEnEscena == null || motorSFX == null) return;
+
+        bool carreraActiva = GameManager.Instancia != null &&
+                             GameManager.Instancia.Estado == GameManager.EstadoJuego.Carrera;
+
+        if (carreraActiva && clipMotor != null)
+        {
+            if (!motorSFX.isPlaying)
+            {
+                motorSFX.clip = clipMotor;
+                motorSFX.loop = true;
+                motorSFX.Play();
+            }
+
+            float pitch = Mathf.Lerp(pitchMin, pitchMax, autoEnEscena.SpeedRatio01);
+            motorSFX.pitch = pitch;
+        }
+        else if (!carreraActiva && motorSFX.isPlaying)
+        {
+            motorSFX.Stop();
+        }
     }
 }

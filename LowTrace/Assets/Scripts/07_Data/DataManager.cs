@@ -76,6 +76,12 @@ public class DataManager : MonoBehaviour
             string textoJson = File.ReadAllText(rutaRecords);
             JsonUtility.FromJsonOverwrite(textoJson, records);
         }
+        else
+        {
+            records.rankingGlobal.Clear();
+            records.mejorTiempo = 9999f;
+            GuardarDatos();
+        }
     }
 
     public void IntentarNuevoRecord(float nuevoTiempo)
@@ -208,6 +214,7 @@ public class DataManager : MonoBehaviour
     public void LimpiarRanking()
     {
         records.rankingGlobal.Clear();
+        records.mejorTiempo = 9999f;
         GuardarDatos();
     }
 

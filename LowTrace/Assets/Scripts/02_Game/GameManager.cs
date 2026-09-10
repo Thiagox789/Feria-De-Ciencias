@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,7 +17,6 @@ public class GameManager : MonoBehaviour
     [Header("Vueltas")]
     [SerializeField] private int vueltasTotales = 1;
     public bool VueltaCompleta { get; private set; }
-    private int siguienteCheckpoint;
 
     public static event System.Action<EstadoJuego> OnEstadoCambio;
     public static event System.Action<float> OnCarreraTerminada;
@@ -27,9 +27,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float umbralCaida = -3f;
     [SerializeField] private Checkpoint[] checkpoints;
 
-    private int checkpointsPisados;
+    private HashSet<int> checkpointsTocados = new HashSet<int>();
 
-    public int CheckpointsCompletados => checkpointsPisados;
+    public int CheckpointsCompletados => checkpointsTocados.Count;
     public int CheckpointsTotales => checkpoints.Length;
 
     private void Awake()
@@ -49,21 +49,24 @@ public class GameManager : MonoBehaviour
         if (checkpoint == null) return;
 
         int indice = System.Array.IndexOf(checkpoints, checkpoint);
+        if (indice < 0) return;
 
-        if (indice < 0 || indice != siguienteCheckpoint) return;
+        if (checkpointsTocados.Contains(indice)) return;
 
-        siguienteCheckpoint++;
-        checkpointsPisados++;
+        checkpointsTocados.Add(indice);
+        Debug.Log($"[GameManager] Checkpoint {indice} registrado. Total: {checkpointsTocados.Count}/{checkpoints.Length}");
 
-        if (siguienteCheckpoint >= checkpoints.Length)
+        if (checkpointsTocados.Count >= checkpoints.Length)
         {
             VueltaCompleta = true;
+            Debug.Log("[GameManager] ¡Todos los checkpoints completados! VueltaCompleta = true");
             OnVueltaCompletada?.Invoke(VueltaActual);
         }
     }
 
     public void CruzarMeta()
     {
+        Debug.Log($"[GameManager] CruzarMeta llamado. Estado={Estado}, VueltaCompleta={VueltaCompleta}");
         if (Estado != EstadoJuego.Carrera) return;
 
         if (!VueltaCompleta) return;
@@ -74,6 +77,7 @@ public class GameManager : MonoBehaviour
 
         if (VueltaActual >= VueltasTotales)
         {
+            Debug.Log("[GameManager] Terminando carrera...");
             TerminarCarrera();
         }
     }
@@ -94,6 +98,7 @@ public class GameManager : MonoBehaviour
     public void IniciarCarrera()
     {
         TiempoCarrera = 0f;
+        checkpointsTocados.Clear();
         CambiarEstado(EstadoJuego.Carrera);
     }
 

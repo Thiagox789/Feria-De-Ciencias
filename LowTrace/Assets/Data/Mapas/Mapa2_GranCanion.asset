@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc12cc31a2fd6a8588d9341954c14623, type: 3}
   m_Name: Mapa2_GranCanion
   m_EditorClassIdentifier: Assembly-CSharp::MapData
-  nombre: "Gran Ca\xF1\xF3n"
-  escena: IA2
+  nombre: Circuito 2
+  escena: Circuito2
   miniatura: {fileID: 21300000, guid: 9638d95a5d8e23e03af17ad0127fb437, type: 3}
   tipoPista: 1
   dificultad: 1

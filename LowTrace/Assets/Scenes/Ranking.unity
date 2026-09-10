@@ -728,6 +728,7 @@ GameObject:
   - component: {fileID: 88129906}
   - component: {fileID: 88129905}
   - component: {fileID: 88129904}
+  - component: {fileID: 88129907}
   m_Layer: 5
   m_Name: Boton-Volver
   m_TagString: Untagged
@@ -849,6 +850,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 88129902}
   m_CullTransparentMesh: 1
+--- !u!114 &88129907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 88129902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73d077f20510f5170bf711473c52e35d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonClickSound
 --- !u!1 &90787985
 GameObject:
   m_ObjectHideFlags: 0
@@ -10713,108 +10726,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5671e27a98bd427b6a93ce48588c9881, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RecordsData
-  mejorTiempo: 60
-  rankingGlobal:
-  - nombreJugador: Jugador 1
-    tiempo: 61.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 2
-    tiempo: 63
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 3
-    tiempo: 64.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 4
-    tiempo: 66
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 5
-    tiempo: 67.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 6
-    tiempo: 69
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 7
-    tiempo: 70.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 8
-    tiempo: 72
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 9
-    tiempo: 73.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 10
-    tiempo: 75
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 11
-    tiempo: 76.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 12
-    tiempo: 78
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 13
-    tiempo: 79.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 14
-    tiempo: 81
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 15
-    tiempo: 82.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 16
-    tiempo: 84
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 17
-    tiempo: 85.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 18
-    tiempo: 87
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 19
-    tiempo: 88.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 20
-    tiempo: 90
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 21
-    tiempo: 91.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 22
-    tiempo: 93
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 23
-    tiempo: 94.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 24
-    tiempo: 96
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
-  - nombreJugador: Jugador 25
-    tiempo: 97.5
-    mapa: Circuito 1
-    fecha: 05/09/2026 16:00
+  mejorTiempo: 9999
+  rankingGlobal: []
 --- !u!1 &2127699759
 GameObject:
   m_ObjectHideFlags: 0

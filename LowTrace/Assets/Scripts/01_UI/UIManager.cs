@@ -257,9 +257,7 @@ public class UIManager : MonoBehaviour
             nombre = inputNombreJugador.text.Trim();
         }
 
-        string mapa = "Mapa1";
-        if (MapSelectionManager.Instancia != null)
-            mapa = MapSelectionManager.Instancia.ObtenerNombreEscenaActual();
+        string mapa = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
         DataManager.Instancia.AgregarAlRanking(nombre, tiempoFinalCarrera, mapa);
         DataManager.Instancia.IntentarNuevoRecord(tiempoFinalCarrera);
