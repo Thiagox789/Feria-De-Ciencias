@@ -9,13 +9,9 @@ public class MapMenuUI : MonoBehaviour
     [SerializeField] private Button botonVolver;
     [SerializeField] private Button botonAjustes;
 
-    [Header("Panel Ajustes")]
+    [Header("Panel Ajustes (Reutiliza SettingsPanelUI)")]
     [SerializeField] private GameObject panelAjustes;
-    [SerializeField] private Slider sliderVolumenMusica;
-    [SerializeField] private Slider sliderVolumenSFX;
-    [SerializeField] private Toggle togglePantallaCompleta;
-    [SerializeField] private TMP_Dropdown dropdownCalidad;
-    [SerializeField] private Button botonCerrarAjustes;
+    [SerializeField] private SettingsPanelUI settingsPanel;
 
     private void Awake()
     {
@@ -37,10 +33,16 @@ public class MapMenuUI : MonoBehaviour
             if (obj != null) botonVolver = obj.GetComponent<Button>();
         }
 
-        if (botonCerrarAjustes == null && panelAjustes != null)
+        if (panelAjustes == null)
         {
-            var obj = GameObject.Find("Canvas/Panel-Ajustes/Boton-Cerrar");
-            if (obj != null) botonCerrarAjustes = obj.GetComponent<Button>();
+            panelAjustes = GameObject.Find("Canvas/Panel-Ajustes");
+        }
+
+        if (settingsPanel == null && panelAjustes != null)
+        {
+            settingsPanel = panelAjustes.GetComponent<SettingsPanelUI>();
+            if (settingsPanel == null)
+                settingsPanel = panelAjustes.AddComponent<SettingsPanelUI>();
         }
     }
 
@@ -54,21 +56,6 @@ public class MapMenuUI : MonoBehaviour
 
         if (botonAjustes != null)
             botonAjustes.onClick.AddListener(AbrirAjustes);
-
-        if (botonCerrarAjustes != null)
-            botonCerrarAjustes.onClick.AddListener(CerrarAjustes);
-
-        if (sliderVolumenMusica != null)
-            sliderVolumenMusica.onValueChanged.AddListener(CambiarVolumenMusica);
-
-        if (sliderVolumenSFX != null)
-            sliderVolumenSFX.onValueChanged.AddListener(CambiarVolumenSFX);
-
-        if (togglePantallaCompleta != null)
-            togglePantallaCompleta.onValueChanged.AddListener(CambiarPantallaCompleta);
-
-        if (dropdownCalidad != null)
-            dropdownCalidad.onValueChanged.AddListener(CambiarCalidad);
     }
 
     private void Start()
@@ -93,47 +80,25 @@ public class MapMenuUI : MonoBehaviour
 
     private void AbrirAjustes()
     {
-        if (panelAjustes != null)
+        if (settingsPanel != null)
+        {
+            settingsPanel.AbrirPanel();
+        }
+        else if (panelAjustes != null)
+        {
             panelAjustes.SetActive(true);
+        }
     }
 
     private void CerrarAjustes()
     {
-        if (panelAjustes != null)
+        if (settingsPanel != null)
+        {
+            settingsPanel.CerrarPanel();
+        }
+        else if (panelAjustes != null)
+        {
             panelAjustes.SetActive(false);
-    }
-
-    private void CambiarVolumenMusica(float valor)
-    {
-        if (SoundManager.Instancia != null)
-            SoundManager.Instancia.SetVolumenMusica(valor);
-
-        if (DataManager.Instancia != null && DataManager.Instancia.ajustes != null)
-        {
-            DataManager.Instancia.ajustes.volumenMusica = valor;
-            DataManager.Instancia.GuardarAjustes();
         }
-    }
-
-    private void CambiarVolumenSFX(float valor)
-    {
-        if (SoundManager.Instancia != null)
-            SoundManager.Instancia.SetVolumenSFX(valor);
-
-        if (DataManager.Instancia != null && DataManager.Instancia.ajustes != null)
-        {
-            DataManager.Instancia.ajustes.volumenSFX = valor;
-            DataManager.Instancia.GuardarAjustes();
-        }
-    }
-
-    private void CambiarPantallaCompleta(bool valor)
-    {
-        Screen.fullScreen = valor;
-    }
-
-    private void CambiarCalidad(int indice)
-    {
-        QualitySettings.SetQualityLevel(indice);
     }
 }

@@ -1,15 +1,9 @@
 using UnityEngine;
-using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
-public class ButtonClickSound : MonoBehaviour
+/// <summary>
+/// Mantiene compatibilidad con escenas y prefabs existentes.
+/// Hereda toda la funcionalidad unificada de UIButtonEffects.
+/// </summary>
+public class ButtonClickSound : UIButtonEffects
 {
-    private void Awake()
-    {
-        GetComponent<Button>().onClick.AddListener(() =>
-        {
-            if (SoundManager.Instancia != null)
-                SoundManager.Instancia.PlaySFXBoton();
-        });
-    }
 }

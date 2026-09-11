@@ -3,14 +3,15 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
-    [Header("Botones con efecto hover")]
+    [Header("Botones con efecto hover y sonido")]
     [SerializeField] private Button[] botones;
 
-    [Header("Configuración hover")]
+    [Header("Configuración visual")]
     [SerializeField] private float escalaObjetivo = 1.1f;
     [SerializeField] private float velocidad = 10f;
     [SerializeField] private Color colorHover = new Color(1f, 0.72f, 0.3f);
     [SerializeField] private bool pulsoActivo = false;
+    [SerializeField] private bool reproducirSonido = true;
 
     private void Awake()
     {
@@ -20,11 +21,11 @@ public class MenuManager : MonoBehaviour
         {
             if (boton == null) continue;
 
-            ButtonHoverScale hover = boton.gameObject.GetComponent<ButtonHoverScale>();
-            if (hover == null)
-                hover = boton.gameObject.AddComponent<ButtonHoverScale>();
+            UIButtonEffects efectos = boton.gameObject.GetComponent<UIButtonEffects>();
+            if (efectos == null)
+                efectos = boton.gameObject.AddComponent<UIButtonEffects>();
 
-            hover.SetConfig(escalaObjetivo, velocidad, colorHover, pulsoActivo);
+            efectos.SetConfig(escalaObjetivo, velocidad, colorHover, pulsoActivo, reproducirSonido);
         }
     }
 
