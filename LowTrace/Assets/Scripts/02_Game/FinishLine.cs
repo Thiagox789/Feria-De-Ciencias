@@ -16,5 +16,18 @@ public class FinishLine : MonoBehaviour
         {
             GameManager.Instancia.CruzarMeta();
         }
+
+        // Encendemos todos los efectos de partículas hijos (confeti)
+        ParticleSystem[] todosLosParticulas = GetComponentsInChildren<ParticleSystem>();
+        for (int i = 0; i < todosLosParticulas.Length; i++)
+        {
+            todosLosParticulas[i].Play();
+        }
+
+        // Reproducimos el mismo sonido que los checkpoints
+        if (SoundManager.Instancia != null)
+        {
+            SoundManager.Instancia.PlaySFXCheckpoint();
+        }
     }
 }

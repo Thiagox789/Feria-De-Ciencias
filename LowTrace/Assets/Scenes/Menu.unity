@@ -1227,6 +1227,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ca6c22a5a27bf5425b2f6e6809bd3a60, type: 3}
   - {fileID: 8300000, guid: 6c868f512f6223eed91eb8f9caeec12a, type: 3}
   sonidoBoton: {fileID: 8300000, guid: 1e50c45edfce7760d903d406ffd91976, type: 3}
+  sonidoCheckpoint: {fileID: 8300000, guid: f5904265ab76a8f6ba6c1ef8df86a076, type: 3}
   sonidoMotor: {fileID: 8300000, guid: b238e9dc0fe885b8bab776935cab1fb8, type: 3}
   tonoMotorMinimo: 0.8
   tonoMotorMaximo: 2

@@ -19,6 +19,9 @@ public class SoundManager : MonoBehaviour
     [Header("Sonidos de la Interfaz")]
     [SerializeField] private AudioClip sonidoBoton;
 
+    [Header("Sonido del Checkpoint")]
+    [SerializeField] private AudioClip sonidoCheckpoint;
+
     [Header("Sonido del Motor")]
     [SerializeField] private AudioClip sonidoMotor;
     [SerializeField] private float tonoMotorMinimo = 0.8f;
@@ -139,6 +142,14 @@ public class SoundManager : MonoBehaviour
         if (reproductorEfectosSFX != null && sonidoBoton != null)
         {
             reproductorEfectosSFX.PlayOneShot(sonidoBoton);
+        }
+    }
+
+    public void PlaySFXCheckpoint()
+    {
+        if (reproductorEfectosSFX != null && sonidoCheckpoint != null)
+        {
+            reproductorEfectosSFX.PlayOneShot(sonidoCheckpoint);
         }
     }
 

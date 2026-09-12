@@ -10,9 +10,6 @@ public class Checkpoint : MonoBehaviour
     [SerializeField] private Color colorOriginal = Color.white;
     [SerializeField] private Color colorActivado = Color.green;
 
-    [Header("Efecto de Partículas")]
-    [SerializeField] private ParticleSystem particulas;
-
     private Material materialInstancia;
     private bool estaActivado;
 
@@ -25,9 +22,10 @@ public class Checkpoint : MonoBehaviour
             materialInstancia.color = colorOriginal;
         }
 
-        if (particulas != null)
+        ParticleSystem[] todosLosParticulas = GetComponentsInChildren<ParticleSystem>();
+        for (int i = 0; i < todosLosParticulas.Length; i++)
         {
-            particulas.Stop();
+            todosLosParticulas[i].Stop();
         }
     }
 
@@ -53,10 +51,17 @@ public class Checkpoint : MonoBehaviour
             materialInstancia.color = colorActivado;
         }
 
-        // Encendemos el efecto de partículas
-        if (particulas != null)
+        // Encendemos todos los efectos de partículas hijos (confeti)
+        ParticleSystem[] todosLosParticulas = GetComponentsInChildren<ParticleSystem>();
+        for (int i = 0; i < todosLosParticulas.Length; i++)
         {
-            particulas.Play();
+            todosLosParticulas[i].Play();
+        }
+
+        // Reproducimos el sonido del checkpoint
+        if (SoundManager.Instancia != null)
+        {
+            SoundManager.Instancia.PlaySFXCheckpoint();
         }
     }
 
