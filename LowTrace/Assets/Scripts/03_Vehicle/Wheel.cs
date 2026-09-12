@@ -1,27 +1,37 @@
 using UnityEngine;
 
+// Este script se coloca en cada rueda visual del auto (sin collider).
+// Hace girar la rueda visualmente según qué tan rápido se mueve el chasis del auto.
 public class Wheel : MonoBehaviour
 {
-    [Tooltip("Auto con el Rigidbody (se usa para leer la velocidad)")]
-    [SerializeField] private Rigidbody rb;
+    [Tooltip("El Rigidbody del auto (cuerpo físico principal)")]
+    [SerializeField] private Rigidbody cuerpoAuto;
     [Tooltip("Radio de la rueda en metros")]
-    [SerializeField] private float radio = 0.3f;
-    [Tooltip("Eje local de rotacion de la rueda (eje de la llanta)")]
-    [SerializeField] private Vector3 ejeGiro = new Vector3(0f, 0f, 1f);
+    [SerializeField] private float radioRueda = 0.3f;
+    [Tooltip("Eje local de rotación de la llanta")]
+    [SerializeField] private Vector3 ejeRotacion = new Vector3(0f, 0f, 1f);
 
     private void Awake()
     {
-        if (rb == null) rb = GetComponentInParent<Rigidbody>();
+        // Si no se asignó en el Inspector, busca el Rigidbody en el auto padre
+        if (cuerpoAuto == null)
+        {
+            cuerpoAuto = GetComponentInParent<Rigidbody>();
+        }
     }
 
     private void FixedUpdate()
     {
-        if (rb == null) return;
+        if (cuerpoAuto == null) return;
 
-        Transform raiz = transform.parent != null ? transform.parent : transform;
-        float avance = Vector3.Dot(rb.linearVelocity, raiz.forward);
+        // Calculamos cuánto avanza el auto hacia adelante
+        Transform padre = transform.parent != null ? transform.parent : transform;
+        float velocidadAvance = Vector3.Dot(cuerpoAuto.linearVelocity, padre.forward);
 
-        float velocidadAngular = avance / radio;
-        transform.Rotate(ejeGiro * (velocidadAngular * Mathf.Rad2Deg * Time.fixedDeltaTime), Space.Self);
+        // Calculamos la velocidad angular (cuántos radianes gira por segundo)
+        float velocidadAngular = velocidadAvance / radioRueda;
+
+        // Hacemos girar la rueda en su eje local
+        transform.Rotate(ejeRotacion * (velocidadAngular * Mathf.Rad2Deg * Time.fixedDeltaTime), Space.Self);
     }
 }

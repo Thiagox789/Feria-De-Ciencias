@@ -367,6 +367,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d077f20510f5170bf711473c52e35d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonClickSound
+  escalaObjetivo: 1.1
+  velocidadAnimacion: 10
+  cambiarColor: 1
+  colorHover: {r: 1, g: 0.92, b: 0.6, a: 1}
+  pulsoActivo: 0
+  amplitudPulso: 0.03
+  velocidadPulso: 2
+  reproducirSonido: 1
 --- !u!1 &440972572
 GameObject:
   m_ObjectHideFlags: 0
@@ -616,6 +624,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d077f20510f5170bf711473c52e35d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonClickSound
+  escalaObjetivo: 1.1
+  velocidadAnimacion: 10
+  cambiarColor: 1
+  colorHover: {r: 1, g: 0.92, b: 0.6, a: 1}
+  pulsoActivo: 0
+  amplitudPulso: 0.03
+  velocidadPulso: 2
+  reproducirSonido: 1
 --- !u!1 &757716626
 GameObject:
   m_ObjectHideFlags: 0
@@ -995,6 +1011,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d077f20510f5170bf711473c52e35d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonClickSound
+  escalaObjetivo: 1.1
+  velocidadAnimacion: 10
+  cambiarColor: 1
+  colorHover: {r: 1, g: 0.92, b: 0.6, a: 1}
+  pulsoActivo: 0
+  amplitudPulso: 0.03
+  velocidadPulso: 2
+  reproducirSonido: 1
 --- !u!1 &897764416
 GameObject:
   m_ObjectHideFlags: 0
@@ -1195,17 +1219,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2792779a8d1bb51318cf07af35c89423, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
-  musica: {fileID: 960520200}
-  sfx: {fileID: 960520199}
-  motorSFX: {fileID: 960520199}
-  musicas:
+  reproductorMusica: {fileID: 960520200}
+  reproductorEfectosSFX: {fileID: 960520199}
+  reproductorMotorSFX: {fileID: 960520199}
+  canciones:
   - {fileID: 8300000, guid: 17c14747bb1ae0b0e8a2d4bc584d16e8, type: 3}
   - {fileID: 8300000, guid: ca6c22a5a27bf5425b2f6e6809bd3a60, type: 3}
   - {fileID: 8300000, guid: 6c868f512f6223eed91eb8f9caeec12a, type: 3}
-  clipBoton: {fileID: 8300000, guid: 1e50c45edfce7760d903d406ffd91976, type: 3}
-  clipMotor: {fileID: 8300000, guid: b238e9dc0fe885b8bab776935cab1fb8, type: 3}
-  pitchMin: 0.8
-  pitchMax: 2
+  sonidoBoton: {fileID: 8300000, guid: 1e50c45edfce7760d903d406ffd91976, type: 3}
+  sonidoMotor: {fileID: 8300000, guid: b238e9dc0fe885b8bab776935cab1fb8, type: 3}
+  tonoMotorMinimo: 0.8
+  tonoMotorMaximo: 2
 --- !u!114 &960520197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2190,6 +2214,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d077f20510f5170bf711473c52e35d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonClickSound
+  escalaObjetivo: 1.1
+  velocidadAnimacion: 10
+  cambiarColor: 1
+  colorHover: {r: 1, g: 0.92, b: 0.6, a: 1}
+  pulsoActivo: 0
+  amplitudPulso: 0.03
+  velocidadPulso: 2
+  reproducirSonido: 1
 --- !u!1 &1820279341
 GameObject:
   m_ObjectHideFlags: 0
@@ -2229,6 +2261,7 @@ MonoBehaviour:
   velocidad: 10
   colorHover: {r: 1, g: 0.72, b: 0.3, a: 1}
   pulsoActivo: 0
+  reproducirSonido: 1
 --- !u!4 &1820279343
 Transform:
   m_ObjectHideFlags: 0
@@ -2654,6 +2687,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d077f20510f5170bf711473c52e35d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonClickSound
+  escalaObjetivo: 1.1
+  velocidadAnimacion: 10
+  cambiarColor: 1
+  colorHover: {r: 1, g: 0.92, b: 0.6, a: 1}
+  pulsoActivo: 0
+  amplitudPulso: 0.03
+  velocidadPulso: 2
+  reproducirSonido: 1
 --- !u!1 &2137394010
 GameObject:
   m_ObjectHideFlags: 0

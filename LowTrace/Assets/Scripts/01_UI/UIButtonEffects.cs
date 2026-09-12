@@ -2,50 +2,64 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+// Este script se coloca en un Botón de la UI.
+// Hace que el botón se agrande suavemente cuando pasamos el cursor por encima
+// y reproduzca un sonido cuando hacemos clic.
 [RequireComponent(typeof(Button))]
 public class UIButtonEffects : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("Escalado / Hover")]
-    [SerializeField] private float escalaObjetivo = 1.1f;
-    [SerializeField] private float velocidad = 10f;
+    [Header("Efecto al pasar el cursor (Hover)")]
+    [SerializeField] private float escalaObjetivo = 1.1f; // Cuánto se agranda el botón (1.1 = 10% más grande)
+    [SerializeField] private float velocidadAnimacion = 10f; // Qué tan rápido se agranda o achica
     [SerializeField] private bool cambiarColor = true;
     [SerializeField] private Color colorHover = new Color(1f, 0.92f, 0.6f);
-    [SerializeField] private Image imagen;
+
+    [Header("Efecto de pulso continuo (Opcional)")]
     [SerializeField] private bool pulsoActivo = false;
     [SerializeField] private float amplitudPulso = 0.03f;
     [SerializeField] private float velocidadPulso = 2f;
 
-    [Header("Sonido de Clic")]
+    [Header("Sonido")]
     [SerializeField] private bool reproducirSonido = true;
 
-    private RectTransform rect;
-    private Vector3 escalaBase;
-    private bool sobreElemento;
-    private Button boton;
+    private RectTransform rectTransform;
+    private Vector3 escalaBaseOriginal;
+    private Image imagenBoton;
+    private bool cursorEncima;
+    private Button botonUI;
 
-    public void SetConfig(float escala, float vel, Color color, bool pulso, bool sonido = true)
+    // Permite cambiar la configuración desde otros scripts si es necesario
+    public void Configurar(float escala, float velocidad, Color color, bool usarPulso, bool usarSonido = true)
     {
         escalaObjetivo = escala;
-        velocidad = vel;
+        velocidadAnimacion = velocidad;
         colorHover = color;
-        pulsoActivo = pulso;
-        reproducirSonido = sonido;
+        pulsoActivo = usarPulso;
+        reproducirSonido = usarSonido;
+    }
+
+    public void SetConfig(float escala, float velocidad, Color color, bool usarPulso, bool usarSonido = true)
+    {
+        Configurar(escala, velocidad, color, usarPulso, usarSonido);
     }
 
     protected virtual void Awake()
     {
-        rect = GetComponent<RectTransform>();
-        escalaBase = rect != null ? rect.localScale : Vector3.one;
-        if (imagen == null) imagen = GetComponent<Image>();
-        boton = GetComponent<Button>();
+        // Guardamos las referencias necesarias al iniciar el objeto
+        rectTransform = GetComponent<RectTransform>();
+        escalaBaseOriginal = rectTransform != null ? rectTransform.localScale : Vector3.one;
+        imagenBoton = GetComponent<Image>();
+        botonUI = GetComponent<Button>();
 
-        if (boton != null)
+        // Escuchamos cuando el jugador hace clic en el botón
+        if (botonUI != null)
         {
-            boton.onClick.AddListener(OnButtonClicked);
+            botonUI.onClick.AddListener(AlHacerClic);
         }
     }
 
-    private void OnButtonClicked()
+    // Se ejecuta al hacer clic en el botón
+    private void AlHacerClic()
     {
         if (reproducirSonido && SoundManager.Instancia != null)
         {
@@ -55,21 +69,35 @@ public class UIButtonEffects : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private void Update()
     {
-        if (rect == null) return;
-        float pulso = pulsoActivo && !sobreElemento ? 1f + Mathf.Sin(Time.time * velocidadPulso) * amplitudPulso : 1f;
-        Vector3 destino = escalaBase * (sobreElemento ? escalaObjetivo : 1f) * pulso;
-        rect.localScale = Vector3.Lerp(rect.localScale, destino, velocidad * Time.deltaTime);
+        if (rectTransform == null) return;
+
+        // Si tiene efecto de pulso activo y el mouse no está encima, hace un latido suave
+        float multiplicadorPulso = (pulsoActivo && !cursorEncima) ? 1f + Mathf.Sin(Time.time * velocidadPulso) * amplitudPulso : 1f;
+
+        // Calculamos la escala destino (agrandado o normal)
+        Vector3 escalaDestino = escalaBaseOriginal * (cursorEncima ? escalaObjetivo : 1f) * multiplicadorPulso;
+
+        // Animamos suavemente la escala actual hacia la escala destino usando Lerp
+        rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, escalaDestino, velocidadAnimacion * Time.deltaTime);
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    // Se ejecuta automáticamente cuando el cursor entra en el botón
+    public void OnPointerEnter(PointerEventData datosEvento)
     {
-        sobreElemento = true;
-        if (cambiarColor && imagen != null) imagen.color = colorHover;
+        cursorEncima = true;
+        if (cambiarColor && imagenBoton != null)
+        {
+            imagenBoton.color = colorHover;
+        }
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    // Se ejecuta automáticamente cuando el cursor sale del botón
+    public void OnPointerExit(PointerEventData datosEvento)
     {
-        sobreElemento = false;
-        if (cambiarColor && imagen != null) imagen.color = Color.white;
+        cursorEncima = false;
+        if (cambiarColor && imagenBoton != null)
+        {
+            imagenBoton.color = Color.white;
+        }
     }
 }

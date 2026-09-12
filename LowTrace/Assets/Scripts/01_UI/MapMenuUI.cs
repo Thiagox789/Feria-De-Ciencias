@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+// Este script controla la pantalla de Selección de Mapa (Jugar, Volver, Abrir Ajustes).
 public class MapMenuUI : MonoBehaviour
 {
     [Header("Botones Principales")]
@@ -49,33 +50,58 @@ public class MapMenuUI : MonoBehaviour
     private void ConectarListeners()
     {
         if (botonJugar != null)
+        {
+            botonJugar.onClick.RemoveListener(Jugar);
             botonJugar.onClick.AddListener(Jugar);
+        }
 
         if (botonVolver != null)
+        {
+            botonVolver.onClick.RemoveListener(VolverAlMenu);
             botonVolver.onClick.AddListener(VolverAlMenu);
+        }
 
         if (botonAjustes != null)
+        {
+            botonAjustes.onClick.RemoveListener(AbrirAjustes);
             botonAjustes.onClick.AddListener(AbrirAjustes);
+        }
     }
 
     private void Start()
     {
         if (panelAjustes != null)
+        {
             panelAjustes.SetActive(false);
+        }
     }
 
     private void Jugar()
     {
         if (MapSelectionManager.Instancia != null)
+        {
             MapSelectionManager.Instancia.CargarMapaSeleccionado();
+        }
+        else
+        {
+            // Fallback por si la escena no tiene MapSelectionManager
+            if (SceneLoader.Instancia != null)
+                SceneLoader.Instancia.CargarEscena("Circuito1");
+            else
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Circuito1");
+        }
     }
 
     private void VolverAlMenu()
     {
         if (SceneLoader.Instancia != null)
+        {
             SceneLoader.Instancia.VolverAlMenu();
+        }
         else
+        {
             UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+        }
     }
 
     private void AbrirAjustes()

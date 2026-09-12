@@ -2,76 +2,90 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+// Este script controla la pantalla o panel de Ajustes del juego.
+// Permite modificar el volumen de la música, el volumen de los efectos de sonido,
+// cambiar la pantalla completa y ajustar la calidad gráfica.
 public class SettingsPanelUI : MonoBehaviour
 {
-    [Header("Sliders de UI")]
+    [Header("Barritas de Volumen (Sliders)")]
     [SerializeField] private Slider sliderMusica;
-    [SerializeField] private Slider sliderSFX;
+    [SerializeField] private Slider sliderEfectosSFX;
 
-    [Header("Opciones Adicionales (Opcionales)")]
+    [Header("Opciones Adicionales")]
     [SerializeField] private Toggle togglePantallaCompleta;
-    [SerializeField] private TMP_Dropdown dropdownCalidad;
-    [SerializeField] private Button botonCerrar;
+    [SerializeField] private TMP_Dropdown dropdownCalidadGraficos;
+    [SerializeField] private Button botonCerrarPanel;
 
     protected virtual void Start()
     {
-        CargarValoresIniciales();
-        ConectarListeners();
+        CargarValoresGuardados();
+        ConectarEventosDeUI();
     }
 
-    public void CargarValoresIniciales()
+    // Carga los datos de volumen guardados previamente en el disco duro (JSON)
+    public void CargarValoresGuardados()
     {
         if (DataManager.Instancia != null && DataManager.Instancia.ajustes != null)
         {
             if (sliderMusica != null) sliderMusica.value = DataManager.Instancia.ajustes.volumenMusica;
-            if (sliderSFX != null) sliderSFX.value = DataManager.Instancia.ajustes.volumenSFX;
+            if (sliderEfectosSFX != null) sliderEfectosSFX.value = DataManager.Instancia.ajustes.volumenSFX;
         }
 
         if (togglePantallaCompleta != null)
+        {
             togglePantallaCompleta.isOn = Screen.fullScreen;
+        }
 
-        if (dropdownCalidad != null)
-            dropdownCalidad.value = QualitySettings.GetQualityLevel();
+        if (dropdownCalidadGraficos != null)
+        {
+            dropdownCalidadGraficos.value = QualitySettings.GetQualityLevel();
+        }
     }
 
-    private void ConectarListeners()
+    // Conecta las funciones con los elementos de la interfaz automáticamente
+    private void ConectarEventosDeUI()
     {
         if (sliderMusica != null)
         {
-            sliderMusica.onValueChanged.RemoveListener(OnMusicaChanged);
-            sliderMusica.onValueChanged.AddListener(OnMusicaChanged);
+            sliderMusica.onValueChanged.RemoveListener(AlCambiarVolumenMusica);
+            sliderMusica.onValueChanged.AddListener(AlCambiarVolumenMusica);
         }
 
-        if (sliderSFX != null)
+        if (sliderEfectosSFX != null)
         {
-            sliderSFX.onValueChanged.RemoveListener(OnSFXChanged);
-            sliderSFX.onValueChanged.AddListener(OnSFXChanged);
+            sliderEfectosSFX.onValueChanged.RemoveListener(AlCambiarVolumenSFX);
+            sliderEfectosSFX.onValueChanged.AddListener(AlCambiarVolumenSFX);
         }
 
         if (togglePantallaCompleta != null)
         {
-            togglePantallaCompleta.onValueChanged.RemoveListener(OnPantallaCompletaChanged);
-            togglePantallaCompleta.onValueChanged.AddListener(OnPantallaCompletaChanged);
+            togglePantallaCompleta.onValueChanged.RemoveListener(AlCambiarPantallaCompleta);
+            togglePantallaCompleta.onValueChanged.AddListener(AlCambiarPantallaCompleta);
         }
 
-        if (dropdownCalidad != null)
+        if (dropdownCalidadGraficos != null)
         {
-            dropdownCalidad.onValueChanged.RemoveListener(OnCalidadChanged);
-            dropdownCalidad.onValueChanged.AddListener(OnCalidadChanged);
+            dropdownCalidadGraficos.onValueChanged.RemoveListener(AlCambiarCalidad);
+            dropdownCalidadGraficos.onValueChanged.AddListener(AlCambiarCalidad);
         }
 
-        if (botonCerrar != null)
+        if (botonCerrarPanel != null)
         {
-            botonCerrar.onClick.RemoveListener(CerrarPanel);
-            botonCerrar.onClick.AddListener(CerrarPanel);
+            botonCerrarPanel.onClick.RemoveListener(CerrarPanel);
+            botonCerrarPanel.onClick.AddListener(CerrarPanel);
         }
     }
 
-    public void OnMusicaChanged(float nuevoVolumen)
+    // Se ejecuta al mover la barra de Música
+    public void AlCambiarVolumenMusica(float nuevoVolumen)
     {
+        // 1. Cambiamos el volumen en el mezclador de audio para escucharlo en vivo
         if (SoundManager.Instancia != null)
+        {
             SoundManager.Instancia.SetVolumenMusica(nuevoVolumen);
+        }
 
+        // 2. Guardamos el nuevo valor en el archivo JSON
         if (DataManager.Instancia != null && DataManager.Instancia.ajustes != null)
         {
             DataManager.Instancia.ajustes.volumenMusica = nuevoVolumen;
@@ -79,10 +93,13 @@ public class SettingsPanelUI : MonoBehaviour
         }
     }
 
-    public void OnSFXChanged(float nuevoVolumen)
+    // Se ejecuta al mover la barra de Efectos de Sonido (SFX)
+    public void AlCambiarVolumenSFX(float nuevoVolumen)
     {
         if (SoundManager.Instancia != null)
+        {
             SoundManager.Instancia.SetVolumenSFX(nuevoVolumen);
+        }
 
         if (DataManager.Instancia != null && DataManager.Instancia.ajustes != null)
         {
@@ -91,22 +108,26 @@ public class SettingsPanelUI : MonoBehaviour
         }
     }
 
-    public void OnPantallaCompletaChanged(bool esPantallaCompleta)
+    // Se ejecuta al activar o desactivar la casilla de Pantalla Completa
+    public void AlCambiarPantallaCompleta(bool esPantallaCompleta)
     {
         Screen.fullScreen = esPantallaCompleta;
     }
 
-    public void OnCalidadChanged(int indiceCalidad)
+    // Se ejecuta al cambiar la opción de calidad gráfica en la lista desplegable
+    public void AlCambiarCalidad(int indiceCalidad)
     {
         QualitySettings.SetQualityLevel(indiceCalidad);
     }
 
+    // Muestra el panel y refresca los datos
     public void AbrirPanel()
     {
         gameObject.SetActive(true);
-        CargarValoresIniciales();
+        CargarValoresGuardados();
     }
 
+    // Oculta el panel de ajustes
     public void CerrarPanel()
     {
         gameObject.SetActive(false);

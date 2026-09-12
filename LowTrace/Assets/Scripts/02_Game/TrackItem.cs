@@ -1,82 +1,82 @@
 using UnityEngine;
 
-/// <summary>
-/// Item coleccionable en la pista: moneda (puntos) o turbo (impulso de velocidad).
-/// Requiere un Collider marcado como "Is Trigger" en el mismo GameObject.
-/// </summary>
+// Este script se coloca en los objetos coleccionables de la pista (Monedas y Turbos).
+// Hace girar el objeto en el aire y aplica el beneficio cuando el auto los toca.
 [RequireComponent(typeof(Collider))]
 public class TrackItem : MonoBehaviour
 {
-    public enum ItemType
+    public enum TipoItem
     {
-        Coin,
+        Moneda,
         Turbo
     }
 
     [Header("Configuración del Item")]
-    [SerializeField] private ItemType itemType = ItemType.Coin;
-    [Tooltip("Tag que debe tener el auto del jugador para poder recolectar el item.")]
-    [SerializeField] private string playerTag = "Player";
+    [SerializeField] private TipoItem tipoItem = TipoItem.Moneda;
+    [SerializeField] private string etiquetaJugador = "Player";
 
-    [Header("Moneda")]
-    [SerializeField] private int coinValue = 10;
+    [Header("Valores")]
+    [SerializeField] private int puntosMoneda = 10;
+    [SerializeField] private float fuerzaTurbo = 15f;
 
-    [Header("Turbo")]
-    [SerializeField] private float boostForce = 15f;
+    [Header("Efectos Visuales y Sonido")]
+    [SerializeField] private GameObject efectoVisualAlRecolectar;
+    [SerializeField] private AudioClip sonidoAlRecolectar;
+    [SerializeField] private float velocidadRotacion = 90f; // Grados por segundo que gira en el aire
 
-    [Header("Feedback (opcional)")]
-    [SerializeField] private GameObject collectVFX;
-    [SerializeField] private AudioClip collectSFX;
-    [Tooltip("Velocidad de rotación visual del item para que se note en la pista (efecto puramente estético).")]
-    [SerializeField] private float visualSpinSpeed = 90f;
-
-    private bool collected = false;
+    private bool yaRecolectado = false;
 
     private void Update()
     {
-        transform.Rotate(Vector3.up, visualSpinSpeed * Time.deltaTime);
+        // Hace girar el objeto continuamente para llamar la atención en la pista
+        transform.Rotate(Vector3.up, velocidadRotacion * Time.deltaTime);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider otroObjeto)
     {
-        if (collected) return;
-        if (!other.CompareTag(playerTag)) return;
+        if (yaRecolectado) return;
+        if (!otroObjeto.CompareTag(etiquetaJugador)) return;
 
-        WheelCarController car = other.GetComponent<WheelCarController>();
-        if (car == null) return;
+        WheelCarController auto = otroObjeto.GetComponent<WheelCarController>();
+        if (auto == null) return;
 
-        collected = true;
-        ApplyEffect(car);
-        PlayFeedback();
+        yaRecolectado = true;
 
+        // Aplicamos el efecto de la moneda o del turbo
+        AplicarEfecto(auto);
+
+        // Reproducimos el sonido o destello de partículas
+        ReproducirEfectos();
+
+        // Ocultamos el objeto de la pista
         gameObject.SetActive(false);
     }
 
-    private void ApplyEffect(WheelCarController car)
+    private void AplicarEfecto(WheelCarController auto)
     {
-        switch (itemType)
+        switch (tipoItem)
         {
-            case ItemType.Coin:
-                Debug.Log($"Moneda recolectada: +{coinValue} puntos");
+            case TipoItem.Moneda:
+                Debug.Log($"Moneda recogida: +{puntosMoneda} puntos");
                 break;
 
-            case ItemType.Turbo:
-                car.ApplyBoost(boostForce);
-                Debug.Log("¡Turbo activado!");
+            case TipoItem.Turbo:
+                auto.ApplyBoost(fuerzaTurbo);
+                Debug.Log("¡Turbo de velocidad activado!");
                 break;
         }
     }
 
-    private void PlayFeedback()
+    private void ReproducirEfectos()
     {
-        if (collectVFX != null)
+        if (efectoVisualAlRecolectar != null)
         {
-            Instantiate(collectVFX, transform.position, Quaternion.identity);
+            Instantiate(efectoVisualAlRecolectar, transform.position, Quaternion.identity);
         }
 
-        if (collectSFX != null)
+        if (sonidoAlRecolectar != null)
         {
-            AudioSource.PlayClipAtPoint(collectSFX, transform.position);
+            AudioSource.PlayClipAtPoint(sonidoAlRecolectar, transform.position);
         }
     }
 }

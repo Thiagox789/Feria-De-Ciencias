@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+// Este script controla la navegación y los botones del Menú Principal del juego.
 public class MenuManager : MonoBehaviour
 {
     [Header("Botones con efecto hover y sonido")]
@@ -23,44 +24,60 @@ public class MenuManager : MonoBehaviour
 
             UIButtonEffects efectos = boton.gameObject.GetComponent<UIButtonEffects>();
             if (efectos == null)
+            {
                 efectos = boton.gameObject.AddComponent<UIButtonEffects>();
+            }
 
             efectos.SetConfig(escalaObjetivo, velocidad, colorHover, pulsoActivo, reproducirSonido);
         }
     }
 
+    // Botón Jugar -> Carga la pantalla de selección de mapas
     public void Jugar()
     {
-        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("Seleccion-Mapa");
+        CargarEscenaSegura("Seleccion-Mapa");
     }
 
     public void IrAMapa()
     {
-        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("Seleccion-Mapa");
+        CargarEscenaSegura("Seleccion-Mapa");
     }
 
     public void VolverAlMenu()
     {
-        if (SceneLoader.Instancia != null) SceneLoader.Instancia.VolverAlMenu();
+        CargarEscenaSegura("Menu");
     }
 
     public void IrAAjustes()
     {
-        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("Ajustes");
+        CargarEscenaSegura("Ajustes");
     }
 
     public void IrARanking()
     {
-        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("Ranking");
+        CargarEscenaSegura("Ranking");
     }
 
     public void IrACreditos()
     {
-        if (SceneLoader.Instancia != null) SceneLoader.Instancia.CargarEscena("Creditos");
+        CargarEscenaSegura("Creditos");
     }
 
     public void Salir()
     {
         Application.Quit();
+    }
+
+    // Método seguro que garantiza cargar la escena sin importar si el singleton fue instanciado o no
+    private void CargarEscenaSegura(string nombreEscena)
+    {
+        if (SceneLoader.Instancia != null)
+        {
+            SceneLoader.Instancia.CargarEscena(nombreEscena);
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(nombreEscena);
+        }
     }
 }

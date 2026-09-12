@@ -862,6 +862,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d077f20510f5170bf711473c52e35d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonClickSound
+  escalaObjetivo: 1.1
+  velocidadAnimacion: 10
+  cambiarColor: 1
+  colorHover: {r: 1, g: 0.92, b: 0.6, a: 1}
+  pulsoActivo: 0
+  amplitudPulso: 0.03
+  velocidadPulso: 2
+  reproducirSonido: 1
 --- !u!1 &90787985
 GameObject:
   m_ObjectHideFlags: 0
@@ -6835,6 +6843,7 @@ MonoBehaviour:
   velocidad: 10
   colorHover: {r: 1, g: 0.72, b: 0.3, a: 1}
   pulsoActivo: 0
+  reproducirSonido: 1
 --- !u!1 &1492588903
 GameObject:
   m_ObjectHideFlags: 0
@@ -7113,21 +7122,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RankingUI
   contenedorFilas: {fileID: 0}
-  templateFila: {fileID: 0}
+  plantillaFila: {fileID: 0}
   textoSinResultados: {fileID: 0}
-  textoTitulo: {fileID: 624751167}
+  textoTituloRanking: {fileID: 0}
   botonVolver: {fileID: 88129904}
-  botonLimpiar: {fileID: 0}
-  colorPrimero: {r: 0, g: 0, b: 0, a: 1}
-  colorSegundo: {r: 1, g: 0.8392157, b: 0, a: 1}
-  colorTercero: {r: 1, g: 0.8392157, b: 0, a: 1}
-  coloresFilas: []
-  inputBuscarNombre: {fileID: 396993320}
-  dropdownMapa: {fileID: 1115654733}
+  botonBorrarTodo: {fileID: 0}
+  colorPrimerLugar: {r: 0, g: 0, b: 0, a: 1}
+  colorSegundoLugar: {r: 0.75, g: 0.75, b: 0.75, a: 1}
+  colorTercerLugar: {r: 0.8, g: 0.5, b: 0.2, a: 1}
+  inputBuscadorNombre: {fileID: 396993320}
+  dropdownFiltroMapa: {fileID: 1115654733}
   botonPaginaAnterior: {fileID: 62161151}
   botonPaginaSiguiente: {fileID: 220973913}
-  textoPaginaInfo: {fileID: 907001138}
-  textosNumeros:
+  textoNumeroPagina: {fileID: 907001138}
+  textosNumerosPosicion:
   - {fileID: 114702584}
   - {fileID: 128888669}
   - {fileID: 1534851407}
@@ -7139,7 +7147,7 @@ MonoBehaviour:
   - {fileID: 2023086551}
   - {fileID: 1678640806}
   - {fileID: 1986208489}
-  textosJugadores:
+  textosNombresJugadores:
   - {fileID: 732361766}
   - {fileID: 533679351}
   - {fileID: 1692652109}
@@ -7151,7 +7159,7 @@ MonoBehaviour:
   - {fileID: 1701964050}
   - {fileID: 407529680}
   - {fileID: 234283811}
-  textosTiempos:
+  textosTiemposJugadores:
   - {fileID: 862139998}
   - {fileID: 55664841}
   - {fileID: 1336302613}

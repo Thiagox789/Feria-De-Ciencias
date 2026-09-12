@@ -339,7 +339,7 @@ Camera:
   m_GameObject: {fileID: 47302163}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -663,6 +663,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d077f20510f5170bf711473c52e35d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonClickSound
+  escalaObjetivo: 1.1
+  velocidadAnimacion: 10
+  cambiarColor: 1
+  colorHover: {r: 1, g: 0.92, b: 0.6, a: 1}
+  pulsoActivo: 0
+  amplitudPulso: 0.03
+  velocidadPulso: 2
+  reproducirSonido: 1
 --- !u!1 &90787985
 GameObject:
   m_ObjectHideFlags: 0
@@ -1761,11 +1769,7 @@ MonoBehaviour:
   botonVolver: {fileID: 0}
   botonAjustes: {fileID: 0}
   panelAjustes: {fileID: 0}
-  sliderVolumenMusica: {fileID: 0}
-  sliderVolumenSFX: {fileID: 0}
-  togglePantallaCompleta: {fileID: 0}
-  dropdownCalidad: {fileID: 0}
-  botonCerrarAjustes: {fileID: 0}
+  settingsPanel: {fileID: 0}
 --- !u!1 &364963267
 GameObject:
   m_ObjectHideFlags: 0
@@ -4952,6 +4956,7 @@ MonoBehaviour:
   velocidad: 10
   colorHover: {r: 1, g: 0.72, b: 0.3, a: 1}
   pulsoActivo: 0
+  reproducirSonido: 1
 --- !u!1 &1492588903
 GameObject:
   m_ObjectHideFlags: 0
@@ -5483,6 +5488,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d077f20510f5170bf711473c52e35d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonClickSound
+  escalaObjetivo: 1.1
+  velocidadAnimacion: 10
+  cambiarColor: 1
+  colorHover: {r: 1, g: 0.92, b: 0.6, a: 1}
+  pulsoActivo: 0
+  amplitudPulso: 0.03
+  velocidadPulso: 2
+  reproducirSonido: 1
 --- !u!1 &1526994720
 GameObject:
   m_ObjectHideFlags: 0

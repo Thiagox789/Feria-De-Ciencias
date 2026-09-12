@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 
+// Este script es un guardián del sistema de eventos de la interfaz (EventSystem).
+// Asegura que siempre haya un EventSystem en cada escena para que los botones y la pantalla táctil o mouse respondan.
 public class EventSystemGuard : MonoBehaviour
 {
     private static EventSystemGuard instancia;
@@ -19,31 +21,32 @@ public class EventSystemGuard : MonoBehaviour
 
     private void OnEnable()
     {
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += AlCargarEscena;
     }
 
     private void OnDisable()
     {
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= AlCargarEscena;
     }
 
-    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    private void AlCargarEscena(UnityEngine.SceneManagement.Scene escena, UnityEngine.SceneManagement.LoadSceneMode modo)
     {
-        EnsureEventSystem();
+        AsegurarEventSystem();
     }
 
-    private void EnsureEventSystem()
+    // Comprueba si existe un EventSystem y si no, lo crea automáticamente
+    private void AsegurarEventSystem()
     {
-        EventSystem existing = FindFirstObjectByType<EventSystem>();
-        if (existing == null)
+        EventSystem existente = FindFirstObjectByType<EventSystem>();
+        if (existente == null)
         {
-            GameObject go = new GameObject("EventSystem");
-            go.AddComponent<EventSystem>();
-            go.AddComponent<InputSystemUIInputModule>();
+            GameObject objetoEventSystem = new GameObject("EventSystem");
+            objetoEventSystem.AddComponent<EventSystem>();
+            objetoEventSystem.AddComponent<InputSystemUIInputModule>();
         }
-        else if (existing.GetComponent<InputSystemUIInputModule>() == null)
+        else if (existente.GetComponent<InputSystemUIInputModule>() == null)
         {
-            existing.gameObject.AddComponent<InputSystemUIInputModule>();
+            existente.gameObject.AddComponent<InputSystemUIInputModule>();
         }
     }
 }

@@ -1,230 +1,185 @@
-// System ranking UI controller with pagination support
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
+// Este script controla la pantalla de Ranking / Tabla de Posiciones.
+// Muestra los mejores tiempos ordenados de menor a mayor, con soporte para paginación y búsqueda por nombre o mapa.
 public class RankingUI : MonoBehaviour
 {
-    [Header("Panel Principal")]
+    [Header("Contenedor de Filas")]
     [SerializeField] private Transform contenedorFilas;
 
-    [Header("Template")]
-    [SerializeField] private GameObject templateFila;
+    [Header("Plantilla de Fila (Template)")]
+    [SerializeField] private GameObject plantillaFila;
 
-    [Header("Información")]
+    [Header("Textos de Información")]
     [SerializeField] private TextMeshProUGUI textoSinResultados;
-    [SerializeField] private TextMeshProUGUI textoTitulo;
+    [SerializeField] private TextMeshProUGUI textoTituloRanking;
 
-    [Header("Botones")]
+    [Header("Botones de Navegación")]
     [SerializeField] private Button botonVolver;
-    [SerializeField] private Button botonLimpiar;
+    [SerializeField] private Button botonBorrarTodo;
 
-    [Header("Colores")]
-    [SerializeField] private Color colorPrimero = new Color(1f, 0.84f, 0f);
-    [SerializeField] private Color colorSegundo = new Color(0.75f, 0.75f, 0.75f);
-    [SerializeField] private Color colorTercero = new Color(0.8f, 0.5f, 0.2f);
-    [SerializeField] private Color[] coloresFilas;
+    [Header("Colores del Podio")]
+    [SerializeField] private Color colorPrimerLugar = new Color(1f, 0.84f, 0f);
+    [SerializeField] private Color colorSegundoLugar = new Color(0.75f, 0.75f, 0.75f);
+    [SerializeField] private Color colorTercerLugar = new Color(0.8f, 0.5f, 0.2f);
 
-    [Header("Búsqueda y Filtro")]
-    [SerializeField] private TMP_InputField inputBuscarNombre;
-    [SerializeField] private TMP_Dropdown dropdownMapa;
+    [Header("Búsqueda y Filtro de Circuito")]
+    [SerializeField] private TMP_InputField inputBuscadorNombre;
+    [SerializeField] private TMP_Dropdown dropdownFiltroMapa;
 
-    [Header("Paginación")]
+    [Header("Controles de Paginación")]
     [SerializeField] private Button botonPaginaAnterior;
     [SerializeField] private Button botonPaginaSiguiente;
-    [SerializeField] private TextMeshProUGUI textoPaginaInfo;
+    [SerializeField] private TextMeshProUGUI textoNumeroPagina;
 
-    [Header("Filas Estáticas (Opcional)")]
-    [SerializeField] private TextMeshProUGUI[] textosNumeros;
-    [SerializeField] private TextMeshProUGUI[] textosJugadores;
-    [SerializeField] private TextMeshProUGUI[] textosTiempos;
+    [Header("Filas Estáticas (Opcionales)")]
+    [SerializeField] private TextMeshProUGUI[] textosNumerosPosicion;
+    [SerializeField] private TextMeshProUGUI[] textosNombresJugadores;
+    [SerializeField] private TextMeshProUGUI[] textosTiemposJugadores;
 
     private List<GameObject> filasGeneradas = new List<GameObject>();
     private int paginaActual = 0;
-    private const int FILAS_POR_PAGINA = 10;
+    private const int REGISTROS_POR_PAGINA = 10;
 
     private void Awake()
     {
-        AutoBuscarReferencias();
+        BuscarReferenciasEnEscena();
 
         if (botonVolver != null)
             botonVolver.onClick.AddListener(VolverAlMenu);
 
-        if (botonLimpiar != null)
-            botonLimpiar.onClick.AddListener(LimpiarRanking);
+        if (botonBorrarTodo != null)
+            botonBorrarTodo.onClick.AddListener(LimpiarTablaRanking);
 
-        if (inputBuscarNombre != null)
+        if (inputBuscadorNombre != null)
         {
-            inputBuscarNombre.characterLimit = 14;
-            inputBuscarNombre.onValueChanged.AddListener(OnFiltroCambiado);
+            inputBuscadorNombre.characterLimit = 14;
+            inputBuscadorNombre.onValueChanged.AddListener(AlCambiarFiltroTexto);
         }
 
-        if (dropdownMapa != null)
-            dropdownMapa.onValueChanged.AddListener(OnFiltroCambiado);
+        if (dropdownFiltroMapa != null)
+            dropdownFiltroMapa.onValueChanged.AddListener(AlCambiarFiltroDropdown);
 
         if (botonPaginaAnterior != null)
-            botonPaginaAnterior.onClick.AddListener(PaginaAnterior);
+            botonPaginaAnterior.onClick.AddListener(IrAPaginaAnterior);
 
         if (botonPaginaSiguiente != null)
-            botonPaginaSiguiente.onClick.AddListener(PaginaSiguiente);
+            botonPaginaSiguiente.onClick.AddListener(IrAPaginaSiguiente);
 
-        InicializarDropdownMapa();
+        CargarOpcionesDelDropdown();
 
-        if (templateFila != null)
-            templateFila.SetActive(false);
-    }
-
-    public void PaginaAnterior()
-    {
-        if (paginaActual > 0)
-        {
-            paginaActual--;
-            CargarRanking();
-        }
-    }
-
-    public void PaginaSiguiente()
-    {
-        paginaActual++;
-        CargarRanking();
-    }
-
-    private void InicializarDropdownMapa()
-    {
-        if (dropdownMapa == null) return;
-        
-        dropdownMapa.ClearOptions();
-        List<string> opciones = new List<string>();
-
-        if (DataManager.Instancia != null)
-        {
-            List<RecordsData.EntradaRanking> ranking = DataManager.Instancia.ObtenerRanking();
-            foreach (var r in ranking)
-            {
-                if (!string.IsNullOrEmpty(r.mapa) && !opciones.Contains(r.mapa))
-                {
-                    opciones.Add(r.mapa);
-                }
-            }
-        }
-
-        opciones.Sort();
-        opciones.Insert(0, "Todos");
-
-        dropdownMapa.AddOptions(opciones);
-        dropdownMapa.value = 0;
-        dropdownMapa.RefreshShownValue();
-    }
-
-    private void OnFiltroCambiado(string texto)
-    {
-        paginaActual = 0;
-        CargarRanking();
-    }
-
-    private void OnFiltroCambiado(int indice)
-    {
-        paginaActual = 0;
-        CargarRanking();
-    }
-
-    public void AutoBuscarReferencias()
-    {
-        if (botonVolver == null)
-        {
-            var btnSalirObj = GameObject.Find("Boton-Salir");
-            if (btnSalirObj != null)
-                botonVolver = btnSalirObj.GetComponent<Button>();
-        }
-
-        if (inputBuscarNombre == null)
-        {
-            var inputObj = GameObject.Find("Canvas/Ranking/Panel-Jugador/Nombre-Input");
-            if (inputObj != null)
-                inputBuscarNombre = inputObj.GetComponent<TMP_InputField>();
-        }
-
-        if (dropdownMapa == null)
-        {
-            var dropObj = GameObject.Find("Canvas/Ranking/Panel-Jugador/Dropdown");
-            if (dropObj != null)
-                dropdownMapa = dropObj.GetComponent<TMP_Dropdown>();
-        }
-
-        if (textoTitulo == null)
-        {
-            var titleObj = GameObject.Find("Canvas/Panel-Titulo/Titulo-Ajustes");
-            if (titleObj != null)
-                textoTitulo = titleObj.GetComponent<TextMeshProUGUI>();
-        }
-
-        if (botonPaginaAnterior == null)
-        {
-            var btnAnt = GameObject.Find("Boton-Anterior");
-            if (btnAnt != null) botonPaginaAnterior = btnAnt.GetComponent<Button>();
-        }
-
-        if (botonPaginaSiguiente == null)
-        {
-            var btnSig = GameObject.Find("Boton-Siguiente");
-            if (btnSig != null) botonPaginaSiguiente = btnSig.GetComponent<Button>();
-        }
-
-        if (textoPaginaInfo == null)
-        {
-            var txtPag = GameObject.Find("Texto-Pagina");
-            if (txtPag != null) textoPaginaInfo = txtPag.GetComponent<TextMeshProUGUI>();
-        }
-
-        bool necesitaBuscar = (textosJugadores == null || textosJugadores.Length == 0 || (textosJugadores.Length > 0 && textosJugadores[0] == null));
-
-        if (necesitaBuscar && templateFila == null)
-        {
-            var fj = GameObject.Find("Canvas/Ranking/Fila_Jugadores");
-            var ft = GameObject.Find("Canvas/Ranking/Fila_Tiempo");
-            var fn = GameObject.Find("Canvas/Ranking/Fila_Numeros");
-
-            if (fj != null) textosJugadores = fj.GetComponentsInChildren<TextMeshProUGUI>();
-            if (ft != null) textosTiempos = ft.GetComponentsInChildren<TextMeshProUGUI>();
-            if (fn != null) textosNumeros = fn.GetComponentsInChildren<TextMeshProUGUI>();
-        }
+        if (plantillaFila != null)
+            plantillaFila.SetActive(false);
     }
 
     private void Start()
     {
-        CargarRanking();
+        CargarRankingEnPantalla();
     }
 
-    public void CargarRanking()
+    public void IrAPaginaAnterior()
     {
-        LimpiarFilas();
-
-        if (DataManager.Instancia == null)
+        if (paginaActual > 0)
         {
-            Debug.LogWarning("DataManager no encontrado");
-            return;
+            paginaActual--;
+            CargarRankingEnPantalla();
+        }
+    }
+
+    public void IrAPaginaSiguiente()
+    {
+        paginaActual++;
+        CargarRankingEnPantalla();
+    }
+
+    private void CargarOpcionesDelDropdown()
+    {
+        if (dropdownFiltroMapa == null) return;
+        
+        dropdownFiltroMapa.ClearOptions();
+        List<string> listaCircuitos = new List<string>();
+
+        if (DataManager.Instancia != null)
+        {
+            List<RecordsData.EntradaRanking> listaRanking = DataManager.Instancia.ObtenerRanking();
+            foreach (var registro in listaRanking)
+            {
+                if (!string.IsNullOrEmpty(registro.mapa) && !listaCircuitos.Contains(registro.mapa))
+                {
+                    listaCircuitos.Add(registro.mapa);
+                }
+            }
         }
 
-        string filtroNombre = inputBuscarNombre != null ? inputBuscarNombre.text : "";
-        string filtroMapa = (dropdownMapa != null && dropdownMapa.options.Count > 0) ? dropdownMapa.options[dropdownMapa.value].text : "";
+        listaCircuitos.Sort();
+        listaCircuitos.Insert(0, "Todos");
 
-        if (textoTitulo != null)
+        dropdownFiltroMapa.AddOptions(listaCircuitos);
+        dropdownFiltroMapa.value = 0;
+        dropdownFiltroMapa.RefreshShownValue();
+    }
+
+    private void AlCambiarFiltroTexto(string texto)
+    {
+        paginaActual = 0;
+        CargarRankingEnPantalla();
+    }
+
+    private void AlCambiarFiltroDropdown(int indice)
+    {
+        paginaActual = 0;
+        CargarRankingEnPantalla();
+    }
+
+    private void BuscarReferenciasEnEscena()
+    {
+        if (botonVolver == null)
+        {
+            var btn = GameObject.Find("Boton-Salir");
+            if (btn != null) botonVolver = btn.GetComponent<Button>();
+        }
+
+        if (inputBuscadorNombre == null)
+        {
+            var inp = GameObject.Find("Canvas/Ranking/Panel-Jugador/Nombre-Input");
+            if (inp != null) inputBuscadorNombre = inp.GetComponent<TMP_InputField>();
+        }
+
+        if (dropdownFiltroMapa == null)
+        {
+            var drop = GameObject.Find("Canvas/Ranking/Panel-Jugador/Dropdown");
+            if (drop != null) dropdownFiltroMapa = drop.GetComponent<TMP_Dropdown>();
+        }
+    }
+
+    public void CargarRankingEnPantalla()
+    {
+        LimpiarFilasPrevias();
+
+        if (DataManager.Instancia == null) return;
+
+        string filtroNombre = inputBuscadorNombre != null ? inputBuscadorNombre.text : "";
+        string filtroMapa = (dropdownFiltroMapa != null && dropdownFiltroMapa.options.Count > 0) ? dropdownFiltroMapa.options[dropdownFiltroMapa.value].text : "";
+
+        if (textoTituloRanking != null)
         {
             if (string.IsNullOrEmpty(filtroMapa) || filtroMapa.Equals("Todos", System.StringComparison.OrdinalIgnoreCase))
-                textoTitulo.text = "RANKING GLOBAL";
+                textoTituloRanking.text = "RANKING GLOBAL";
             else
-                textoTitulo.text = "RANKING " + filtroMapa.ToUpper();
+                textoTituloRanking.text = "RANKING " + filtroMapa.ToUpper();
         }
 
-        List<DataManager.EntradaRankingConPosicion> ranking = DataManager.Instancia.ObtenerRankingFiltradoConPosicion(filtroNombre, filtroMapa);
+        List<DataManager.EntradaRankingConPosicion> rankingFiltrado = DataManager.Instancia.ObtenerRankingFiltradoConPosicion(filtroNombre, filtroMapa);
 
-        int totalPaginas = Mathf.Max(1, Mathf.CeilToInt((float)ranking.Count / FILAS_POR_PAGINA));
+        int totalPaginas = Mathf.Max(1, Mathf.CeilToInt((float)rankingFiltrado.Count / REGISTROS_POR_PAGINA));
         paginaActual = Mathf.Clamp(paginaActual, 0, totalPaginas - 1);
 
-        if (textoPaginaInfo != null)
+        if (textoNumeroPagina != null)
         {
-            textoPaginaInfo.text = (paginaActual + 1).ToString();
+            textoNumeroPagina.text = (paginaActual + 1).ToString();
         }
 
         if (botonPaginaAnterior != null)
@@ -233,131 +188,125 @@ public class RankingUI : MonoBehaviour
         if (botonPaginaSiguiente != null)
             botonPaginaSiguiente.interactable = (paginaActual < totalPaginas - 1);
 
-        if (ranking.Count == 0)
+        if (rankingFiltrado.Count == 0)
         {
-            MostrarSinResultados(true);
-            ActualizarFilasEstaticas(ranking);
+            MostrarMensajeSinResultados(true);
+            ActualizarFilasEstaticas(rankingFiltrado);
             return;
         }
 
-        MostrarSinResultados(false);
+        MostrarMensajeSinResultados(false);
 
-        if (templateFila != null && contenedorFilas != null)
+        if (plantillaFila != null && contenedorFilas != null)
         {
-            GenerarFilas(ranking);
+            GenerarFilasDinamicas(rankingFiltrado);
         }
         else
         {
-            ActualizarFilasEstaticas(ranking);
+            ActualizarFilasEstaticas(rankingFiltrado);
         }
     }
 
     private void ActualizarFilasEstaticas(List<DataManager.EntradaRankingConPosicion> ranking)
     {
-        if (textosJugadores == null || textosTiempos == null) return;
+        if (textosNombresJugadores == null || textosTiemposJugadores == null) return;
 
-        int offset = paginaActual * FILAS_POR_PAGINA;
-        int totalSlots = Mathf.Min(textosJugadores.Length, textosTiempos.Length);
+        int desplazamiento = paginaActual * REGISTROS_POR_PAGINA;
+        int espacioTotal = Mathf.Min(textosNombresJugadores.Length, textosTiemposJugadores.Length);
 
-        for (int i = 0; i < totalSlots; i++)
+        for (int i = 0; i < espacioTotal; i++)
         {
-            int indexRanking = offset + i;
-            if (indexRanking < ranking.Count)
+            int indiceReal = desplazamiento + i;
+            if (indiceReal < ranking.Count)
             {
-                int posReal = ranking[indexRanking].posicionGlobal;
+                int posicion = ranking[indiceReal].posicionGlobal;
 
-                if (textosNumeros != null && i < textosNumeros.Length)
+                if (textosNumerosPosicion != null && i < textosNumerosPosicion.Length)
                 {
-                    textosNumeros[i].gameObject.SetActive(true);
-                    textosNumeros[i].text = posReal.ToString();
+                    textosNumerosPosicion[i].gameObject.SetActive(true);
+                    textosNumerosPosicion[i].text = posicion.ToString();
                 }
 
-                textosJugadores[i].gameObject.SetActive(true);
-                textosJugadores[i].text = ranking[indexRanking].entrada.nombreJugador;
+                textosNombresJugadores[i].gameObject.SetActive(true);
+                textosNombresJugadores[i].text = ranking[indiceReal].entrada.nombreJugador;
 
-                textosTiempos[i].gameObject.SetActive(true);
-                textosTiempos[i].text = FormatearTiempo(ranking[indexRanking].entrada.tiempo);
+                textosTiemposJugadores[i].gameObject.SetActive(true);
+                textosTiemposJugadores[i].text = FormatearTiempo(ranking[indiceReal].entrada.tiempo);
             }
             else
             {
-                if (textosNumeros != null && i < textosNumeros.Length)
-                    textosNumeros[i].text = "-";
+                if (textosNumerosPosicion != null && i < textosNumerosPosicion.Length)
+                    textosNumerosPosicion[i].text = "-";
 
-                textosJugadores[i].text = "---";
-                textosTiempos[i].text = "--:--.---";
+                textosNombresJugadores[i].text = "---";
+                textosTiemposJugadores[i].text = "--:--.---";
             }
         }
     }
 
-    private void GenerarFilas(List<DataManager.EntradaRankingConPosicion> ranking)
+    private void GenerarFilasDinamicas(List<DataManager.EntradaRankingConPosicion> ranking)
     {
         for (int i = 0; i < ranking.Count; i++)
         {
-            GameObject fila = Instantiate(templateFila, contenedorFilas);
-            fila.SetActive(true);
-            filasGeneradas.Add(fila);
+            GameObject nuevaFila = Instantiate(plantillaFila, contenedorFilas);
+            nuevaFila.SetActive(true);
+            filasGeneradas.Add(nuevaFila);
 
-            TextMeshProUGUI[] textos = fila.GetComponentsInChildren<TextMeshProUGUI>();
+            TextMeshProUGUI[] componentesTexto = nuevaFila.GetComponentsInChildren<TextMeshProUGUI>();
 
-            if (textos.Length >= 3)
+            if (componentesTexto.Length >= 3)
             {
-                int posReal = ranking[i].posicionGlobal;
-                textos[0].text = posReal.ToString();
-                textos[1].text = ranking[i].entrada.nombreJugador;
-                textos[2].text = FormatearTiempo(ranking[i].entrada.tiempo);
+                int posicion = ranking[i].posicionGlobal;
+                componentesTexto[0].text = posicion.ToString();
+                componentesTexto[1].text = ranking[i].entrada.nombreJugador;
+                componentesTexto[2].text = FormatearTiempo(ranking[i].entrada.tiempo);
             }
         }
     }
 
-    private void LimpiarFilas()
+    private void LimpiarFilasPrevias()
     {
         foreach (GameObject fila in filasGeneradas)
         {
-            if (fila != null)
-                Destroy(fila);
+            if (fila != null) Destroy(fila);
         }
         filasGeneradas.Clear();
     }
 
-    private void MostrarSinResultados(bool mostrar)
+    private void MostrarMensajeSinResultados(bool mostrar)
     {
         if (textoSinResultados != null)
-            textoSinResultados.gameObject.SetActive(mostrar);
-    }
-
-    private Color ObtenerColorPosicion(int posicion)
-    {
-        switch (posicion)
         {
-            case 0: return colorPrimero;
-            case 1: return colorSegundo;
-            case 2: return colorTercero;
-            default: return Color.white;
+            textoSinResultados.gameObject.SetActive(mostrar);
         }
     }
 
-    private string FormatearTiempo(float tiempo)
+    private string FormatearTiempo(float tiempoSegundos)
     {
-        int min = (int)(tiempo / 60f);
-        int seg = (int)(tiempo % 60f);
-        int mili = (int)((tiempo - Mathf.Floor(tiempo)) * 1000f);
+        int min = (int)(tiempoSegundos / 60f);
+        int seg = (int)(tiempoSegundos % 60f);
+        int mili = (int)((tiempoSegundos - Mathf.Floor(tiempoSegundos)) * 1000f);
         return string.Format("{0:00}:{1:00}.{2:000}", min, seg, mili);
     }
 
     private void VolverAlMenu()
     {
         if (SceneLoader.Instancia != null)
+        {
             SceneLoader.Instancia.VolverAlMenu();
+        }
         else
+        {
             UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+        }
     }
 
-    private void LimpiarRanking()
+    private void LimpiarTablaRanking()
     {
         if (DataManager.Instancia != null)
         {
             DataManager.Instancia.LimpiarRanking();
-            CargarRanking();
+            CargarRankingEnPantalla();
         }
     }
 }

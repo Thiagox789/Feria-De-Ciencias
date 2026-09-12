@@ -2,19 +2,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections;
 using System.Collections.Generic;
 
+// Este es el Gestor de Selección de Mapas y Cielos (MapSelectionManager).
+// Permite al jugador elegir qué circuito correr y qué clima/cielo (skybox) usar.
 public class MapSelectionManager : MonoBehaviour
 {
     public static MapSelectionManager Instancia { get; private set; }
 
-    [Header("Lista de Mapas (ScriptableObjects)")]
+    [Header("Lista de Circuitos Disponibles")]
     [SerializeField] private List<MapData> mapas = new List<MapData>();
 
     [Header("Opciones de Inicio")]
     [SerializeField] private bool empezarEnPrimerMapa = true;
 
-    [Header("Referencias de UI (Arrastrar en Inspector)")]
+    [Header("Elementos de la Interfaz (UI)")]
     [SerializeField] private Image imagenMapa;
     [SerializeField] private RawImage rawImagenMapa;
     [SerializeField] private SpriteRenderer spriteRendererMapa;
@@ -23,18 +26,17 @@ public class MapSelectionManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textoDificultad;
     [SerializeField] private TextMeshProUGUI textoTiempoEstimado;
 
-    [Header("Botones de Navegación (Arrastrar en Inspector)")]
+    [Header("Botones para Cambiar de Mapa")]
     [SerializeField] private Button botonAdelante;
     [SerializeField] private Button botonAtras;
 
-    [Header("Selector de Cielo")]
+    [Header("Botones para Cambiar de Cielo (Skybox)")]
     [SerializeField] private TextMeshProUGUI textoNombreCielo;
     [SerializeField] private Button botonCieloAdelante;
     [SerializeField] private Button botonCieloAtras;
 
     private int indiceSeleccionado = 0;
     private int indiceCieloActual = 0;
-    private int framesRestantesApply = 0;
 
     public int IndiceSeleccionado => indiceSeleccionado;
     public MapData MapaActual => (mapas != null && mapas.Count > 0 && indiceSeleccionado >= 0 && indiceSeleccionado < mapas.Count) ? mapas[indiceSeleccionado] : null;
@@ -69,23 +71,38 @@ public class MapSelectionManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnEscenaCargada;
     }
 
+    // Cuando carga una nueva escena, esperamos un momento antes de aplicar el skybox.
+    // Esto es necesario porque Unity puede sobreescribir el skybox durante la carga.
+    private static readonly string[] escenasUI = { "Menu", "Ajustes", "Ranking", "Creditos", "Seleccion-Mapa" };
+
     private void OnEscenaCargada(Scene escena, LoadSceneMode modo)
     {
-        framesRestantesApply = 10;
-    }
-
-    private void Update()
-    {
-        if (framesRestantesApply > 0)
+        foreach (string ui in escenasUI)
         {
-            AplicarSkybox();
-            framesRestantesApply--;
+            if (escena.name == ui)
+            {
+                RenderSettings.skybox = null;
+                RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+                RenderSettings.ambientSkyColor = new Color(0.15f, 0.15f, 0.2f);
+                RenderSettings.fog = false;
+                return;
+            }
         }
+        // En escenas de juego (Circuito1, Circuito2), AplicarSkyboxEscena se encarga
     }
 
-    private System.Collections.IEnumerator AplicarSkyboxDespuesDeFrame()
+    // Esperamos hasta que la escena esté completamente lista y luego ponemos el skybox
+    private IEnumerator AplicarSkyboxAlCargar()
     {
+        // Esperamos 3 frames para que Unity termine de inicializar la escena
         yield return null;
+        yield return null;
+        yield return null;
+        // Esperamos también al final del frame de render
+        yield return new WaitForEndOfFrame();
+        AplicarSkybox();
+        // Aplicamos una vez más por las dudas (por si URP hace override en el primer render)
+        yield return new WaitForEndOfFrame();
         AplicarSkybox();
     }
 
@@ -103,9 +120,8 @@ public class MapSelectionManager : MonoBehaviour
         MapData mapa = MapaActual;
         if (mapa != null && mapa.skyboxes != null && mapa.skyboxes.Length > 0)
         {
-            string key = "SkyboxIndex_" + mapa.escena;
-            int defaultIdx = Mathf.Clamp(mapa.skyboxDefault, 0, mapa.skyboxes.Length - 1);
-            indiceCieloActual = PlayerPrefs.GetInt(key, defaultIdx);
+            int defecto = Mathf.Clamp(mapa.skyboxDefault, 0, mapa.skyboxes.Length - 1);
+            indiceCieloActual = PlayerPrefs.GetInt("SkyboxGlobal", defecto);
             indiceCieloActual = Mathf.Clamp(indiceCieloActual, 0, mapa.skyboxes.Length - 1);
         }
     }
@@ -113,7 +129,9 @@ public class MapSelectionManager : MonoBehaviour
     public void CopiarReferencias(MapSelectionManager nuevo)
     {
         if (nuevo.mapas != null && nuevo.mapas.Count > 0)
+        {
             this.mapas = nuevo.mapas;
+        }
 
         this.imagenMapa = nuevo.imagenMapa;
         this.rawImagenMapa = nuevo.rawImagenMapa;
@@ -130,7 +148,9 @@ public class MapSelectionManager : MonoBehaviour
         this.botonCieloAtras = nuevo.botonCieloAtras;
 
         if (nuevo.empezarEnPrimerMapa)
+        {
             this.indiceSeleccionado = 0;
+        }
 
         ConectarBotones();
         ActualizarUI();
@@ -167,16 +187,14 @@ public class MapSelectionManager : MonoBehaviour
     {
         if (mapas == null || mapas.Count == 0) return;
         if (indice < 0 || indice >= mapas.Count) return;
-        if (!EsMapaDesbloqueado(indice)) return;
 
         indiceSeleccionado = indice;
         
         MapData mapa = MapaActual;
         if (mapa != null && mapa.skyboxes != null && mapa.skyboxes.Length > 0)
         {
-            string key = "SkyboxIndex_" + mapa.escena;
-            int defaultIdx = Mathf.Clamp(mapa.skyboxDefault, 0, mapa.skyboxes.Length - 1);
-            indiceCieloActual = PlayerPrefs.GetInt(key, defaultIdx);
+            int defecto = Mathf.Clamp(mapa.skyboxDefault, 0, mapa.skyboxes.Length - 1);
+            indiceCieloActual = PlayerPrefs.GetInt("SkyboxGlobal", defecto);
             indiceCieloActual = Mathf.Clamp(indiceCieloActual, 0, mapa.skyboxes.Length - 1);
         }
         else
@@ -193,7 +211,6 @@ public class MapSelectionManager : MonoBehaviour
     public void SeleccionarSiguiente()
     {
         if (mapas == null || mapas.Count == 0) return;
-
         int siguiente = (indiceSeleccionado + 1) % mapas.Count;
         SeleccionarMapa(siguiente);
     }
@@ -201,16 +218,9 @@ public class MapSelectionManager : MonoBehaviour
     public void SeleccionarAnterior()
     {
         if (mapas == null || mapas.Count == 0) return;
-
         int anterior = indiceSeleccionado - 1;
         if (anterior < 0) anterior = mapas.Count - 1;
         SeleccionarMapa(anterior);
-    }
-
-    public bool EsMapaDesbloqueado(int indice)
-    {
-        if (indice < 0 || (mapas != null && indice >= mapas.Count)) return false;
-        return true;
     }
 
     public void ActualizarUI()
@@ -220,41 +230,35 @@ public class MapSelectionManager : MonoBehaviour
 
         if (mapa.miniatura != null)
         {
-            if (imagenMapa != null)
-                imagenMapa.sprite = mapa.miniatura;
-
-            if (rawImagenMapa != null)
-                rawImagenMapa.texture = mapa.miniatura.texture;
-
-            if (spriteRendererMapa != null)
-                spriteRendererMapa.sprite = mapa.miniatura;
+            if (imagenMapa != null) imagenMapa.sprite = mapa.miniatura;
+            if (rawImagenMapa != null) rawImagenMapa.texture = mapa.miniatura.texture;
+            if (spriteRendererMapa != null) spriteRendererMapa.sprite = mapa.miniatura;
         }
 
-        if (textoNombreMapa != null)
-            textoNombreMapa.text = mapa.nombre;
-
-        if (textoTipoPista != null)
-            textoTipoPista.text = mapa.tipoPista.ToString();
-
-        if (textoDificultad != null)
-            textoDificultad.text = mapa.dificultad.ToString();
-
-        if (textoTiempoEstimado != null)
-            textoTiempoEstimado.text = mapa.tiempoEstimado.ToString("F0") + "s";
+        if (textoNombreMapa != null) textoNombreMapa.text = mapa.nombre;
+        if (textoTipoPista != null) textoTipoPista.text = mapa.tipoPista.ToString();
+        if (textoDificultad != null) textoDificultad.text = mapa.dificultad.ToString();
+        if (textoTiempoEstimado != null) textoTiempoEstimado.text = mapa.tiempoEstimado.ToString("F0") + "s";
 
         ActualizarUICielo();
     }
 
     public void CargarMapaSeleccionado()
     {
-        if (mapas == null || mapas.Count == 0) return;
-        
-        // Aplicar skybox antes de cargar la escena
-        AplicarSkybox();
-        
-        string escena = mapas[indiceSeleccionado].escena;
-        if (!string.IsNullOrEmpty(escena))
-            SceneManager.LoadScene(escena);
+        if (mapas != null && mapas.Count > 0 && indiceSeleccionado >= 0 && indiceSeleccionado < mapas.Count)
+        {
+            string escena = mapas[indiceSeleccionado].escena;
+            if (!string.IsNullOrEmpty(escena))
+            {
+                // Guardamos qué skybox usar antes de cargar la nueva escena
+                // El skybox se aplicará automáticamente cuando la escena cargue (OnEscenaCargada)
+                SceneManager.LoadScene(escena);
+                return;
+            }
+        }
+
+        // Fallback por defecto si no hay lista de mapas configurada en el inspector
+        SceneManager.LoadScene("Circuito1");
     }
 
     public string ObtenerNombreEscenaActual()
@@ -272,14 +276,18 @@ public class MapSelectionManager : MonoBehaviour
     private void CargarSeleccion()
     {
         if (PlayerPrefs.HasKey("MapSelection"))
+        {
             indiceSeleccionado = PlayerPrefs.GetInt("MapSelection");
+        }
 
         if (indiceSeleccionado < 0 || (mapas != null && indiceSeleccionado >= mapas.Count))
+        {
             indiceSeleccionado = 0;
+        }
     }
 
     // ==========================================
-    // SELECTOR DE CIELO
+    // SELECCIÓN Y CAMBIO DE CIELO (SKYBOX)
     // ==========================================
     
     public void SeleccionarCieloSiguiente()
@@ -288,7 +296,7 @@ public class MapSelectionManager : MonoBehaviour
         if (mapa == null || mapa.skyboxes == null || mapa.skyboxes.Length <= 1) return;
 
         indiceCieloActual = (indiceCieloActual + 1) % mapa.skyboxes.Length;
-        PlayerPrefs.SetInt("SkyboxIndex_" + mapa.escena, indiceCieloActual);
+        PlayerPrefs.SetInt("SkyboxGlobal", indiceCieloActual);
         PlayerPrefs.Save();
         ActualizarUICielo();
         AplicarSkybox();
@@ -301,7 +309,7 @@ public class MapSelectionManager : MonoBehaviour
 
         indiceCieloActual--;
         if (indiceCieloActual < 0) indiceCieloActual = mapa.skyboxes.Length - 1;
-        PlayerPrefs.SetInt("SkyboxIndex_" + mapa.escena, indiceCieloActual);
+        PlayerPrefs.SetInt("SkyboxGlobal", indiceCieloActual);
         PlayerPrefs.Save();
         ActualizarUICielo();
         AplicarSkybox();
@@ -312,16 +320,15 @@ public class MapSelectionManager : MonoBehaviour
         MapData mapa = MapaActual;
         if (mapa == null || mapa.skyboxes == null || mapa.skyboxes.Length == 0)
         {
-            if (textoNombreCielo != null)
-                textoNombreCielo.text = "Sin cielo";
+            if (textoNombreCielo != null) textoNombreCielo.text = "Sin cielo";
             return;
         }
 
-        // Asegurar que el índice sea válido
         if (indiceCieloActual < 0 || indiceCieloActual >= mapa.skyboxes.Length)
+        {
             indiceCieloActual = 0;
+        }
 
-        // Mostrar nombre del cielo
         if (textoNombreCielo != null)
         {
             if (mapa.nombresSkyboxes != null && indiceCieloActual < mapa.nombresSkyboxes.Length)
@@ -334,11 +341,8 @@ public class MapSelectionManager : MonoBehaviour
     public Material ObtenerSkyboxSeleccionado()
     {
         MapData mapa = MapaActual;
-        if (mapa == null || mapa.skyboxes == null || mapa.skyboxes.Length == 0)
-            return null;
-
-        if (indiceCieloActual < 0 || indiceCieloActual >= mapa.skyboxes.Length)
-            return null;
+        if (mapa == null || mapa.skyboxes == null || mapa.skyboxes.Length == 0) return null;
+        if (indiceCieloActual < 0 || indiceCieloActual >= mapa.skyboxes.Length) return null;
 
         return mapa.skyboxes[indiceCieloActual];
     }
@@ -346,12 +350,27 @@ public class MapSelectionManager : MonoBehaviour
     public void AplicarSkybox()
     {
         Material skybox = ObtenerSkyboxSeleccionado();
-        if (skybox != null)
+        if (skybox == null) return;
+
+        // Ponemos el material del cielo en los ajustes del mundo
+        RenderSettings.skybox = skybox;
+        DynamicGI.UpdateEnvironment();
+
+        // Buscamos TODAS las camaras y les decimos que muestren el cielo
+        Camera[] todasLasCamaras = FindObjectsByType<Camera>(FindObjectsSortMode.None);
+        foreach (Camera cam in todasLasCamaras)
         {
-            RenderSettings.skybox = skybox;
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = skybox.HasProperty("_Tint") ? skybox.GetColor("_Tint") : new Color(0.5f, 0.5f, 0.5f);
-            DynamicGI.UpdateEnvironment();
+            // Solo configuramos las camaras que no son de la interfaz (UI)
+            if (cam.gameObject.layer != LayerMask.NameToLayer("UI"))
+            {
+                cam.clearFlags = CameraClearFlags.Skybox;
+            }
+        }
+
+        // Nos aseguramos tambien con Camera.main por si acaso
+        if (Camera.main != null)
+        {
+            Camera.main.clearFlags = CameraClearFlags.Skybox;
         }
     }
 }

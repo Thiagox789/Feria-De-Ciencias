@@ -2,6 +2,9 @@ using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
 
+// Este es el Gestor de Datos (DataManager).
+// Guarda y carga la información del juego en archivos formato JSON en el disco rígido
+// (volumen, mejores tiempos y tabla de posiciones de jugadores).
 public class DataManager : MonoBehaviour
 {
     private static DataManager _instancia;
@@ -14,8 +17,8 @@ public class DataManager : MonoBehaviour
                 _instancia = FindObjectOfType<DataManager>();
                 if (_instancia == null)
                 {
-                    GameObject go = new GameObject("DataManager");
-                    _instancia = go.AddComponent<DataManager>();
+                    GameObject objetoGestor = new GameObject("DataManager");
+                    _instancia = objetoGestor.AddComponent<DataManager>();
                 }
             }
             return _instancia;
@@ -23,14 +26,14 @@ public class DataManager : MonoBehaviour
         private set { _instancia = value; }
     }
 
-    [Header("Archivos de Datos (ScriptableObjects)")]
+    [Header("Objetos de Datos")]
     public RecordsData records;
     public SettingsData ajustes;
 
-    private string rutaRecords;
-    private string rutaAjustes;
+    private string rutaArchivoRecords;
+    private string rutaArchivoAjustes;
 
-    private const int MAXIMO_RANKING = 100;
+    private const int MAXIMO_ENTRADAS_RANKING = 100;
 
     private void Awake()
     {
@@ -47,33 +50,36 @@ public class DataManager : MonoBehaviour
         if (ajustes == null)
             ajustes = ScriptableObject.CreateInstance<SettingsData>();
 
-        rutaRecords = Application.persistentDataPath + "/records_jugador.json";
-        rutaAjustes = Application.persistentDataPath + "/ajustes_juego.json";
+        // Rutas donde se guardan los archivos JSON en la computadora del jugador
+        rutaArchivoRecords = Application.persistentDataPath + "/records_jugador.json";
+        rutaArchivoAjustes = Application.persistentDataPath + "/ajustes_juego.json";
 
         CargarDatos();
         CargarAjustes();
     }
 
     // ==========================================
-    // RÉCORDS
+    // RÉCORDS Y RANKING EN JSON
     // ==========================================
     public void GuardarDatos()
     {
+        // Convertimos el objeto C# a texto formato JSON
         string textoJson = JsonUtility.ToJson(records);
-        File.WriteAllText(rutaRecords, textoJson);
+        File.WriteAllText(rutaArchivoRecords, textoJson);
     }
 
     public void CargarDatos()
     {
-        if (string.IsNullOrEmpty(rutaRecords))
-            rutaRecords = Application.persistentDataPath + "/records_jugador.json";
+        if (string.IsNullOrEmpty(rutaArchivoRecords))
+            rutaArchivoRecords = Application.persistentDataPath + "/records_jugador.json";
 
         if (records == null)
             records = ScriptableObject.CreateInstance<RecordsData>();
 
-        if (File.Exists(rutaRecords))
+        if (File.Exists(rutaArchivoRecords))
         {
-            string textoJson = File.ReadAllText(rutaRecords);
+            // Leemos el texto del archivo JSON y lo cargamos en el objeto
+            string textoJson = File.ReadAllText(rutaArchivoRecords);
             JsonUtility.FromJsonOverwrite(textoJson, records);
         }
         else
@@ -93,9 +99,6 @@ public class DataManager : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // RANKING
-    // ==========================================
     public void AgregarAlRanking(string nombre, float tiempo, string mapa)
     {
         if (!string.IsNullOrEmpty(nombre) && nombre.Length > 14)
@@ -114,8 +117,10 @@ public class DataManager : MonoBehaviour
         records.rankingGlobal.Add(nuevaEntrada);
         records.rankingGlobal.Sort((a, b) => a.tiempo.CompareTo(b.tiempo));
 
-        if (records.rankingGlobal.Count > MAXIMO_RANKING)
-            records.rankingGlobal.RemoveRange(MAXIMO_RANKING, records.rankingGlobal.Count - MAXIMO_RANKING);
+        if (records.rankingGlobal.Count > MAXIMO_ENTRADAS_RANKING)
+        {
+            records.rankingGlobal.RemoveRange(MAXIMO_ENTRADAS_RANKING, records.rankingGlobal.Count - MAXIMO_ENTRADAS_RANKING);
+        }
 
         GuardarDatos();
     }
@@ -145,7 +150,6 @@ public class DataManager : MonoBehaviour
         if (records.rankingGlobal == null)
             records.rankingGlobal = new List<RecordsData.EntradaRanking>();
 
-        // 1. Filtrar primero por mapa (o incluir todos)
         List<RecordsData.EntradaRanking> listaPorMapa = new List<RecordsData.EntradaRanking>();
         bool esTodos = string.IsNullOrEmpty(filtroMapa) || 
                        filtroMapa.Equals("Todos", System.StringComparison.OrdinalIgnoreCase) ||
@@ -159,10 +163,8 @@ public class DataManager : MonoBehaviour
             }
         }
 
-        // 2. Ordenar por tiempo (menor tiempo = mejor posición en este mapa)
         listaPorMapa.Sort((a, b) => a.tiempo.CompareTo(b.tiempo));
 
-        // 3. Asignar posición en este mapa y filtrar por nombre si hay texto en el buscador
         List<EntradaRankingConPosicion> resultado = new List<EntradaRankingConPosicion>();
 
         for (int i = 0; i < listaPorMapa.Count; i++)
@@ -219,19 +221,19 @@ public class DataManager : MonoBehaviour
     }
 
     // ==========================================
-    // AJUSTES DE VOLUMEN
+    // CONFIGURACIÓN DE AJUSTES EN JSON
     // ==========================================
     public void GuardarAjustes()
     {
         string textoJson = JsonUtility.ToJson(ajustes);
-        File.WriteAllText(rutaAjustes, textoJson);
+        File.WriteAllText(rutaArchivoAjustes, textoJson);
     }
 
     public void CargarAjustes()
     {
-        if (File.Exists(rutaAjustes))
+        if (File.Exists(rutaArchivoAjustes))
         {
-            string textoJson = File.ReadAllText(rutaAjustes);
+            string textoJson = File.ReadAllText(rutaArchivoAjustes);
             JsonUtility.FromJsonOverwrite(textoJson, ajustes);
         }
         else

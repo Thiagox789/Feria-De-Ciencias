@@ -1,11 +1,20 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
+// Este es el Gestor Principal de la Carrera (GameManager).
+// Controla el estado del juego (En Espera, En Carrera, Terminado),
+// mide el tiempo del cronómetro, valida los checkpoints y cuenta las vueltas.
 public class GameManager : MonoBehaviour
 {
-    public enum EstadoJuego { Espera, Carrera, Terminado }
+    // Estados posibles del juego
+    public enum EstadoJuego 
+    { 
+        Espera,     // Esperando a que el auto acelere
+        Carrera,    // Carrera en curso (cronómetro activo)
+        Terminado   // El auto cruzó la meta final
+    }
 
+    // Singleton para acceder a GameManager.Instancia desde cualquier script
     public static GameManager Instancia { get; private set; }
 
     public EstadoJuego Estado { get; private set; } = EstadoJuego.Espera;
@@ -14,23 +23,24 @@ public class GameManager : MonoBehaviour
     public int VueltaActual { get; private set; }
     public int VueltasTotales { get; private set; } = 1;
 
-    [Header("Vueltas")]
+    [Header("Configuración de Vueltas")]
     [SerializeField] private int vueltasTotales = 1;
     public bool VueltaCompleta { get; private set; }
 
+    // Eventos para notificar a la UI cuando cambia el estado del juego
     public static event System.Action<EstadoJuego> OnEstadoCambio;
     public static event System.Action<float> OnCarreraTerminada;
     public static event System.Action<int> OnVueltaCompletada;
 
-    [Header("Referencias")]
-    [SerializeField] private Transform auto;
-    [SerializeField] private float umbralCaida = -3f;
-    [SerializeField] private Checkpoint[] checkpoints;
+    [Header("Referencias en la Escena")]
+    [SerializeField] private Transform autoJugador;
+    [SerializeField] private float limiteCaidaVacio = -3f; // Si el auto cae al vacío reabre la escena
+    [SerializeField] private Checkpoint[] listaCheckpoints;
 
     private HashSet<int> checkpointsTocados = new HashSet<int>();
 
     public int CheckpointsCompletados => checkpointsTocados.Count;
-    public int CheckpointsTotales => checkpoints.Length;
+    public int CheckpointsTotales => listaCheckpoints != null ? listaCheckpoints.Length : 0;
 
     private void Awake()
     {
@@ -43,58 +53,21 @@ public class GameManager : MonoBehaviour
         VueltasTotales = vueltasTotales;
     }
 
-    public void RegistrarCheckpoint(Checkpoint checkpoint)
-    {
-        if (Estado != EstadoJuego.Carrera) return;
-        if (checkpoint == null) return;
-
-        int indice = System.Array.IndexOf(checkpoints, checkpoint);
-        if (indice < 0) return;
-
-        if (checkpointsTocados.Contains(indice)) return;
-
-        checkpointsTocados.Add(indice);
-        Debug.Log($"[GameManager] Checkpoint {indice} registrado. Total: {checkpointsTocados.Count}/{checkpoints.Length}");
-
-        if (checkpointsTocados.Count >= checkpoints.Length)
-        {
-            VueltaCompleta = true;
-            Debug.Log("[GameManager] ¡Todos los checkpoints completados! VueltaCompleta = true");
-            OnVueltaCompletada?.Invoke(VueltaActual);
-        }
-    }
-
-    public void CruzarMeta()
-    {
-        Debug.Log($"[GameManager] CruzarMeta llamado. Estado={Estado}, VueltaCompleta={VueltaCompleta}");
-        if (Estado != EstadoJuego.Carrera) return;
-
-        if (!VueltaCompleta) return;
-
-        VueltaCompleta = false;
-
-        VueltaActual++;
-
-        if (VueltaActual >= VueltasTotales)
-        {
-            Debug.Log("[GameManager] Terminando carrera...");
-            TerminarCarrera();
-        }
-    }
-
     private void Update()
     {
         if (Estado == EstadoJuego.Carrera)
         {
             TiempoCarrera += Time.deltaTime;
 
-            if (auto != null && auto.position.y < umbralCaida)
+            // Si el auto se cae de la pista al vacío, reiniciamos la carrera
+            if (autoJugador != null && autoJugador.position.y < limiteCaidaVacio)
             {
-                Castigo();
+                ReiniciarPorCaida();
             }
         }
     }
 
+    // Inicia el cronómetro cuando el jugador presiona las teclas de acelerar por primera vez
     public void IniciarCarrera()
     {
         TiempoCarrera = 0f;
@@ -102,6 +75,46 @@ public class GameManager : MonoBehaviour
         CambiarEstado(EstadoJuego.Carrera);
     }
 
+    // Registra un checkpoint cuando el auto pasa a través de él
+    public void RegistrarCheckpoint(Checkpoint checkpoint)
+    {
+        if (Estado != EstadoJuego.Carrera) return;
+        if (checkpoint == null || listaCheckpoints == null) return;
+
+        int indice = System.Array.IndexOf(listaCheckpoints, checkpoint);
+        if (indice < 0) return;
+
+        if (checkpointsTocados.Contains(indice)) return;
+
+        checkpointsTocados.Add(indice);
+        Debug.Log($"[GameManager] Checkpoint {indice} superado. Progreso: {checkpointsTocados.Count}/{listaCheckpoints.Length}");
+
+        // Si ya pasó por todos los checkpoints de la pista, habilita poder cruzar la meta
+        if (checkpointsTocados.Count >= listaCheckpoints.Length)
+        {
+            VueltaCompleta = true;
+            OnVueltaCompletada?.Invoke(VueltaActual);
+        }
+    }
+
+    // Se llama cuando el auto toca la línea de meta
+    public void CruzarMeta()
+    {
+        if (Estado != EstadoJuego.Carrera) return;
+
+        // Si no completó todos los checkpoints previamente, no le cuenta la meta (evita trampas)
+        if (!VueltaCompleta) return;
+
+        VueltaCompleta = false;
+        VueltaActual++;
+
+        if (VueltaActual >= VueltasTotales)
+        {
+            TerminarCarrera();
+        }
+    }
+
+    // Finaliza la carrera y detiene el tiempo
     public void TerminarCarrera()
     {
         if (Estado != EstadoJuego.Carrera) return;
@@ -115,16 +128,21 @@ public class GameManager : MonoBehaviour
         OnCarreraTerminada?.Invoke(TiempoCarrera);
     }
 
-    public void Castigo()
+    // Si el auto cae al vacío reinicia la escena
+    public void ReiniciarPorCaida()
     {
         if (Estado != EstadoJuego.Carrera) return;
         if (SceneLoader.Instancia != null)
+        {
             SceneLoader.Instancia.CargarEscenaActual();
+        }
     }
 
-    private void CambiarEstado(EstadoJuego nuevo)
+    public void Castigo() => ReiniciarPorCaida();
+
+    private void CambiarEstado(EstadoJuego nuevoEstado)
     {
-        Estado = nuevo;
-        OnEstadoCambio?.Invoke(nuevo);
+        Estado = nuevoEstado;
+        OnEstadoCambio?.Invoke(nuevoEstado);
     }
 }
