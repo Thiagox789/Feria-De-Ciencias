@@ -35,6 +35,17 @@ public class SceneLoader : MonoBehaviour
         }
         _instancia = this;
         DontDestroyOnLoad(gameObject);
+
+        // En la compilación ejecutable, activar inmediatamente el Display 2 si hay 2 o más monitores conectados
+        if (Display.displays.Length > 1)
+        {
+            int ancho = Display.displays[1].systemWidth;
+            int alto = Display.displays[1].systemHeight;
+            if (ancho <= 0) ancho = 1920;
+            if (alto <= 0) alto = 1080;
+            Display.displays[1].Activate(ancho, alto, 60);
+        }
+
         SceneManager.sceneLoaded += OnEscenaCargada;
     }
 
@@ -43,8 +54,37 @@ public class SceneLoader : MonoBehaviour
         SceneManager.sceneLoaded -= OnEscenaCargada;
     }
 
+    private void Start()
+    {
+        AsegurarRankingEnSegundoMonitor();
+    }
+
     private void OnEscenaCargada(Scene escena, LoadSceneMode modo)
     {
+        // Si no estamos cargando la escena de Ranking, asegurar que esté cargada en segundo plano para el Monitor 2
+        if (escena.name != "Ranking")
+        {
+            AsegurarRankingEnSegundoMonitor();
+
+            Canvas[] todosCanvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
+            foreach (Canvas c in todosCanvases)
+            {
+                if (c.gameObject.scene.name != "Ranking")
+                {
+                    c.targetDisplay = 0;
+                }
+            }
+
+            Camera[] todasCamaras = FindObjectsByType<Camera>(FindObjectsSortMode.None);
+            foreach (Camera cam in todasCamaras)
+            {
+                if (cam.gameObject.scene.name != "Ranking")
+                {
+                    cam.targetDisplay = 0;
+                }
+            }
+        }
+
         // Si es escena de UI, limpiar skybox
         foreach (string ui in escenasUI)
         {
@@ -80,5 +120,33 @@ public class SceneLoader : MonoBehaviour
     public void VolverAlMenu()
     {
         SceneManager.LoadScene("Menu");
+    }
+
+    private void AsegurarRankingEnSegundoMonitor()
+    {
+        bool esMultiMonitor = Display.displays.Length > 1;
+
+#if UNITY_EDITOR
+        // En el Editor de Unity, permitimos la carga aditiva para poder visualizar Display 1 y Display 2 en pestañas paralelas
+        esMultiMonitor = true;
+#endif
+
+        if (esMultiMonitor && !EsEscenaRankingCargada())
+        {
+            SceneManager.LoadSceneAsync("Ranking", LoadSceneMode.Additive);
+        }
+    }
+
+    private bool EsEscenaRankingCargada()
+    {
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene s = SceneManager.GetSceneAt(i);
+            if (s.isLoaded && s.name == "Ranking")
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

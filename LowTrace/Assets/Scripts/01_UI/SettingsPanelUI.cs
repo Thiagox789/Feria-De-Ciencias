@@ -1,48 +1,168 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.IO.Ports;
 
 // Este script controla la pantalla o panel de Ajustes del juego.
-// Permite modificar el volumen de la música, el volumen de los efectos de sonido,
-// cambiar la pantalla completa y ajustar la calidad gráfica.
+// Permite modificar el volumen, monitores, resolución, pantalla completa y puerto serial.
 public class SettingsPanelUI : MonoBehaviour
 {
     [Header("Barritas de Volumen (Sliders)")]
     [SerializeField] private Slider sliderMusica;
     [SerializeField] private Slider sliderEfectosSFX;
 
-    [Header("Opciones Adicionales")]
+    [Header("Pantalla")]
+    [SerializeField] private TMP_Dropdown dropdownMonitor;
+    [SerializeField] private TMP_Dropdown dropdownMonitorRanking;
+    [SerializeField] private TMP_Dropdown dropdownResolucion;
     [SerializeField] private Toggle togglePantallaCompleta;
     [SerializeField] private TMP_Dropdown dropdownCalidadGraficos;
+
+    [Header("Puerto Serial (Volante)")]
+    [SerializeField] private TMP_Dropdown dropdownPuertoSerial;
+    [SerializeField] private TMP_Text textoEstadoSerial;
+
+    [Header("Botones")]
     [SerializeField] private Button botonCerrarPanel;
+
+    private Resolution[] resolucionesDisponibles;
+    private string[] puertosDisponibles;
 
     protected virtual void Start()
     {
+        LlenarDropdowns();
         CargarValoresGuardados();
         ConectarEventosDeUI();
     }
 
-    // Carga los datos de volumen guardados previamente en el disco duro (JSON)
+    // ==========================================
+    // LLENADO DE DROPDOWNS
+    // ==========================================
+    private void LlenarDropdowns()
+    {
+        LlenarDropdownMonitores();
+        LlenarDropdownResoluciones();
+        LlenarDropdownPuertosSeriales();
+    }
+
+    private void LlenarDropdownMonitores()
+    {
+        var opciones = new System.Collections.Generic.List<string>();
+
+        // Aseguramos que siempre existan al menos las opciones Monitor 1 y Monitor 2 en el desplegable
+        int cantidadMonitores = Mathf.Max(2, Display.displays.Length);
+
+        for (int i = 0; i < cantidadMonitores; i++)
+        {
+            opciones.Add("Monitor " + (i + 1));
+        }
+
+        if (dropdownMonitor != null)
+        {
+            dropdownMonitor.ClearOptions();
+            dropdownMonitor.AddOptions(opciones);
+        }
+
+        if (dropdownMonitorRanking != null)
+        {
+            dropdownMonitorRanking.ClearOptions();
+            dropdownMonitorRanking.AddOptions(opciones);
+        }
+    }
+
+    private void LlenarDropdownResoluciones()
+    {
+        if (dropdownResolucion == null) return;
+
+        dropdownResolucion.ClearOptions();
+        resolucionesDisponibles = Screen.resolutions;
+        var opciones = new System.Collections.Generic.List<string>();
+
+        for (int i = 0; i < resolucionesDisponibles.Length; i++)
+        {
+            Resolution r = resolucionesDisponibles[i];
+            opciones.Add(r.width + " x " + r.height + " @ " + r.refreshRateRatio.value + "Hz");
+        }
+
+        dropdownResolucion.AddOptions(opciones);
+    }
+
+    private void LlenarDropdownPuertosSeriales()
+    {
+        if (dropdownPuertoSerial == null) return;
+
+        dropdownPuertoSerial.ClearOptions();
+        puertosDisponibles = SerialPort.GetPortNames();
+        var opciones = new System.Collections.Generic.List<string>();
+
+        opciones.Add("Ninguno");
+        for (int i = 0; i < puertosDisponibles.Length; i++)
+        {
+            opciones.Add(puertosDisponibles[i]);
+        }
+
+        dropdownPuertoSerial.AddOptions(opciones);
+    }
+
+    // ==========================================
+    // CARGA DE VALORES GUARDADOS
+    // ==========================================
     public void CargarValoresGuardados()
     {
-        if (DataManager.Instancia != null && DataManager.Instancia.ajustes != null)
+        if (DataManager.Instancia == null || DataManager.Instancia.ajustes == null) return;
+
+        var ajustes = DataManager.Instancia.ajustes;
+
+        if (sliderMusica != null) sliderMusica.value = ajustes.volumenMusica;
+        if (sliderEfectosSFX != null) sliderEfectosSFX.value = ajustes.volumenSFX;
+
+        if (dropdownMonitor != null)
         {
-            if (sliderMusica != null) sliderMusica.value = DataManager.Instancia.ajustes.volumenMusica;
-            if (sliderEfectosSFX != null) sliderEfectosSFX.value = DataManager.Instancia.ajustes.volumenSFX;
+            int idx = ajustes.indiceMonitorRanking;
+            if (idx >= 0 && idx < dropdownMonitor.options.Count)
+            {
+                dropdownMonitor.value = idx;
+            }
+        }
+
+        if (dropdownResolucion != null && dropdownResolucion.options.Count > ajustes.indiceResolucion)
+        {
+            dropdownResolucion.value = ajustes.indiceResolucion;
         }
 
         if (togglePantallaCompleta != null)
         {
-            togglePantallaCompleta.isOn = Screen.fullScreen;
+            togglePantallaCompleta.isOn = ajustes.pantallaCompleta;
         }
 
         if (dropdownCalidadGraficos != null)
         {
             dropdownCalidadGraficos.value = QualitySettings.GetQualityLevel();
         }
+
+        if (dropdownPuertoSerial != null)
+        {
+            int indicePuerto = 0;
+            if (!string.IsNullOrEmpty(ajustes.puertoSerial))
+            {
+                for (int i = 0; i < puertosDisponibles.Length; i++)
+                {
+                    if (puertosDisponibles[i] == ajustes.puertoSerial)
+                    {
+                        indicePuerto = i + 1;
+                        break;
+                    }
+                }
+            }
+            dropdownPuertoSerial.value = indicePuerto;
+        }
+
+        ActualizarEstadoSerial();
     }
 
-    // Conecta las funciones con los elementos de la interfaz automáticamente
+    // ==========================================
+    // CONEXIÓN DE EVENTOS
+    // ==========================================
     private void ConectarEventosDeUI()
     {
         if (sliderMusica != null)
@@ -57,6 +177,24 @@ public class SettingsPanelUI : MonoBehaviour
             sliderEfectosSFX.onValueChanged.AddListener(AlCambiarVolumenSFX);
         }
 
+        if (dropdownMonitor != null)
+        {
+            dropdownMonitor.onValueChanged.RemoveListener(AlCambiarMonitor);
+            dropdownMonitor.onValueChanged.AddListener(AlCambiarMonitor);
+        }
+
+        if (dropdownMonitorRanking != null)
+        {
+            dropdownMonitorRanking.onValueChanged.RemoveListener(AlCambiarMonitor);
+            dropdownMonitorRanking.onValueChanged.AddListener(AlCambiarMonitor);
+        }
+
+        if (dropdownResolucion != null)
+        {
+            dropdownResolucion.onValueChanged.RemoveListener(AlCambiarResolucion);
+            dropdownResolucion.onValueChanged.AddListener(AlCambiarResolucion);
+        }
+
         if (togglePantallaCompleta != null)
         {
             togglePantallaCompleta.onValueChanged.RemoveListener(AlCambiarPantallaCompleta);
@@ -69,6 +207,12 @@ public class SettingsPanelUI : MonoBehaviour
             dropdownCalidadGraficos.onValueChanged.AddListener(AlCambiarCalidad);
         }
 
+        if (dropdownPuertoSerial != null)
+        {
+            dropdownPuertoSerial.onValueChanged.RemoveListener(AlCambiarPuertoSerial);
+            dropdownPuertoSerial.onValueChanged.AddListener(AlCambiarPuertoSerial);
+        }
+
         if (botonCerrarPanel != null)
         {
             botonCerrarPanel.onClick.RemoveListener(CerrarPanel);
@@ -76,58 +220,126 @@ public class SettingsPanelUI : MonoBehaviour
         }
     }
 
-    // Se ejecuta al mover la barra de Música
+    // ==========================================
+    // CALLBACKS DE UI
+    // ==========================================
     public void AlCambiarVolumenMusica(float nuevoVolumen)
     {
-        // 1. Cambiamos el volumen en el mezclador de audio para escucharlo en vivo
         if (SoundManager.Instancia != null)
-        {
             SoundManager.Instancia.SetVolumenMusica(nuevoVolumen);
-        }
 
-        // 2. Guardamos el nuevo valor en el archivo JSON
-        if (DataManager.Instancia != null && DataManager.Instancia.ajustes != null)
-        {
-            DataManager.Instancia.ajustes.volumenMusica = nuevoVolumen;
-            DataManager.Instancia.GuardarAjustes();
-        }
+        GuardarAjusteEnDisco();
     }
 
-    // Se ejecuta al mover la barra de Efectos de Sonido (SFX)
     public void AlCambiarVolumenSFX(float nuevoVolumen)
     {
         if (SoundManager.Instancia != null)
-        {
             SoundManager.Instancia.SetVolumenSFX(nuevoVolumen);
+
+        GuardarAjusteEnDisco();
+    }
+
+    public void AlCambiarMonitor(int indice)
+    {
+        if (indice < 0 || indice >= Display.displays.Length) return;
+
+        // Activar el display seleccionado
+        for (int i = 0; i < Display.displays.Length; i++)
+        {
+            if (i == indice)
+            {
+                Display.displays[i].Activate();
+            }
         }
 
         if (DataManager.Instancia != null && DataManager.Instancia.ajustes != null)
         {
-            DataManager.Instancia.ajustes.volumenSFX = nuevoVolumen;
-            DataManager.Instancia.GuardarAjustes();
+            DataManager.Instancia.ajustes.indiceMonitorRanking = indice;
         }
+
+        GuardarAjusteEnDisco();
     }
 
-    // Se ejecuta al activar o desactivar la casilla de Pantalla Completa
+    public void AlCambiarResolucion(int indice)
+    {
+        if (resolucionesDisponibles == null || indice < 0 || indice >= resolucionesDisponibles.Length) return;
+
+        Resolution r = resolucionesDisponibles[indice];
+        Screen.SetResolution(r.width, r.height, Screen.fullScreen);
+
+        GuardarAjusteEnDisco();
+    }
+
     public void AlCambiarPantallaCompleta(bool esPantallaCompleta)
     {
         Screen.fullScreen = esPantallaCompleta;
+        GuardarAjusteEnDisco();
     }
 
-    // Se ejecuta al cambiar la opción de calidad gráfica en la lista desplegable
     public void AlCambiarCalidad(int indiceCalidad)
     {
         QualitySettings.SetQualityLevel(indiceCalidad);
     }
 
-    // Muestra el panel y refresca los datos
-    public void AbrirPanel()
+    public void AlCambiarPuertoSerial(int indice)
     {
-        gameObject.SetActive(true);
-        CargarValoresGuardados();
+        string puerto = "";
+
+        if (indice > 0 && puertosDisponibles != null && indice - 1 < puertosDisponibles.Length)
+        {
+            puerto = puertosDisponibles[indice - 1];
+        }
+
+        ActualizarEstadoSerial();
+        GuardarAjusteEnDisco();
     }
 
-    // Oculta el panel de ajustes
+    // ==========================================
+    // UTILIDADES
+    // ==========================================
+    private void GuardarAjusteEnDisco()
+    {
+        if (DataManager.Instancia == null || DataManager.Instancia.ajustes == null) return;
+
+        var ajustes = DataManager.Instancia.ajustes;
+
+        ajustes.volumenMusica = sliderMusica != null ? sliderMusica.value : ajustes.volumenMusica;
+        ajustes.volumenSFX = sliderEfectosSFX != null ? sliderEfectosSFX.value : ajustes.volumenSFX;
+        ajustes.indiceMonitorRanking = dropdownMonitor != null ? dropdownMonitor.value : ajustes.indiceMonitorRanking;
+        ajustes.indiceMonitorPrincipal = 0; // El juego principal siempre se ejecuta en Monitor 1
+        ajustes.indiceResolucion = dropdownResolucion != null ? dropdownResolucion.value : ajustes.indiceResolucion;
+        ajustes.pantallaCompleta = togglePantallaCompleta != null ? togglePantallaCompleta.isOn : ajustes.pantallaCompleta;
+
+        if (dropdownPuertoSerial != null && puertosDisponibles != null)
+        {
+            int idx = dropdownPuertoSerial.value - 1;
+            ajustes.puertoSerial = (idx >= 0 && idx < puertosDisponibles.Length) ? puertosDisponibles[idx] : "";
+        }
+
+        DataManager.Instancia.GuardarAjustes();
+    }
+
+    private void ActualizarEstadoSerial()
+    {
+        if (textoEstadoSerial == null) return;
+
+        if (dropdownPuertoSerial == null || dropdownPuertoSerial.value == 0)
+        {
+            textoEstadoSerial.text = "Sin conexión";
+        }
+        else
+        {
+            textoEstadoSerial.text = "Conectado: " + dropdownPuertoSerial.options[dropdownPuertoSerial.value].text;
+        }
+    }
+
+    public void AbrirPanel()
+    {
+        LlenarDropdowns();
+        CargarValoresGuardados();
+        gameObject.SetActive(true);
+    }
+
     public void CerrarPanel()
     {
         gameObject.SetActive(false);

@@ -46,7 +46,10 @@ public class RankingUI : MonoBehaviour
 
     private void Awake()
     {
+        ConfigurarMultiDisplay();
         BuscarReferenciasEnEscena();
+
+        DataManager.OnRankingActualizado += CargarRankingEnPantalla;
 
         if (botonVolver != null)
             botonVolver.onClick.AddListener(VolverAlMenu);
@@ -75,9 +78,113 @@ public class RankingUI : MonoBehaviour
             plantillaFila.SetActive(false);
     }
 
+    private void OnDestroy()
+    {
+        DataManager.OnRankingActualizado -= CargarRankingEnPantalla;
+    }
+
     private void Start()
     {
+        ConfigurarMultiDisplay();
         CargarRankingEnPantalla();
+    }
+
+    private void ConfigurarMultiDisplay()
+    {
+        // Si hay múltiples escenas cargadas (ej: Menu en Display 1 + Ranking aditivo en Display 2) o más de 1 monitor:
+        // el Ranking se envía al Display 2 (índice 1).
+        // Si el usuario abrió directamente la escena de Ranking de forma individual (escena única):
+        // se muestra en el Display 1 (índice 0) para que sea visible en la pantalla principal.
+        int targetDisplay = 0;
+
+        bool esCargaAditiva = UnityEngine.SceneManagement.SceneManager.sceneCount > 1;
+
+        if (esCargaAditiva || Display.displays.Length > 1)
+        {
+            targetDisplay = 1;
+        }
+
+        if (DataManager.Instancia != null && DataManager.Instancia.ajustes != null)
+        {
+            int monitorElegido = DataManager.Instancia.ajustes.indiceMonitorRanking;
+            // Solo sobreescribir el monitor si el usuario seleccionó explícitamente un monitor secundario (mayor a 0)
+            if (monitorElegido > 0 && monitorElegido < Display.displays.Length)
+            {
+                targetDisplay = monitorElegido;
+            }
+        }
+
+        if (targetDisplay > 0 && targetDisplay < Display.displays.Length)
+        {
+            int ancho = Display.displays[targetDisplay].systemWidth;
+            int alto = Display.displays[targetDisplay].systemHeight;
+            if (ancho <= 0) ancho = 1920;
+            if (alto <= 0) alto = 1080;
+            Display.displays[targetDisplay].Activate(ancho, alto, 60);
+        }
+
+        // Asignar Display 2 (índice 1) ÚNICAMENTE a los Canvases y Cámaras pertenecientes a esta escena (Ranking)
+        UnityEngine.SceneManagement.Scene escenaActual = gameObject.scene;
+        if (escenaActual.isLoaded)
+        {
+            foreach (GameObject rootObj in escenaActual.GetRootGameObjects())
+            {
+                Canvas[] canvases = rootObj.GetComponentsInChildren<Canvas>(true);
+                foreach (Canvas canvas in canvases)
+                {
+                    canvas.targetDisplay = targetDisplay;
+                    ConfigurarEscalaCanvas(canvas);
+                    CrearFondoSolidoSiNoExiste(canvas);
+                }
+
+                Camera[] cameras = rootObj.GetComponentsInChildren<Camera>(true);
+                foreach (Camera cam in cameras)
+                {
+                    cam.targetDisplay = targetDisplay;
+                    cam.clearFlags = CameraClearFlags.SolidColor;
+                    cam.backgroundColor = new Color(0.12f, 0.18f, 0.28f, 1f); // Azul opaco sólido
+                }
+            }
+        }
+    }
+
+    private void ConfigurarEscalaCanvas(Canvas canvas)
+    {
+        if (canvas == null) return;
+
+        UnityEngine.UI.CanvasScaler scaler = canvas.GetComponent<UnityEngine.UI.CanvasScaler>();
+        if (scaler == null)
+        {
+            scaler = canvas.gameObject.AddComponent<UnityEngine.UI.CanvasScaler>();
+        }
+
+        scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        scaler.screenMatchMode = UnityEngine.UI.CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.matchWidthOrHeight = 0.5f;
+    }
+
+    private void CrearFondoSolidoSiNoExiste(Canvas canvas)
+    {
+        if (canvas == null) return;
+
+        Transform fondoExistente = canvas.transform.Find("FondoPantallaSolido");
+        if (fondoExistente == null)
+        {
+            GameObject objetoFondo = new GameObject("FondoPantallaSolido", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            objetoFondo.transform.SetParent(canvas.transform, false);
+            objetoFondo.transform.SetAsFirstSibling(); // Colocarlo al fondo de la jerarquía de UI
+
+            RectTransform rect = objetoFondo.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.sizeDelta = Vector2.zero;
+            rect.anchoredPosition = Vector2.zero;
+
+            Image img = objetoFondo.GetComponent<Image>();
+            img.color = new Color(0.12f, 0.18f, 0.28f, 1f); // Azul sólido oscuro totalmente opaco (Alpha = 1)
+            img.raycastTarget = false;
+        }
     }
 
     public void IrAPaginaAnterior()

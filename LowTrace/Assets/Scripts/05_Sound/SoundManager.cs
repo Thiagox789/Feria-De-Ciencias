@@ -157,7 +157,7 @@ public class SoundManager : MonoBehaviour
     {
         if (autoEnEscena == null)
         {
-            autoEnEscena = FindObjectOfType<WheelCarController>();
+            autoEnEscena = FindFirstObjectByType<WheelCarController>();
         }
 
         if (autoEnEscena == null || reproductorMotorSFX == null) return;

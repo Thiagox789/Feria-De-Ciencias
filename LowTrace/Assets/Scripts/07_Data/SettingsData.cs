@@ -4,7 +4,15 @@ using UnityEngine;
 public class SettingsData : ScriptableObject
 {
     [Header("Volumen del Juego")]
-    // [Range] hace que en Unity aparezca una barrita para elegir entre 0.0 (muteado) y 1.0 (máximo)
     [Range(0f, 1f)] public float volumenMusica = 1f;
     [Range(0f, 1f)] public float volumenSFX = 1f;
+
+    [Header("Pantalla")]
+    public int indiceMonitorPrincipal;
+    public int indiceMonitorRanking = 1;
+    public int indiceResolucion;
+    public bool pantallaCompleta = true;
+
+    [Header("Puerto Serial (Volante)")]
+    public string puertoSerial = "";
 }

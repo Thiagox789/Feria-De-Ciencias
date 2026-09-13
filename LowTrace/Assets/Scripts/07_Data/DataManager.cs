@@ -14,7 +14,7 @@ public class DataManager : MonoBehaviour
         {
             if (_instancia == null)
             {
-                _instancia = FindObjectOfType<DataManager>();
+                _instancia = FindFirstObjectByType<DataManager>();
                 if (_instancia == null)
                 {
                     GameObject objetoGestor = new GameObject("DataManager");
@@ -29,6 +29,8 @@ public class DataManager : MonoBehaviour
     [Header("Objetos de Datos")]
     public RecordsData records;
     public SettingsData ajustes;
+
+    public static event System.Action OnRankingActualizado;
 
     private string rutaArchivoRecords;
     private string rutaArchivoAjustes;
@@ -123,6 +125,7 @@ public class DataManager : MonoBehaviour
         }
 
         GuardarDatos();
+        OnRankingActualizado?.Invoke();
     }
 
     public struct EntradaRankingConPosicion
@@ -218,6 +221,7 @@ public class DataManager : MonoBehaviour
         records.rankingGlobal.Clear();
         records.mejorTiempo = 9999f;
         GuardarDatos();
+        OnRankingActualizado?.Invoke();
     }
 
     // ==========================================
