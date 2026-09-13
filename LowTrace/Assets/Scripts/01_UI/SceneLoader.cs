@@ -36,9 +36,11 @@ public class SceneLoader : MonoBehaviour
         _instancia = this;
         DontDestroyOnLoad(gameObject);
 
-        // En la compilación ejecutable, activar inmediatamente el Display 2 si hay 2 o más monitores conectados
+        // En multi-pantalla, usar FullScreenWindow para evitar que el modo exclusivo deforme resoluciones o apague el 2do monitor
         if (Display.displays.Length > 1)
         {
+            Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+
             int ancho = Display.displays[1].systemWidth;
             int alto = Display.displays[1].systemHeight;
             if (ancho <= 0) ancho = 1920;
@@ -61,6 +63,15 @@ public class SceneLoader : MonoBehaviour
 
     private void OnEscenaCargada(Scene escena, LoadSceneMode modo)
     {
+        // Configurar escalado de resolución automático para todos los Canvases de la escena cargada
+        foreach (GameObject root in escena.GetRootGameObjects())
+        {
+            foreach (Canvas c in root.GetComponentsInChildren<Canvas>(true))
+            {
+                ConfigurarEscalaCanvas(c);
+            }
+        }
+
         // Si no estamos cargando la escena de Ranking, asegurar que esté cargada en segundo plano para el Monitor 2
         if (escena.name != "Ranking")
         {
@@ -148,5 +159,21 @@ public class SceneLoader : MonoBehaviour
             }
         }
         return false;
+    }
+
+    private void ConfigurarEscalaCanvas(Canvas canvas)
+    {
+        if (canvas == null) return;
+
+        UnityEngine.UI.CanvasScaler scaler = canvas.GetComponent<UnityEngine.UI.CanvasScaler>();
+        if (scaler == null)
+        {
+            scaler = canvas.gameObject.AddComponent<UnityEngine.UI.CanvasScaler>();
+        }
+
+        scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        scaler.screenMatchMode = UnityEngine.UI.CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.matchWidthOrHeight = 0.5f;
     }
 }
