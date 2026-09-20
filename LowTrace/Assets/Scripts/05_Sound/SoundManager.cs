@@ -70,6 +70,12 @@ public class SoundManager : MonoBehaviour
     // Cambia automáticamente la canción de fondo al cambiar de pantalla
     private void AlCargarEscena(Scene escena, LoadSceneMode modo)
     {
+        // Ignorar cargas de escenas aditivas (como Ranking cargado en 2do monitor)
+        if (modo == LoadSceneMode.Additive)
+        {
+            return;
+        }
+
         autoEnEscena = null;
 
         if (reproductorMotorSFX != null && reproductorMotorSFX.isPlaying)
@@ -79,7 +85,7 @@ public class SoundManager : MonoBehaviour
 
         int indiceCancion = 0; // Canción del Menú por defecto
 
-        if (escena.name == "IA" || escena.name == "Game" || escena.name == "Mapa" || escena.name.StartsWith("Circuito")) 
+        if (escena.name == "IA" || escena.name.StartsWith("IA") || escena.name == "Game" || escena.name == "Mapa" || escena.name.StartsWith("Circuito")) 
         {
             indiceCancion = 1; // Canción de la Carrera
         }
@@ -99,6 +105,9 @@ public class SoundManager : MonoBehaviour
             SetVolumenMusica(DataManager.Instancia.ajustes.volumenMusica);
             SetVolumenSFX(DataManager.Instancia.ajustes.volumenSFX);
         }
+
+        // Reproduce la música correspondiente a la escena activa inicial
+        AlCargarEscena(SceneManager.GetActiveScene(), LoadSceneMode.Single);
     }
 
     public void SetVolumenMusica(float volumen)
@@ -120,11 +129,16 @@ public class SoundManager : MonoBehaviour
         if (reproductorMusica != null && canciones != null && indice < canciones.Length && canciones[indice] != null)
         {
             reproductorMusica.loop = true;
-            // Solo cambia la canción si es distinta para no reiniciarla desde cero
+            // Solo cambia la canción si es distinta para no reiniciarla desde cero,
+            // o de lo contrario asegura que esté reproduciéndose.
             if (reproductorMusica.clip != canciones[indice])
             {
                 reproductorMusica.clip = canciones[indice]; 
                 reproductorMusica.Play();                
+            }
+            else if (!reproductorMusica.isPlaying)
+            {
+                reproductorMusica.Play();
             }
         }
     }

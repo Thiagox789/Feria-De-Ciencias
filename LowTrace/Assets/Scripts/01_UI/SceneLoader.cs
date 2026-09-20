@@ -45,7 +45,7 @@ public class SceneLoader : MonoBehaviour
             int alto = Display.displays[1].systemHeight;
             if (ancho <= 0) ancho = 1920;
             if (alto <= 0) alto = 1080;
-            Display.displays[1].Activate(ancho, alto, 60);
+            Display.displays[1].Activate(ancho, alto, new RefreshRate { numerator = 60, denominator = 1 });
         }
 
         SceneManager.sceneLoaded += OnEscenaCargada;

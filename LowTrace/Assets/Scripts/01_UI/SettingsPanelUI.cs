@@ -292,6 +292,11 @@ public class SettingsPanelUI : MonoBehaviour
 
         ActualizarEstadoSerial();
         GuardarAjusteEnDisco();
+
+        if (ArduinoInputReader.Instancia != null)
+        {
+            ArduinoInputReader.Instancia.InicializarPuerto();
+        }
     }
 
     // ==========================================

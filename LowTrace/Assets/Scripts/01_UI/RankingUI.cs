@@ -120,7 +120,7 @@ public class RankingUI : MonoBehaviour
             int alto = Display.displays[targetDisplay].systemHeight;
             if (ancho <= 0) ancho = 1920;
             if (alto <= 0) alto = 1080;
-            Display.displays[targetDisplay].Activate(ancho, alto, 60);
+            Display.displays[targetDisplay].Activate(ancho, alto, new RefreshRate { numerator = 60, denominator = 1 });
         }
 
         // Asignar Display 2 (índice 1) ÚNICAMENTE a los Canvases y Cámaras pertenecientes a esta escena (Ranking)

@@ -112,11 +112,26 @@ public class WheelCarController : MonoBehaviour
 
     private void Update()
     {
-        // Leemos las teclas presionadas por el jugador (Flechas o WASD)
-        entradaAcelerador = (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) ? 1f : 0f;
-        entradaFreno = (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) ? 1f : 0f;
+        // Leemos primero el volante/pedales de Arduino si está conectado
+        if (ArduinoInputReader.Instancia != null && ArduinoInputReader.Instancia.Conectado)
+        {
+            entradaAcelerador = ArduinoInputReader.Instancia.EntradaAcelerador;
+            entradaFreno = ArduinoInputReader.Instancia.EntradaFreno;
 
-        // Al tocar cualquier tecla de movimiento se inicia el conteo del tiempo de carrera
+            // Si no se presiona el pedal de Arduino, permitir teclas WASD/flechas de respaldo
+            if (entradaAcelerador <= 0f)
+                entradaAcelerador = (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) ? 1f : 0f;
+            if (entradaFreno <= 0f)
+                entradaFreno = (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) ? 1f : 0f;
+        }
+        else
+        {
+            // Lectura de teclas por defecto (WASD o Flechas)
+            entradaAcelerador = (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) ? 1f : 0f;
+            entradaFreno = (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) ? 1f : 0f;
+        }
+
+        // Al tocar cualquier control de movimiento se inicia el conteo del tiempo de carrera
         if (!carreraIniciada && (entradaAcelerador != 0 || Mathf.Abs(entradaDireccion) > 0.05f))
         {
             carreraIniciada = true;
@@ -144,8 +159,22 @@ public class WheelCarController : MonoBehaviour
     private void SuavizarEntradaDireccion()
     {
         float direccionObjetivo = 0f;
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) direccionObjetivo = 1f;
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) direccionObjetivo = -1f;
+
+        // Leer dirección de Arduino si está conectado
+        if (ArduinoInputReader.Instancia != null && ArduinoInputReader.Instancia.Conectado)
+        {
+            direccionObjetivo = ArduinoInputReader.Instancia.EntradaDireccion;
+        }
+
+        // Teclado (A/D o Flechas) sobrescribe el giro si se presiona alguna tecla
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            direccionObjetivo = 1f;
+        }
+        else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            direccionObjetivo = -1f;
+        }
 
         // Suavizamos el giro del volante progresivamente
         entradaDireccion = Mathf.Lerp(entradaDireccion, direccionObjetivo, velocidadSuavizadoGiro);
