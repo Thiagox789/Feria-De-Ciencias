@@ -18,7 +18,8 @@ public class MapSelectionManager : MonoBehaviour
     [SerializeField] private bool empezarEnPrimerMapa = true;
 
     [Header("Elementos de la Interfaz (UI)")]
-    [SerializeField] private Image imagenMapa;
+    [Tooltip("Arrastra aquí el componente Image o RawImage de la UI para la vista previa del mapa")]
+    [SerializeField] private Graphic imagenMapa;
     [SerializeField] private RawImage rawImagenMapa;
     [SerializeField] private SpriteRenderer spriteRendererMapa;
     [SerializeField] private TextMeshProUGUI textoNombreMapa;
@@ -230,7 +231,17 @@ public class MapSelectionManager : MonoBehaviour
 
         if (mapa.miniatura != null)
         {
-            if (imagenMapa != null) imagenMapa.sprite = mapa.miniatura;
+            if (imagenMapa != null)
+            {
+                if (imagenMapa is Image img)
+                {
+                    img.sprite = mapa.miniatura;
+                }
+                else if (imagenMapa is RawImage rawImg)
+                {
+                    rawImg.texture = mapa.miniatura.texture;
+                }
+            }
             if (rawImagenMapa != null) rawImagenMapa.texture = mapa.miniatura.texture;
             if (spriteRendererMapa != null) spriteRendererMapa.sprite = mapa.miniatura;
         }

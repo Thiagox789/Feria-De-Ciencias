@@ -29,7 +29,9 @@ public class ArduinoInputReader : MonoBehaviour
     [SerializeField] private int baudRate = 9600;
 
     [Header("Calibración Volante")]
-    [SerializeField] [Range(0.01f, 0.3f)] private float umbralZonaMuerta = 0.12f; // 12% de margen en el centro
+    [SerializeField] [Range(0.001f, 0.1f)] private float umbralZonaMuerta = 0.02f; // 2% de margen mínimo en el centro
+    [SerializeField] private float potenciometroMinimo = 0f;
+    [SerializeField] private float potenciometroMaximo = 962f;
 
     [Header("Valores Recibidos de Arduino")]
     public float EntradaDireccion = 0f;  // Rango de -1.0 a 1.0
@@ -117,18 +119,57 @@ public class ArduinoInputReader : MonoBehaviour
 
         string texto = ultimaLinea;
 
-        // Si el mensaje empieza con "Valor: ", remover la etiqueta
-        if (texto.StartsWith("Valor:"))
+        // Si viene con etiquetas legibles de Arduino (ej: "Volante: 50 Acel: 1 Freno: 0" o "Volante: -45 | Max Detectado: 530 | Acel: 0 Freno: 0")
+        if (texto.Contains("Acel:"))
         {
-            texto = texto.Replace("Valor:", "").Trim();
+            try
+            {
+                string tagVol = texto.Contains("Volante:") ? "Volante:" : (texto.Contains("Valor:") ? "Valor:" : "");
+                if (!string.IsNullOrEmpty(tagVol))
+                {
+                    int pVal = texto.IndexOf(tagVol) + tagVol.Length;
+                    int pAcel = texto.IndexOf("Acel:");
+                    string valStr = texto.Substring(pVal, pAcel - pVal).Trim();
+                    if (valStr.Contains("|")) valStr = valStr.Split('|')[0].Trim();
+
+                    if (float.TryParse(valStr, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float rawVal))
+                    {
+                        ProcesarLecturaVolante(rawVal);
+                    }
+                }
+
+                int idxAcel = texto.IndexOf("Acel:") + 5;
+                int idxFreno = texto.IndexOf("Freno:");
+                if (idxAcel > 4 && idxFreno > idxAcel)
+                {
+                    string acelStr = texto.Substring(idxAcel, idxFreno - idxAcel).Trim();
+                    if (acelStr.Contains("|")) acelStr = acelStr.Split('|')[0].Trim();
+                    if (float.TryParse(acelStr, out float acelVal)) EntradaAcelerador = Mathf.Clamp01(acelVal);
+                }
+
+                if (idxFreno > 0)
+                {
+                    string frenoStr = texto.Substring(idxFreno + 6).Trim();
+                    if (frenoStr.Contains("|")) frenoStr = frenoStr.Split('|')[0].Trim();
+                    if (float.TryParse(frenoStr, out float frenoVal)) EntradaFreno = Mathf.Clamp01(frenoVal);
+                }
+                return;
+            }
+            catch { }
         }
 
-        // Si es formato CSV (ejemplo: "-0.45,1,0")
+        // Si el mensaje empieza solo con "Volante: " o "Valor: ", remover la etiqueta
+        if (texto.StartsWith("Volante:")) texto = texto.Replace("Volante:", "").Trim();
+        if (texto.StartsWith("Valor:")) texto = texto.Replace("Valor:", "").Trim();
+
+        // Si es formato CSV (ejemplo: "-0.45,1,0" o "512,1,0")
         string[] datos = texto.Split(',');
         if (datos.Length > 1)
         {
             if (float.TryParse(datos[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float dir))
-                EntradaDireccion = Mathf.Clamp(dir, -1f, 1f);
+            {
+                ProcesarLecturaVolante(dir);
+            }
 
             if (float.TryParse(datos[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float acel))
                 EntradaAcelerador = Mathf.Clamp01(acel);
@@ -138,32 +179,36 @@ public class ArduinoInputReader : MonoBehaviour
         }
         else
         {
-            // Si es una sola lectura raw del potenciómetro (ejemplo: 0 a 998 de analogRead)
+            // Lectura simple de una sola variable
             if (float.TryParse(texto, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float valorRaw))
             {
-                // Si el valor viene en rango analógico de potenciómetro (0 a 998)
-                if (valorRaw >= 0f && valorRaw <= 1023f)
-                {
-                    float dirNorm = Mathf.InverseLerp(0f, 998f, valorRaw); // 0 a 1
-                    float dirBruta = Mathf.Lerp(-1f, 1f, dirNorm);        // -1 a 1
-
-                    // Aplicar zona muerta central amplia y re-escalado suave al salir del centro
-                    if (Mathf.Abs(dirBruta) < umbralZonaMuerta)
-                    {
-                        EntradaDireccion = 0f;
-                    }
-                    else
-                    {
-                        float signo = Mathf.Sign(dirBruta);
-                        float magnitud = Mathf.InverseLerp(umbralZonaMuerta, 1f, Mathf.Abs(dirBruta));
-                        EntradaDireccion = signo * magnitud;
-                    }
-                }
-                else
-                {
-                    EntradaDireccion = Mathf.Clamp(valorRaw, -1f, 1f);
-                }
+                ProcesarLecturaVolante(valorRaw);
             }
+        }
+    }
+
+    private void ProcesarLecturaVolante(float valor)
+    {
+        // Si viene en rango de porcentaje (-100 a 100) desde Arduino map(val, min, max, -100, 100)
+        if (Mathf.Abs(valor) > 1.0f && Mathf.Abs(valor) <= 100.0f)
+        {
+            EntradaDireccion = Mathf.Clamp(valor / 100.0f, -1f, 1f);
+        }
+        // Si viene en rango analógico raw (0 a 1023)
+        else if (valor >= 0f && valor <= 1023f)
+        {
+            float max = potenciometroMaximo > potenciometroMinimo ? potenciometroMaximo : 962f;
+            float dirNorm = Mathf.InverseLerp(potenciometroMinimo, max, valor); // 0 a 1
+            EntradaDireccion = Mathf.Lerp(-1f, 1f, dirNorm);     // -1 a 1
+        }
+        else
+        {
+            EntradaDireccion = Mathf.Clamp(valor, -1f, 1f);
+        }
+
+        if (Mathf.Abs(EntradaDireccion) < umbralZonaMuerta)
+        {
+            EntradaDireccion = 0f;
         }
     }
 
