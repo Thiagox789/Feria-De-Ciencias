@@ -236,6 +236,7 @@ public class MapSelectionManager : MonoBehaviour
                 if (imagenMapa is Image img)
                 {
                     img.sprite = mapa.miniatura;
+                    img.preserveAspect = false;
                 }
                 else if (imagenMapa is RawImage rawImg)
                 {
