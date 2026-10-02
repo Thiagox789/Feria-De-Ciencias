@@ -31,6 +31,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textoPosicionRanking;
     [SerializeField] private GameObject panelRankingGuardado;
 
+    [Header("Visibilidad del HUD (Tecla H)")]
+    [Tooltip("Arrastra aquí el panel principal del HUD o todos los objetos/cuadrados/iconos que desees ocultar al presionar la tecla H")]
+    [SerializeField] private GameObject panelHUD;
+    [SerializeField] private GameObject[] elementosAOcultarConH;
+    private bool hudVisible = true;
+
     private float tiempoFinalCarrera;
 
     private void Awake()
@@ -95,6 +101,13 @@ public class UIManager : MonoBehaviour
 
     private void ProcesarTeclasAccesoRapido()
     {
+        // Al presionar la tecla H se oculta o muestra el HUD
+        bool presionoH = (Keyboard.current != null && Keyboard.current.hKey.wasPressedThisFrame) || Input.GetKeyDown(KeyCode.H);
+        if (presionoH)
+        {
+            AlternarVisibilidadHUD();
+        }
+
         if (Keyboard.current == null) return;
 
         // Si se presiona R o Espacio se reinicia la carrera
@@ -104,12 +117,43 @@ public class UIManager : MonoBehaviour
         }
 
         // Si terminó la carrera y se presiona Escape, vuelve al Menú
-        if (GameManager.Instancia.Estado == GameManager.EstadoJuego.Terminado)
+        if (GameManager.Instancia != null && GameManager.Instancia.Estado == GameManager.EstadoJuego.Terminado)
         {
             if (Keyboard.current.escapeKey.wasPressedThisFrame)
             {
                 VolverAlMenu();
             }
+        }
+    }
+
+    public void AlternarVisibilidadHUD()
+    {
+        hudVisible = !hudVisible;
+
+        if (panelHUD != null)
+        {
+            panelHUD.SetActive(hudVisible);
+        }
+
+        if (elementosAOcultarConH != null && elementosAOcultarConH.Length > 0)
+        {
+            foreach (GameObject obj in elementosAOcultarConH)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(hudVisible);
+                }
+            }
+        }
+
+        if (panelHUD == null && (elementosAOcultarConH == null || elementosAOcultarConH.Length == 0))
+        {
+            if (textoTiempoCronometro != null) textoTiempoCronometro.enabled = hudVisible;
+            if (textoDiferenciaConRecord != null) textoDiferenciaConRecord.enabled = hudVisible;
+            if (textoRecordHUD != null) textoRecordHUD.enabled = hudVisible;
+            if (textoCheckpoints != null) textoCheckpoints.enabled = hudVisible;
+            if (textoNumeroVuelta != null) textoNumeroVuelta.enabled = hudVisible;
+            if (textoEstadoMensaje != null) textoEstadoMensaje.enabled = hudVisible;
         }
     }
 

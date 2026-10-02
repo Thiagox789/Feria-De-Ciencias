@@ -10433,6 +10433,8 @@ MonoBehaviour:
   botonGuardarRanking: {fileID: 460736637}
   textoPosicionRanking: {fileID: 0}
   panelRankingGuardado: {fileID: 0}
+  panelHUD: {fileID: 2093829648}
+  elementosAOcultarConH: []
 --- !u!4 &918908102
 Transform:
   m_ObjectHideFlags: 0

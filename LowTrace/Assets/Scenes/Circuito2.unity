@@ -9268,6 +9268,8 @@ MonoBehaviour:
   botonGuardarRanking: {fileID: 501913053}
   textoPosicionRanking: {fileID: 0}
   panelRankingGuardado: {fileID: 0}
+  panelHUD: {fileID: 1320605967}
+  elementosAOcultarConH: []
 --- !u!1001 &379875011
 PrefabInstance:
   m_ObjectHideFlags: 0

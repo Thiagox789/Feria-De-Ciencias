@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapData
   nombre: Circuito 2
   escena: Circuito2
-  miniatura: {fileID: 21300000, guid: 89746fea9bf5c2bd69ecda8d64b4dfac, type: 3}
+  miniatura: {fileID: 21300000, guid: 5e8e3be4e446de009a5bbe6ca5b105f1, type: 3}
   tipoPista: 1
   dificultad: 1
   tiempoEstimado: 60
@@ -22,12 +22,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 2490c6b880e6295658d166ad00bbbf85, type: 2}
   - {fileID: 2100000, guid: cb8a9663a334df67aae152cd822bd939, type: 2}
   - {fileID: 2100000, guid: b87e1254844d17952b70d4bc7af0a081, type: 2}
-  - {fileID: 2100000, guid: c77fc37b4873bb951a9acaa07d8b7b87, type: 2}
-  - {fileID: 2100000, guid: 25b4de9837c58525799db3be05a2e9b4, type: 2}
   nombresSkyboxes:
   - Alien
   - Dia
   - Amanecer
-  - Noche
-  - Espacio
-  skyboxDefault: 0
+  skyboxDefault: 1

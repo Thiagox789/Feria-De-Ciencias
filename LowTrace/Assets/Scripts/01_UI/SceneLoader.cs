@@ -133,6 +133,8 @@ public class SceneLoader : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
+    private static bool cargandoRankingAsincrono = false;
+
     private void AsegurarRankingEnSegundoMonitor()
     {
         bool esMultiMonitor = Display.displays.Length > 1;
@@ -142,9 +144,18 @@ public class SceneLoader : MonoBehaviour
         esMultiMonitor = true;
 #endif
 
-        if (esMultiMonitor && !EsEscenaRankingCargada())
+        if (esMultiMonitor && !EsEscenaRankingCargada() && !cargandoRankingAsincrono)
         {
-            SceneManager.LoadSceneAsync("Ranking", LoadSceneMode.Additive);
+            cargandoRankingAsincrono = true;
+            AsyncOperation op = SceneManager.LoadSceneAsync("Ranking", LoadSceneMode.Additive);
+            if (op != null)
+            {
+                op.completed += (a) => { cargandoRankingAsincrono = false; };
+            }
+            else
+            {
+                cargandoRankingAsincrono = false;
+            }
         }
     }
 
@@ -153,7 +164,7 @@ public class SceneLoader : MonoBehaviour
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
             Scene s = SceneManager.GetSceneAt(i);
-            if (s.isLoaded && s.name == "Ranking")
+            if (s.name == "Ranking")
             {
                 return true;
             }
