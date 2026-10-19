@@ -235,4 +235,38 @@ public class ArduinoInputReader : MonoBehaviour
 
         Conectado = false;
     }
+
+    /// <summary>
+    /// Envía telemetría formateada al Arduino para mostrar en la pantalla OLED 0.91".
+    /// Formato: #VEL,TIEMPO_STR,CHK,CHK_TOT
+    /// Ejemplo: #128,01:23.456,3,5
+    /// </summary>
+    public void EnviarTelemetria(float velocidadKMH, float tiempoSegundos, int chkActual, int chkTotales)
+    {
+        if (!Conectado || puertoSerie == null || !puertoSerie.IsOpen) return;
+
+        try
+        {
+            int vel = Mathf.RoundToInt(velocidadKMH);
+            int min = (int)(tiempoSegundos / 60f);
+            int seg = (int)(tiempoSegundos % 60f);
+            int ms = (int)((tiempoSegundos - Mathf.Floor(tiempoSegundos)) * 1000f);
+            string tiempoStr = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:00}:{1:00}.{2:000}", min, seg, ms);
+            
+            string mensaje = $"#{vel},{tiempoStr},{chkActual},{chkTotales}";
+            puertoSerie.WriteLine(mensaje);
+        }
+        catch (System.Exception)
+        {
+            // Ignorar errores esporádicos de timeout en escritura
+        }
+    }
+
+    /// <summary>
+    /// Limpia los datos de la pantalla de Arduino cuando se sale al menú o se cambia de mapa.
+    /// </summary>
+    public void LimpiarTelemetria()
+    {
+        EnviarTelemetria(0f, 0f, 0, 0);
+    }
 }

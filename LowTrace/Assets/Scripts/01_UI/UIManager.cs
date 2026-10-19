@@ -38,6 +38,8 @@ public class UIManager : MonoBehaviour
     private bool hudVisible = true;
 
     private float tiempoFinalCarrera;
+    private float tiempoSiguienteEnvioArduino = 0f;
+    private WheelCarController autoJugadorRef;
 
     private void Awake()
     {
@@ -55,6 +57,12 @@ public class UIManager : MonoBehaviour
     {
         GameManager.OnEstadoCambio -= MostrarMensajeEstado;
         GameManager.OnCarreraTerminada -= MostrarPantallaVictoria;
+
+        // Limpiar la pantalla de Arduino al salir del mapa
+        if (ArduinoInputReader.Instancia != null)
+        {
+            ArduinoInputReader.Instancia.LimpiarTelemetria();
+        }
     }
 
     private void Start()
@@ -76,6 +84,26 @@ public class UIManager : MonoBehaviour
         ActualizarTextoCheckpoints();
         ActualizarTextoVuelta();
         ProcesarTeclasAccesoRapido();
+        TransmitirTelemetriaArduino();
+    }
+
+    private void TransmitirTelemetriaArduino()
+    {
+        if (ArduinoInputReader.Instancia == null || !ArduinoInputReader.Instancia.Conectado) return;
+        if (Time.time < tiempoSiguienteEnvioArduino) return;
+        tiempoSiguienteEnvioArduino = Time.time + 0.08f; // ~12-13 actualizaciones por segundo
+
+        if (autoJugadorRef == null)
+        {
+            autoJugadorRef = FindFirstObjectByType<WheelCarController>();
+        }
+
+        float velocidad = autoJugadorRef != null ? autoJugadorRef.VelocidadActualKMH : 0f;
+        float tiempo = GameManager.Instancia != null ? GameManager.Instancia.TiempoCarrera : 0f;
+        int chk = GameManager.Instancia != null ? GameManager.Instancia.CheckpointsCompletados : 0;
+        int chkTot = GameManager.Instancia != null ? GameManager.Instancia.CheckpointsTotales : 0;
+
+        ArduinoInputReader.Instancia.EnviarTelemetria(velocidad, tiempo, chk, chkTot);
     }
 
     private string ObtenerNombreMapaActual()
